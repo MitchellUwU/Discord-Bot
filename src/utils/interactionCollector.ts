@@ -2,7 +2,7 @@
 
 import BotClient from '../client';
 import { EventEmitter } from 'events';
-import * as Lib from 'oceanic.js';
+import Lib from 'oceanic.js';
 
 // Collector configuration interface.
 

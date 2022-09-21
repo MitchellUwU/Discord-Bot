@@ -3,7 +3,7 @@ import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
 import InteractionWrapper from '../../utils/interactionWrapper';
-import * as Lib from 'oceanic.js';
+import Lib from 'oceanic.js';
 import ms from 'ms';
 
 export default class TimeoutCommand extends CommandInterface {

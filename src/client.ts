@@ -4,7 +4,7 @@ import CommandInterface from './interfaces/command';
 import Database from './utils/db';
 import EventInterface from './interfaces/event';
 import fs from 'fs/promises';
-import * as Lib from 'oceanic.js';
+import Lib from 'oceanic.js';
 import path from 'path';
 import { PoolConfig } from 'pg';
 

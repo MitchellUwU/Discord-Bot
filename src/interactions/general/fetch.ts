@@ -2,7 +2,7 @@ import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-ap
 import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
-import * as Lib from 'oceanic.js';
+import Lib from 'oceanic.js';
 import { request } from 'undici';
 import InteractionWrapper from '../../utils/interactionWrapper';
 
@@ -32,7 +32,7 @@ export default class FetchCommand extends CommandInterface {
 
 		switch (command.toString()) {
 			case 'meme': {
-				interaction.raw.defer();
+				interaction.deferResponse();
 
 				const data = await request('https://meme-api.herokuapp.com/gimme/memes');
 				const file = await client.utils.getJSONContent(data.body);
@@ -54,10 +54,11 @@ export default class FetchCommand extends CommandInterface {
 							.toJSON(),
 					],
 				});
+
 				break;
 			}
 			case 'cat': {
-				interaction.raw.defer();
+				interaction.deferResponse();
 
 				const data = await request('https://aws.random.cat/meow');
 				const { file } = await client.utils.getJSONContent(data.body);
@@ -72,6 +73,7 @@ export default class FetchCommand extends CommandInterface {
 							.toJSON(),
 					],
 				});
+
 				break;
 			}
 			case 'urban': {
@@ -103,6 +105,7 @@ export default class FetchCommand extends CommandInterface {
 							.toJSON(),
 					],
 				});
+				
 				break;
 			}
 			default: {

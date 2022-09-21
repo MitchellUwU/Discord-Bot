@@ -1,6 +1,6 @@
 import BotClient from '../client';
 import { Builders } from './builders';
-import * as Lib from 'oceanic.js';
+import Lib from 'oceanic.js';
 
 // Wrapper for interaction (which is also a wrapper of raw interaction) to make things easier (i don't want to use Object.defineProperty, it makes my life hell).
 
@@ -96,6 +96,16 @@ export default class InteractionWrapper {
 	}
 
 	/**
+	 * Defer interaction response.
+	 * @param flag Defer with a flags.
+	 * @returns Promise<void>
+	 */
+
+	public async deferResponse(flag?: number): Promise<void> {
+		return this.raw.defer(flag);
+	}
+
+	/**
 	 * Send a respond to interaction.
 	 * @param content Content of interaction.
 	 * @returns Promise<void>
@@ -104,11 +114,11 @@ export default class InteractionWrapper {
 	public async createMessage(content: Lib.InteractionContent): Promise<void> {
 		content.content = this.cleanContent(content.content);
 		if (this.raw.acknowledged) {
-			/** 
-			 * since createFollowup return a Message and i don't want that 
-			 * so i just make it do nothing so it return void (this could be a very bad idea in future so) 
+			/**
+			 * since createFollowup return a Message and i don't want that
+			 * so i just make it do nothing so it return void (this could be a very bad idea in future so)
 			 * [TODO] make this return a Message and properly solve types error
-			*/
+			 */
 			this.raw.createFollowup(content);
 			return this.doNothing();
 		} else {
