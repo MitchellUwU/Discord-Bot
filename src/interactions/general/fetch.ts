@@ -37,7 +37,7 @@ export default class FetchCommand extends CommandInterface {
 				const data = await request('https://meme-api.herokuapp.com/gimme/memes');
 				const file = await client.utils.getJSONContent(data.body);
 
-				interaction.raw.editOriginal({
+				interaction.editOriginal({
 					embeds: [
 						new Builders.Embed()
 							.setRandomColor()
@@ -63,7 +63,7 @@ export default class FetchCommand extends CommandInterface {
 				const data = await request('https://aws.random.cat/meow');
 				const { file } = await client.utils.getJSONContent(data.body);
 
-				interaction.raw.editOriginal({
+				interaction.editOriginal({
 					embeds: [
 						new Builders.Embed()
 							.setRandomColor()

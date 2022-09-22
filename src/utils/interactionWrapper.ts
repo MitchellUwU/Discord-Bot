@@ -96,6 +96,22 @@ export default class InteractionWrapper {
 	}
 
 	/**
+	 * Edit interaction response.
+	 * @param content Content of interaction.
+	 * @returns Promise<void>
+	 */
+
+	public async editOriginal(content: Lib.InteractionContent): Promise<void> {
+		content.content = this.cleanContent(content.content);
+		if (this.raw.acknowledged) {
+			this.raw.editOriginal(content);
+			return this.doNothing();
+		} else {
+			return this.raw.createMessage(content);
+		}
+	}
+
+	/**
 	 * Defer interaction response.
 	 * @param flag Defer with a flags.
 	 * @returns Promise<void>
