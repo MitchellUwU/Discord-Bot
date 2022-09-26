@@ -11,7 +11,10 @@ export default class PingCommand extends CommandInterface {
 		.setDescription('show latency statistic thing')
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): Promise<void | Lib.Message<Lib.TextChannel>> {
+	public async execute(
+		client: BotClient,
+		interaction: InteractionWrapper
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		const startTime = performance.now();
 		await interaction.deferResponse();
 		const endTime = performance.now();
