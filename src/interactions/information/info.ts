@@ -12,7 +12,10 @@ export default class InfoCommand extends CommandInterface {
 		.setDescription('show a super duper cool information')
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): Promise<void> {
+	public async execute(
+		client: BotClient,
+		interaction: InteractionWrapper
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()

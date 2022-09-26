@@ -2,6 +2,7 @@ import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-ap
 import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
+import Lib from 'oceanic.js';
 import InteractionWrapper from '../../utils/interactionWrapper';
 
 export default class EightBallCommand extends CommandInterface {
@@ -15,7 +16,10 @@ export default class EightBallCommand extends CommandInterface {
 		)
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): Promise<void> {
+	public async execute(
+		client: BotClient,
+		interaction: InteractionWrapper
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		const message: string = interaction.options.getString('message', true);
 		const config = client.config.answers;
 		const botAnswer: string = config.repliesTemplate[

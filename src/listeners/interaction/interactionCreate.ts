@@ -8,7 +8,10 @@ import Lib from 'oceanic.js';
 export default class InteractionCreateEvent extends EventInterface {
 	public override data = new Builders.Event('interactionCreate', false).toJSON();
 
-	public async execute(client: BotClient, rawInteraction: Lib.Interaction): Promise<void> {
+	public async execute(
+		client: BotClient,
+		rawInteraction: Lib.Interaction
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		switch (rawInteraction.type) {
 			case Lib.InteractionTypes.APPLICATION_COMMAND: {
 				if (!(rawInteraction instanceof Lib.CommandInteraction)) return;

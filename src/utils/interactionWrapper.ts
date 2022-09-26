@@ -47,13 +47,6 @@ export default class InteractionWrapper {
 	}
 
 	/**
-	 * [INTERNAL] Do nothing. (used for solving types error)
-	 * @returns void
-	 */
-
-	private doNothing(): void {}
-
-	/**
 	 * Get all roles in a member.
 	 * @param user Guild member.
 	 * @returns any
@@ -101,11 +94,10 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async editOriginal(content: Lib.InteractionContent): Promise<void> {
+	public async editOriginal(content: Lib.InteractionContent): Promise<void | Lib.Message<Lib.TextChannel>> {
 		content.content = this.cleanContent(content.content);
 		if (this.raw.acknowledged) {
-			this.raw.editOriginal(content);
-			return this.doNothing();
+			return this.raw.editOriginal(content);
 		} else {
 			return this.raw.createMessage(content);
 		}
@@ -127,16 +119,10 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async createMessage(content: Lib.InteractionContent): Promise<void> {
+	public async createMessage(content: Lib.InteractionContent): Promise<void | Lib.Message<Lib.TextChannel>> {
 		content.content = this.cleanContent(content.content);
 		if (this.raw.acknowledged) {
-			/**
-			 * since createFollowup return a Message and i don't want that
-			 * so i just make it do nothing so it return void (this could be a very bad idea in future so)
-			 * [TODO] make this return a Message and properly solve types error
-			 */
-			this.raw.createFollowup(content);
-			return this.doNothing();
+			return this.raw.createFollowup(content);
 		} else {
 			return this.raw.createMessage(content);
 		}
@@ -148,7 +134,10 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async createError(content: Lib.InteractionContent, hidden?: boolean): Promise<void> {
+	public async createError(
+		content: Lib.InteractionContent,
+		hidden?: boolean
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		const embed = new Builders.Embed()
 			.setColor('red')
 			.setTitle('❌ error!')
@@ -157,18 +146,16 @@ export default class InteractionWrapper {
 
 		if (this.raw.acknowledged) {
 			if (hidden === undefined || hidden) {
-				this.raw.createFollowup({
+				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
 					flags: 64,
 					files: content.files,
 				});
-				return this.doNothing();
 			} else {
-				this.raw.createFollowup({
+				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
 					files: content.files,
 				});
-				return this.doNothing();
 			}
 		} else {
 			if (hidden === undefined || hidden) {
@@ -192,7 +179,10 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async createSuccess(content: Lib.InteractionContent, hidden?: boolean): Promise<void> {
+	public async createSuccess(
+		content: Lib.InteractionContent,
+		hidden?: boolean
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		const embed = new Builders.Embed()
 			.setColor('green')
 			.setTitle('✅ success!')
@@ -201,18 +191,16 @@ export default class InteractionWrapper {
 
 		if (this.raw.acknowledged) {
 			if (hidden === undefined || hidden) {
-				this.raw.createFollowup({
+				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
 					flags: 64,
 					files: content.files,
 				});
-				return this.doNothing();
 			} else {
-				this.raw.createFollowup({
+				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
 					files: content.files,
 				});
-				return this.doNothing();
 			}
 		} else {
 			if (hidden === undefined || hidden) {
@@ -236,7 +224,10 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async createWarn(content: Lib.InteractionContent, hidden?: boolean): Promise<void> {
+	public async createWarn(
+		content: Lib.InteractionContent,
+		hidden?: boolean
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		const embed = new Builders.Embed()
 			.setColor('yellow')
 			.setTitle('⚠️ warning!')
@@ -245,18 +236,16 @@ export default class InteractionWrapper {
 
 		if (this.raw.acknowledged) {
 			if (hidden === undefined || hidden) {
-				this.raw.createFollowup({
+				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
 					flags: 64,
 					files: content.files,
 				});
-				return this.doNothing();
 			} else {
-				this.raw.createFollowup({
+				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
 					files: content.files,
 				});
-				return this.doNothing();
 			}
 		} else {
 			if (hidden === undefined || hidden) {

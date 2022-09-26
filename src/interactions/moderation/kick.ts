@@ -1,4 +1,4 @@
-import { ApplicationCommandType, ApplicationCommandOptionType, TextInputStyle } from 'discord-api-types/v10';
+import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
@@ -19,7 +19,10 @@ export default class KickCommand extends CommandInterface {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): Promise<void> {
+	public async execute(
+		client: BotClient,
+		interaction: InteractionWrapper
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		const user: Lib.Member = interaction.options.getMember('user', true);
 		const reason: string = interaction.options.getString('reason', false) || 'no reason?';
 

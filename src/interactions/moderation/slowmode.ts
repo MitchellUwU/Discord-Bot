@@ -25,7 +25,10 @@ export default class SlowmodeCommand extends CommandInterface {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): Promise<void> {
+	public async execute(
+		client: BotClient,
+		interaction: InteractionWrapper
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 
@@ -64,7 +67,7 @@ export default class SlowmodeCommand extends CommandInterface {
 						return interaction.createError({ content: 'you need manage channels permission to do that...' });
 					}
 				}
-				
+
 				try {
 					interaction.channel.edit({ rateLimitPerUser: 0 });
 					interaction.createSuccess({ content: 'successfully removed the slowmode!' });

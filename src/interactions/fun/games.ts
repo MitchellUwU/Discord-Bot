@@ -6,7 +6,7 @@ import Lib from 'oceanic.js';
 import InteractionWrapper from '../../utils/interactionWrapper';
 
 export default class EightBallCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'games')
+	override data = new Builders.Command(ApplicationCommandType.ChatInput, 'games')
 		.setDescription('games')
 		.addOptions([
 			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'rps')
@@ -26,7 +26,10 @@ export default class EightBallCommand extends CommandInterface {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): Promise<void> {
+	async execute(
+		client: BotClient,
+		interaction: InteractionWrapper
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 

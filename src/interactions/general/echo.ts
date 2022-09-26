@@ -2,6 +2,7 @@ import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-ap
 import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
+import Lib from 'oceanic.js';
 import InteractionWrapper from '../../utils/interactionWrapper';
 
 export default class EchoCommand extends CommandInterface {
@@ -15,7 +16,10 @@ export default class EchoCommand extends CommandInterface {
 		)
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): Promise<void> {
+	public async execute(
+		client: BotClient,
+		interaction: InteractionWrapper
+	): Promise<void | Lib.Message<Lib.TextChannel>> {
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()

@@ -34,7 +34,7 @@ export default class NicknameCommand extends CommandInterface {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): Promise<void> {
+	public async execute(client: BotClient, interaction: InteractionWrapper): Promise<void | Lib.Message<Lib.TextChannel>> {
 		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 

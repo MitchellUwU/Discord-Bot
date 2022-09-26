@@ -1,5 +1,5 @@
 import BotClient from '../client';
-import { Builders } from '../utils/builders';
+import Lib from 'oceanic.js';
 
 export interface EventOptions {
 	name: string;
@@ -9,13 +9,13 @@ export interface EventOptions {
 
 export default class EventInterface {
 	private client: BotClient;
-	public data: EventOptions = new Builders.Event('placeholder', true).toJSON();
+	public data: EventOptions = {} as EventOptions;
 
 	public constructor(client: BotClient) {
 		this.client = client;
 	}
 
-	public async execute(client: BotClient, ...args: any): Promise<void> {
+	public async execute(client: BotClient, ...args: any): Promise<void | Lib.Message<Lib.TextChannel>> {
 		this.client.utils.logger({ title: this.data.name, content: 'this works!', type: 1 });
 	}
 }
