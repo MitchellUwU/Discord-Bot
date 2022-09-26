@@ -3,6 +3,7 @@ import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
 import InteractionWrapper from '../../utils/interactionWrapper';
+import { performance } from 'perf_hooks';
 
 export default class PingCommand extends CommandInterface {
 	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'ping')
@@ -10,14 +11,17 @@ export default class PingCommand extends CommandInterface {
 		.toJSON();
 
 	public async execute(client: BotClient, interaction: InteractionWrapper): Promise<void> {
-		interaction.createMessage({
+		const startTime = performance.now();
+		await interaction.deferResponse();
+		const endTime = performance.now();
+		interaction.editOriginal({
 			embeds: [
 				new Builders.Embed()
 					.setRandomColor()
 					.setTitle('🏓 pong!')
 					.setDescription(
 						[
-							`**bot latency:** ${Math.floor(Date.now() - interaction.raw.createdAt.getTime())}ms`,
+							`**bot latency:** ${(endTime - startTime).toFixed(0)}ms`,
 							`**gateway latency:** ${interaction.guild.shard.latency}ms`.replace(
 								'Infinityms',
 								'wait for a minute and it should show up'

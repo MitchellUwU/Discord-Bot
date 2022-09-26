@@ -30,7 +30,7 @@ export default class CommandBuilder {
 		return this;
 	}
 
-	public addOptions(options: Array<ApplicationCommandOptions>): this {
+	public addOptions(options: ApplicationCommandOptions[]): this {
 		options.forEach((option) => this.addOption(option));
 		return this;
 	}

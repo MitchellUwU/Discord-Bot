@@ -170,7 +170,7 @@ export default class BanCommand extends CommandInterface {
 				}
 
 				if (!user) {
-					const fetchedMembers: Array<Lib.Ban> = await interaction.guild.getBans();
+					const fetchedMembers: Lib.Ban[] = await interaction.guild.getBans();
 					const bannedMembers: string = fetchedMembers
 						.map((member: Lib.Ban) => {
 							`**${member.user.tag} (${member.user.id}) is banned for:** ${member.reason}`;

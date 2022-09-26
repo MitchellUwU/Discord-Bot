@@ -15,7 +15,7 @@ export default class EventInterface {
 		this.client = client;
 	}
 
-	public async execute(...args: any): Promise<void> {
+	public async execute(client: BotClient, ...args: any): Promise<void> {
 		this.client.utils.logger({ title: this.data.name, content: 'this works!', type: 1 });
 	}
 }

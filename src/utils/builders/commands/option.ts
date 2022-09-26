@@ -30,7 +30,7 @@ export default class OptionBuilder {
 		return this;
 	}
 
-	public addOptions(options: Array<ApplicationCommandOptions>): this {
+	public addOptions(options: ApplicationCommandOptions[]): this {
 		options.forEach((option) => this.addOption(option));
 		return this;
 	}
@@ -45,7 +45,7 @@ export default class OptionBuilder {
 		return this;
 	}
 
-	public addChoices(choices: Array<any>): this {
+	public addChoices(choices: any[]): this {
 		choices.forEach((choice) => this.addChoice(choice));
 		return this;
 	}
@@ -55,7 +55,7 @@ export default class OptionBuilder {
 		return this;
 	}
 
-	public setChannelTypes(types: Array<ChannelType>): this {
+	public setChannelTypes(types: ChannelType[]): this {
 		this.json.channel_types = types;
 		return this;
 	}

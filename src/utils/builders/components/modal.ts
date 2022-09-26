@@ -24,7 +24,7 @@ export default class ModalBuilder {
 		return this;
 	}
 
-	public addComponents(components: Array<ActionRowBase>): this {
+	public addComponents(components: ActionRowBase[]): this {
 		components.forEach((arg: any) => this.addComponent(arg));
 		return this;
 	}

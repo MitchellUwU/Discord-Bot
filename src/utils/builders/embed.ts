@@ -67,7 +67,7 @@ export default class EmbedBuilder {
 		return this.addField({ name: '\u200b', value: '\u200b', inline: inline });
 	}
 
-	public addFields(fields: Array<EmbedField>): this {
+	public addFields(fields: EmbedField[]): this {
 		fields.forEach((arg: any) => this.addField(arg));
 		return this;
 	}

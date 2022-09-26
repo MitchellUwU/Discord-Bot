@@ -50,7 +50,7 @@ export class Collectors {
 export class InteractionCollector extends EventEmitter {
 	public authorID: string; // User ID that triggers the collector.
 	private client: BotClient; // [INTERNAL] The main client.
-	private collected: Array<{ interaction: Lib.AnyInteractionGateway }>; // [INTERNAL] All collected interactions.
+	private collected: { interaction: Lib.AnyInteractionGateway }[]; // [INTERNAL] All collected interactions.
 	public componentType: boolean; // Component type.
 	private ended: boolean; // [INTERNAL] Value telling collector state.
 	public interaction: Lib.AnyInteractionGateway; // Interaction that triggers the collector.

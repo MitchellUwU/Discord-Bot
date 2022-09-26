@@ -12,18 +12,18 @@ import { PoolConfig } from 'pg';
 
 export interface BotConfig {
 	answers: {
-		repliesTemplate: Array<string>;
-		answers: Array<string>;
-		pronouns: Array<string>;
-		faces: Array<string>;
+		repliesTemplate: string[];
+		answers: string[];
+		pronouns: string[];
+		faces: string[];
 	};
-	ascii?: Array<string>;
+	ascii?: string[];
 	clientOptions: Lib.ClientOptions;
-	blockedGuilds?: Array<string>;
-	blockedUsers?: Array<string>;
+	blockedGuilds?: string[];
+	blockedUsers?: string[];
 	db: PoolConfig;
 	devMode: boolean;
-	devIDs: Array<string>;
+	devIDs: string[];
 	disableDebug?: boolean;
 	guildID?: string;
 	requiredPermission: number;
@@ -42,7 +42,7 @@ export default class BotClient extends Lib.Client {
 	public eventListeners: Map<string, EventInterface> = new Map(); // Collection of event listeners.
 	public interactions: Map<string, CommandInterface> = new Map(); // Collection of commands.
 
-	private commandList: Array<Lib.CreateApplicationCommandOptions> = []; // [INTERNAL] Array of commands.
+	private commandList: Lib.CreateApplicationCommandOptions[] = []; // [INTERNAL] Array of commands.
 	public collectors: Collectors = new Collectors(); // Collector manager.
 	public onMaintenance: boolean = false; // Value telling client maintenance state.
 	public readonly config: BotConfig; // [READONLY] Configuration specified in constructor.
@@ -66,7 +66,7 @@ export default class BotClient extends Lib.Client {
 	 */
 
 	private async *loadFiles(dir: string): AsyncGenerator<string, void, void> {
-		const files: Array<string> = await fs.readdir(dir);
+		const files: string[] = await fs.readdir(dir);
 		for await (const file of files) {
 			const filePath: string = path.join(dir, file);
 			const fileIsDir: boolean = (await fs.stat(filePath)).isDirectory();
@@ -164,7 +164,7 @@ export default class BotClient extends Lib.Client {
 	}
 
 	/**
-	 * Sync application commands.
+	 * [INTERNAL] Sync application commands.
 	 * @returns void
 	 */
 	

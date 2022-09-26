@@ -14,7 +14,7 @@ export default class SelectMenuBuilder {
 		return this;
 	}
 
-	public addOptions(components: Array<SelectOption>): this {
+	public addOptions(components: SelectOption[]): this {
 		components.forEach((arg: any) => this.addOption(arg));
 		return this;
 	}

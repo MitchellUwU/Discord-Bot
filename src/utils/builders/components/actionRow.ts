@@ -13,7 +13,7 @@ export default class ActionRowBuilder<T> {
 		return this;
 	}
 
-	public addComponents(components: Array<T>): this {
+	public addComponents(components: T[]): this {
 		components.forEach((arg: any) => this.addComponent(arg));
 		return this;
 	}

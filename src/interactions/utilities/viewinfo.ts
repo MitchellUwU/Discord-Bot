@@ -98,8 +98,8 @@ export default class ViewInfoCommand extends CommandInterface {
 				break;
 			}
 			case 'guild': {
-				const verificationLevels: Array<string> = ['none', 'low', 'medium', 'high', 'very high'];
-				const mfaLevels: Array<string> = ['disabled', 'enabled'];
+				const verificationLevels: string[] = ['none', 'low', 'medium', 'high', 'very high'];
+				const mfaLevels: string[] = ['disabled', 'enabled'];
 				const guild: Lib.Guild = interaction.guild;
 				const channels = guild.channels;
 				const threads = guild.threads;
