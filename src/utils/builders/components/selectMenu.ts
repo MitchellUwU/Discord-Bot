@@ -1,10 +1,10 @@
 import { SelectMenu as SelectMenuBase, SelectOption } from 'oceanic.js';
 
 export default class SelectMenuBuilder {
-	private json: any;
+	private json: SelectMenuBase;
 
 	public constructor(customID: string) {
-		this.json = {};
+		this.json = {} as SelectMenuBase;
 		this.json.type = 3;
 		this.json.customID = customID;
 	}
@@ -30,12 +30,12 @@ export default class SelectMenuBuilder {
 	}
 
 	public setMaxValues(number: number): this {
-		this.json.max_values = number;
+		this.json.maxValues = number;
 		return this;
 	}
 
 	public setMinValues(number: number): this {
-		this.json.min_values = number;
+		this.json.minValues = number;
 		return this;
 	}
 

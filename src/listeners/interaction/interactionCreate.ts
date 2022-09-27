@@ -5,7 +5,7 @@ import EventInterface from '../../interfaces/event';
 import InteractionWrapper from '../../utils/interactionWrapper';
 import Lib from 'oceanic.js';
 
-export default class InteractionCreateEvent extends EventInterface {
+export default class InteractionCreateEvent extends EventInterface<'interactionCreate'> {
 	public override data = new Builders.Event('interactionCreate', false).toJSON();
 
 	public async execute(

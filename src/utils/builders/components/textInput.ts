@@ -1,10 +1,10 @@
 import { TextInput as TextInputBase } from 'oceanic.js';
 
 export default class TextInputBuilder {
-	private json: any;
+	private json: TextInputBase;
 
 	public constructor(style: number, customID: string, label: string) {
-		this.json = {};
+		this.json = {} as TextInputBase;
 		this.json.type = 4;
 		this.json.style = style;
 		this.json.customID = customID;
@@ -37,12 +37,12 @@ export default class TextInputBuilder {
 	}
 
 	public setMaxLength(number: number): this {
-		this.json.max_length = number;
+		this.json.maxLength = number;
 		return this;
 	}
 
 	public setMinLength(number: number): this {
-		this.json.min_length = number;
+		this.json.minLength = number;
 		return this;
 	}
 

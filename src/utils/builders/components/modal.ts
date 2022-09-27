@@ -1,10 +1,10 @@
-import { ActionRowBase, ModalData } from 'oceanic.js';
+import { ActionRowBase, ModalActionRow, ModalData } from 'oceanic.js';
 
 export default class ModalBuilder {
-	private json: any;
+	private json: ModalData;
 
 	public constructor(customID: string, title: string) {
-		this.json = {};
+		this.json = {} as ModalData;
 		this.json.customID = customID;
 		this.json.title = title;
 	}
@@ -19,12 +19,12 @@ export default class ModalBuilder {
 		return this;
 	}
 
-	public addComponent(options: ActionRowBase): this {
+	public addComponent(options: ModalActionRow): this {
 		this.json.components = [...(this.json.components ?? []), options];
 		return this;
 	}
 
-	public addComponents(components: ActionRowBase[]): this {
+	public addComponents(components: ModalActionRow[]): this {
 		components.forEach((arg: any) => this.addComponent(arg));
 		return this;
 	}

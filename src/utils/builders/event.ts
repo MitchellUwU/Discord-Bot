@@ -1,14 +1,17 @@
-export default class EventBuilder {
-	private json: any;
+import Lib from 'oceanic.js';
+import { EventOptions } from '../../interfaces/event';
 
-	public constructor(name: string, once: boolean) {
-		this.json = {};
+export default class EventBuilder {
+	private json: EventOptions;
+
+	public constructor(name: keyof Lib.ClientEvents, once: boolean) {
+		this.json = {} as EventOptions;
 		this.json.name = name;
 		this.json.once = once;
 		this.json.type = once ? 'once' : 'on';
 	}
 
-	public toJSON(): { name: string; once: boolean; type: string } {
+	public toJSON(): EventOptions {
 		return this.json;
 	}
 }

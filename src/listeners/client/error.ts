@@ -2,7 +2,7 @@ import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import EventInterface from '../../interfaces/event';
 
-export default class ErrorEvent extends EventInterface {
+export default class ErrorEvent extends EventInterface<'error'> {
 	public override data = new Builders.Event('error', false).toJSON();
 
 	public async execute(client: BotClient, error: any): Promise<void> {

@@ -2,7 +2,7 @@ import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import EventInterface from '../../interfaces/event';
 
-export default class ShardReadyEvent extends EventInterface {
+export default class ShardReadyEvent extends EventInterface<'shardReady'> {
 	public override data = new Builders.Event('shardReady', false).toJSON();
 
 	public async execute(client: BotClient, id: number): Promise<void> {
