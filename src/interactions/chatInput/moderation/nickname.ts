@@ -1,9 +1,9 @@
 import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import BotClient from '../../client';
-import { Builders } from '../../utils/builders';
-import CommandInterface from '../../interfaces/command';
+import BotClient from '../../../client';
+import { Builders } from '../../../utils/builders';
+import CommandInterface from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
-import InteractionWrapper from '../../utils/interactionWrapper';
+import InteractionWrapper from '../../../utils/interactionWrapper';
 
 export default class NicknameCommand extends CommandInterface {
 	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'nickname')
@@ -43,21 +43,38 @@ export default class NicknameCommand extends CommandInterface {
 
 		switch (command.toString()) {
 			case 'change': {
-				const user: Lib.Member = interaction.options.getMember('user', true);
+				if (interaction.user.id !== interaction.guild.ownerID) {
+					if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
+						return interaction.createError({
+							content:
+								"you need manage nicknames permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+						});
+					}
+				}
+
+				let user: Lib.Member;
+
+				try {
+					user = interaction.options.getMember('user', true);
+				} catch (error) {
+					try {
+						const name = interaction.options.getUser('user', true).tag;
+						return interaction.createError({ content: `${name} is not in this server!` });
+					} catch (error) {
+						return interaction.createError({ content: "that user doesn't exist?" });
+					}
+				}
+
 				const name: string = interaction.options.getString('name', true);
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
-						return interaction.createError({ content: 'you need manage nicknames permission to do that...' });
-					}
-
 					if (user.id === interaction.guild.ownerID) {
 						return interaction.createError({ content: `i can't change/remove the owner nickname` });
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
 						return interaction.createError({
-							content: `i can't change/remove user nickname that has administrator permission`,
+							content: `${user.tag} have administrator permission, i can't change/remove their nickname!`,
 						});
 					}
 
@@ -65,7 +82,7 @@ export default class NicknameCommand extends CommandInterface {
 						interaction.getHighestRole(user).position >=
 						interaction.getHighestRole(interaction.member).position
 					) {
-						return interaction.createError({ content: 'that user has higher/same role than you' });
+						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
 					}
 				}
 
@@ -73,25 +90,52 @@ export default class NicknameCommand extends CommandInterface {
 					interaction.getHighestRole(user).position >=
 					interaction.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createError({ content: 'that user has higher/same role than me' });
+					return interaction.createError({
+						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+					});
 				}
 
 				try {
 					user.edit({ nick: name });
 					interaction.createSuccess({ content: `successfully changed ${user.tag}'s nickname!` });
 				} catch (error: any) {
-					interaction.createError({ content: `i can't change ${user.tag}'s nickname sorry! :(` });
+					interaction.createError({
+						content: `i can't change ${user.tag}'s nickname sorry! :(\n\n${error.name}: ${error.message}`,
+					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;
 			}
 			case 'remove': {
-				const user: Lib.Member = interaction.options.getMember('user', true);
+				if (interaction.user.id !== interaction.guild.ownerID) {
+					if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
+						return interaction.createError({
+							content:
+								"you need manage nicknames permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+						});
+					}
+				}
+
+				let user: Lib.Member;
+
+				try {
+					user = interaction.options.getMember('user', true);
+				} catch (error) {
+					try {
+						const name = interaction.options.getUser('user', true).tag;
+						return interaction.createError({ content: `${name} is not in this server!` });
+					} catch (error) {
+						return interaction.createError({ content: "that user doesn't exist?" });
+					}
+				}
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
-						return interaction.createError({ content: 'you need manage nicknames permission to do that...' });
+						return interaction.createError({
+							content:
+								"you need manage nicknames permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+						});
 					}
 
 					if (user.id === interaction.guild.ownerID) {
@@ -100,7 +144,7 @@ export default class NicknameCommand extends CommandInterface {
 
 					if (user.permissions.has('ADMINISTRATOR')) {
 						return interaction.createError({
-							content: `i can't change/remove user nickname that has administrator permission`,
+							content: `${user.tag} have administrator permission, i can't change/remove their nickname!`,
 						});
 					}
 
@@ -108,7 +152,7 @@ export default class NicknameCommand extends CommandInterface {
 						interaction.getHighestRole(user).position >=
 						interaction.getHighestRole(interaction.member).position
 					) {
-						return interaction.createError({ content: 'that user has higher/same role than you' });
+						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
 					}
 				}
 
@@ -116,14 +160,18 @@ export default class NicknameCommand extends CommandInterface {
 					interaction.getHighestRole(user).position >=
 					interaction.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createError({ content: 'that user has higher/same role than me' });
+					return interaction.createError({
+						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+					});
 				}
 
 				try {
 					user.edit({ nick: '' });
 					interaction.createSuccess({ content: `successfully changed ${user.tag}'s nickname!` });
 				} catch (error: any) {
-					interaction.createError({ content: `i can't change ${user.tag}'s nickname sorry! :(` });
+					interaction.createError({
+						content: `i can't change ${user.tag}'s nickname sorry! :(\n\n${error.name}: ${error.message}`,
+					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 

@@ -116,4 +116,15 @@ export default class BotUtils {
 			}
 		}
 	}
+
+	/**
+	 * Trim amount of characters.
+	 * @param str Message that you want to trim.
+	 * @param max Amount of characters that you want to trim to.
+	 * @returns string
+	 */
+
+	public trim(str: string, max: number): string {
+		return str.length > max ? `${str.slice(0, max - 3)}...` : str;
+	}
 }

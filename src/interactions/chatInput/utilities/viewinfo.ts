@@ -1,10 +1,10 @@
 import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import BotClient from '../../client';
-import { Builders } from '../../utils/builders';
-import CommandInterface from '../../interfaces/command';
+import BotClient from '../../../client';
+import { Builders } from '../../../utils/builders';
+import CommandInterface from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
-import InteractionWrapper from '../../utils/interactionWrapper';
+import InteractionWrapper from '../../../utils/interactionWrapper';
 
 export default class ViewInfoCommand extends CommandInterface {
 	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'viewinfo')

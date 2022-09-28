@@ -1,8 +1,8 @@
 import { ApplicationCommandType, ApplicationCommandOptionType, ButtonStyle } from 'discord-api-types/v10';
-import BotClient from '../../client';
-import { Builders } from '../../utils/builders';
-import CommandInterface from '../../interfaces/command';
-import InteractionWrapper from '../../utils/interactionWrapper';
+import BotClient from '../../../client';
+import { Builders } from '../../../utils/builders';
+import CommandInterface from '../../../interfaces/command';
+import InteractionWrapper from '../../../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
@@ -59,7 +59,28 @@ export default class TimeoutCommand extends CommandInterface {
 
 		switch (command.toString()) {
 			case 'add': {
-				const user: Lib.Member = interaction.options.getMember('user', true);
+				if (interaction.user.id !== interaction.guild.ownerID) {
+					if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
+						return interaction.createError({
+							content:
+								"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+						});
+					}
+				}
+
+				let user: Lib.Member;
+
+				try {
+					user = interaction.options.getMember('user', true);
+				} catch (error) {
+					try {
+						const name = interaction.options.getUser('user', true).tag;
+						return interaction.createError({ content: `${name} is not in this server!` });
+					} catch (error) {
+						return interaction.createError({ content: "that user doesn't exist?" });
+					}
+				}
+
 				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
 				const time: number = ms(`${interaction.options.getString('time', true)}`);
 				const date: string = new Date(Date.now() + time).toISOString();
@@ -73,17 +94,13 @@ export default class TimeoutCommand extends CommandInterface {
 				}
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
-						return interaction.createError({ content: 'you need moderate members permission to do that...' });
-					}
-
 					if (user.id === interaction.guild.ownerID) {
 						return interaction.createError({ content: "i can't timeout the owner" });
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
 						return interaction.createError({
-							content: "i can't timeout a user with administrator permission",
+							content: `${user.tag} have administrator permission, i can't timeout them!`,
 						});
 					}
 
@@ -91,7 +108,7 @@ export default class TimeoutCommand extends CommandInterface {
 						interaction.getHighestRole(user).position >=
 						interaction.getHighestRole(interaction.member).position
 					) {
-						return interaction.createError({ content: 'that user has higher/same role than you' });
+						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
 					}
 				}
 
@@ -99,11 +116,15 @@ export default class TimeoutCommand extends CommandInterface {
 					interaction.getHighestRole(user).position >=
 					interaction.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createError({ content: 'that user has higher/same role than me' });
+					return interaction.createError({
+						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+					});
 				}
 
 				if (isNaN(time)) {
-					return interaction.createError({ content: 'invalid time!' });
+					return interaction.createError({
+						content: 'invalid time! please specify them correctly (example: 5h, 10 minutes etc.)',
+					});
 				}
 
 				if (time > 604800000 || time < 1000) {
@@ -139,31 +160,54 @@ export default class TimeoutCommand extends CommandInterface {
 						communicationDisabledUntil: date,
 						reason: reason,
 					});
-					interaction.createSuccess({ content: 'successfully timeout the member!' });
+					interaction.createSuccess({ content: `successfully timeout ${user.tag}!` });
 				} catch (error: any) {
 					message!.delete();
-					interaction.createError({ content: "i can't timeout that member sorry! :(" });
+					interaction.createError({
+						content: `i can't timeout that member sorry! :(\n\n${error.name}: ${error.message}`,
+					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;
 			}
 			case 'remove': {
-				const user: Lib.Member = interaction.options.getMember('user', true);
-				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
-
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
-						return interaction.createError({ content: 'you need moderate members permission to do that...' });
+						return interaction.createError({
+							content:
+								"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+						});
 					}
+				}
 
+				let user: Lib.Member;
+
+				try {
+					user = interaction.options.getMember('user', true);
+				} catch (error) {
+					try {
+						const name = interaction.options.getUser('user', true).tag;
+						return interaction.createError({ content: `${name} is not in this server!` });
+					} catch (error) {
+						return interaction.createError({ content: "that user doesn't exist?" });
+					}
+				}
+
+				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
+
+				if (user.id === interaction.user.id) {
+					return interaction.createError({ content: "you can't untimeout yourself" });
+				}
+
+				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
 						return interaction.createError({ content: "i can't untimeout the owner" });
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
 						return interaction.createError({
-							content: "i can't untimeout a user with administrator permission",
+							content: `${user.tag} have administrator permission, i can't untimeout them!`,
 						});
 					}
 
@@ -171,19 +215,17 @@ export default class TimeoutCommand extends CommandInterface {
 						interaction.getHighestRole(user).position >=
 						interaction.getHighestRole(interaction.member).position
 					) {
-						return interaction.createError({ content: 'that user has higher/same role than you' });
+						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
 					}
-				}
-
-				if (user.id === interaction.user.id) {
-					return interaction.createError({ content: "you can't untimeout yourself" });
 				}
 
 				if (
 					interaction.getHighestRole(user).position >=
 					interaction.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createError({ content: 'that user has higher/same role than me' });
+					return interaction.createError({
+						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+					});
 				}
 
 				try {
@@ -191,20 +233,42 @@ export default class TimeoutCommand extends CommandInterface {
 						communicationDisabledUntil: new Date(Date.now()).toISOString(),
 						reason: reason,
 					});
-					interaction.createSuccess({ content: 'successfully untimeout the member!' });
+					interaction.createSuccess({ content: `successfully untimeout ${user.tag}!` });
 				} catch (error: any) {
-					interaction.createError({ content: "i can't untimeout that member sorry! :(" });
+					interaction.createError({
+						content: `i can't untimeout ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;
 			}
 			case 'view': {
-				const user: Lib.Member = interaction.options.getMember('user', true);
+				if (interaction.user.id !== interaction.guild.ownerID) {
+					if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
+						return interaction.createError({
+							content:
+								"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+						});
+					}
+				}
+				
+				let user: Lib.Member;
+
+				try {
+					user = interaction.options.getMember('user', true);
+				} catch (error) {
+					try {
+						const name = interaction.options.getUser('user', true).tag;
+						return interaction.createError({ content: `${name} is not in this server!` });
+					} catch (error) {
+						return interaction.createError({ content: "that user doesn't exist?" });
+					}
+				}
 
 				if (!user.communicationDisabledUntil) {
 					return interaction.createError({
-						content: 'that user is not in timeout!',
+						content: `${user.tag} is not in timeout!`,
 					});
 				}
 
@@ -245,24 +309,10 @@ export default class TimeoutCommand extends CommandInterface {
 
 					if (interaction.user.id !== interaction.guild.ownerID) {
 						if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
-							return helper.createError({ content: 'you need moderate members permission to do that...' });
-						}
-
-						if (user.id === interaction.guild.ownerID) {
-							return helper.createError({ content: "i can't untimeout the owner" });
-						}
-
-						if (user.permissions.has('ADMINISTRATOR')) {
-							return helper.createError({
-								content: "i can't untimeout a user with administrator permission",
+							return interaction.createError({
+								content:
+									"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
 							});
-						}
-
-						if (
-							interaction.getHighestRole(user).position >=
-							interaction.getHighestRole(interaction.member).position
-						) {
-							return helper.createError({ content: 'that user has higher/same role than you' });
 						}
 					}
 
@@ -270,21 +320,44 @@ export default class TimeoutCommand extends CommandInterface {
 						return helper.createError({ content: "you can't untimeout yourself" });
 					}
 
+					if (interaction.user.id !== interaction.guild.ownerID) {
+						if (user.id === interaction.guild.ownerID) {
+							return helper.createError({ content: "i can't untimeout the owner" });
+						}
+
+						if (user.permissions.has('ADMINISTRATOR')) {
+							return helper.createError({
+								content: `${user.tag} have administrator permission, i can't untimeout them!`,
+							});
+						}
+
+						if (
+							interaction.getHighestRole(user).position >=
+							interaction.getHighestRole(interaction.member).position
+						) {
+							return helper.createError({ content: `${user.tag} have higher (or same) role than you` });
+						}
+					}
+
 					if (
 						interaction.getHighestRole(user).position >=
 						interaction.getHighestRole(interaction.guild.clientMember).position
 					) {
-						return helper.createError({ content: 'that user has higher/same role than me' });
+						return helper.createError({
+							content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+						});
 					}
 
 					try {
 						await user.edit({
 							communicationDisabledUntil: new Date(Date.now()).toISOString(),
-							reason: 'untimeout using view timeout command',
+							reason: 'untimeout using button in view command',
 						});
-						helper.createSuccess({ content: 'successfully untimeout the member!' });
+						helper.createSuccess({ content: `successfully untimeout ${user.tag}!` });
 					} catch (error: any) {
-						helper.createError({ content: "i can't untimeout that member sorry! :(" });
+						helper.createError({
+							content: `i can't untimeout ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+						});
 						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 					}
 				});

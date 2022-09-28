@@ -1,8 +1,8 @@
 import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import BotClient from '../../client';
-import { Builders } from '../../utils/builders';
-import CommandInterface from '../../interfaces/command';
-import InteractionWrapper from '../../utils/interactionWrapper';
+import BotClient from '../../../client';
+import { Builders } from '../../../utils/builders';
+import CommandInterface from '../../../interfaces/command';
+import InteractionWrapper from '../../../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
 
 export default class KickCommand extends CommandInterface {
@@ -23,7 +23,28 @@ export default class KickCommand extends CommandInterface {
 		client: BotClient,
 		interaction: InteractionWrapper
 	): Promise<void | Lib.Message<Lib.TextChannel>> {
-		const user: Lib.Member = interaction.options.getMember('user', true);
+		if (interaction.user.id !== interaction.guild.ownerID) {
+			if (!interaction.member.permissions.has('KICK_MEMBERS')) {
+				return interaction.createError({
+					content:
+						"you need kick members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+				});
+			}
+		}
+
+		let user: Lib.Member;
+
+		try {
+			user = interaction.options.getMember('user', true);
+		} catch (error) {
+			try {
+				const name = interaction.options.getUser('user', true).tag;
+				return interaction.createError({ content: `${name} is not in this server!` });
+			} catch (error) {
+				return interaction.createError({ content: "that user doesn't exist?" });
+			}
+		}
+
 		const reason: string = interaction.options.getString('reason', false) || 'no reason?';
 
 		if (user.id === interaction.user.id) {
@@ -35,22 +56,20 @@ export default class KickCommand extends CommandInterface {
 		}
 
 		if (interaction.user.id !== interaction.guild.ownerID) {
-			if (!interaction.member.permissions.has('KICK_MEMBERS')) {
-				return interaction.createError({ content: 'you need kick members permission to do that...' });
-			}
-
 			if (user.id === interaction.guild.ownerID) {
 				return interaction.createError({ content: "i can't kick the owner" });
 			}
 
 			if (user.permissions.has('ADMINISTRATOR')) {
-				return interaction.createError({ content: "i can't kick a user with administrator permission" });
+				return interaction.createError({
+					content: `${user.tag} have administrator permission, i can't kick them!`,
+				});
 			}
 
 			if (
 				interaction.getHighestRole(user).position >= interaction.getHighestRole(interaction.member).position
 			) {
-				return interaction.createError({ content: 'that user has higher/same role than you' });
+				return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
 			}
 		}
 
@@ -58,7 +77,9 @@ export default class KickCommand extends CommandInterface {
 			interaction.getHighestRole(user).position >=
 			interaction.getHighestRole(interaction.guild.clientMember).position
 		) {
-			return interaction.createError({ content: 'that user has higher/same role than me' });
+			return interaction.createError({
+				content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+			});
 		}
 
 		let message: Lib.Message;
@@ -83,10 +104,12 @@ export default class KickCommand extends CommandInterface {
 
 		try {
 			await user.kick(reason);
-			interaction.createSuccess({ content: 'successfully kicked the member!' });
+			interaction.createSuccess({ content: `successfully kicked ${user.tag}!` });
 		} catch (error: any) {
 			message!.delete();
-			interaction.createError({ content: "i can't kick that member sorry! :(" });
+			interaction.createError({
+				content: `i can't kick ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+			});
 			client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 		}
 	}

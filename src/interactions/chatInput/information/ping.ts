@@ -1,9 +1,9 @@
 import { ApplicationCommandType } from 'discord-api-types/v10';
-import BotClient from '../../client';
-import { Builders } from '../../utils/builders';
-import CommandInterface from '../../interfaces/command';
+import BotClient from '../../../client';
+import { Builders } from '../../../utils/builders';
+import CommandInterface from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
-import InteractionWrapper from '../../utils/interactionWrapper';
+import InteractionWrapper from '../../../utils/interactionWrapper';
 import { performance } from 'perf_hooks';
 
 export default class PingCommand extends CommandInterface {

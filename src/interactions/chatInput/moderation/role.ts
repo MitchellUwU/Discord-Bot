@@ -1,8 +1,8 @@
 import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import BotClient from '../../client';
-import { Builders } from '../../utils/builders';
-import CommandInterface from '../../interfaces/command';
-import InteractionWrapper from '../../utils/interactionWrapper';
+import BotClient from '../../../client';
+import { Builders } from '../../../utils/builders';
+import CommandInterface from '../../../interfaces/command';
+import InteractionWrapper from '../../../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
 
 export default class RoleCommand extends CommandInterface {
@@ -61,22 +61,39 @@ export default class RoleCommand extends CommandInterface {
 
 		switch (command.toString()) {
 			case 'add': {
-				const user: Lib.Member = interaction.options.getMember('user', true);
+				if (interaction.user.id !== interaction.guild.ownerID) {
+					if (!interaction.member.permissions.has('MANAGE_ROLES')) {
+						return interaction.createError({
+							content:
+								"you need manage roles permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+						});
+					}
+				}
+				
+				let user: Lib.Member;
+
+				try {
+					user = interaction.options.getMember('user', true);
+				} catch (error) {
+					try {
+						const name = interaction.options.getUser('user', true).tag;
+						return interaction.createError({ content: `${name} is not in this server!` });
+					} catch (error) {
+						return interaction.createError({ content: "that user doesn't exist?" });
+					}
+				}
+
 				const role: Lib.Role = interaction.options.getRole('role', true);
 				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MANAGE_ROLES')) {
-						return interaction.createError({ content: 'you need manage roles permission to do that...' });
-					}
-
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createError({ content: "i can't add the role to the owner" });
+						return interaction.createError({ content: `i can't give ${role.name} role to the owner` });
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
 						return interaction.createError({
-							content: "i can't add the role to the user with administrator permission",
+							content: `${user.tag} have administrator permission, i can't give them roles!`,
 						});
 					}
 
@@ -84,18 +101,11 @@ export default class RoleCommand extends CommandInterface {
 						interaction.getHighestRole(user).position >=
 						interaction.getHighestRole(interaction.member).position
 					) {
-						return interaction.createError({ content: 'that user has higher/same role than you' });
-					}
-
-					if (
-						interaction.getHighestRole(user).position >=
-						interaction.getHighestRole(interaction.guild.clientMember).position
-					) {
-						return interaction.createError({ content: 'that user has higher/same role than me' });
+						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
 					}
 
 					if (role.position >= interaction.getHighestRole(interaction.member).position) {
-						return interaction.createError({ content: 'that role is higher/same role than you' });
+						return interaction.createError({ content: `${role.name} role is higher (or same) than you` });
 					}
 				}
 
@@ -103,40 +113,63 @@ export default class RoleCommand extends CommandInterface {
 					interaction.getHighestRole(user).position >=
 					interaction.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createError({ content: 'that user has higher/same role than me' });
+					return interaction.createError({
+						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+					});
 				}
 
 				if (role.position >= interaction.getHighestRole(interaction.guild.clientMember).position) {
-					return interaction.createError({ content: 'that role is higher/same role than me' });
+					return interaction.createError({
+						content: `${role.name} role is higher (or same) than me, please ask an admin or the owner to fix this`,
+					});
 				}
 
 				try {
 					user.addRole(role.id, reason);
-					interaction.createSuccess({ content: 'successfully added the role to the member!' });
+					interaction.createSuccess({ content: `successfully added ${role.name} role to ${user.tag}!` });
 				} catch (error: any) {
-					interaction.createError({ content: "i can't add that role to the member sorry! :(" });
+					interaction.createError({
+						content: `i can't add ${role.name} role to ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;
 			}
 			case 'remove': {
-				const user: Lib.Member = interaction.options.getMember('user', true);
+				if (interaction.user.id !== interaction.guild.ownerID) {
+					if (!interaction.member.permissions.has('MANAGE_ROLES')) {
+						return interaction.createError({
+							content:
+								"you need manage roles permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+						});
+					}
+				}
+
+				let user: Lib.Member;
+
+				try {
+					user = interaction.options.getMember('user', true);
+				} catch (error) {
+					try {
+						const name = interaction.options.getUser('user', true).tag;
+						return interaction.createError({ content: `${name} is not in this server!` });
+					} catch (error) {
+						return interaction.createError({ content: "that user doesn't exist?" });
+					}
+				}
+
 				const role: Lib.Role = interaction.options.getRole('role', true);
 				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MANAGE_ROLES')) {
-						return interaction.createError({ content: 'you need manage roles permission to do that...' });
-					}
-
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createError({ content: "i can't remove the role from the owner" });
+						return interaction.createError({ content: `i can't remove ${role.name} role from the owner` });
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
 						return interaction.createError({
-							content: "i can't remove the role from the user with administrator permission",
+							content: `${user.tag} have administrator permission, i can't remove their roles!`,
 						});
 					}
 
@@ -144,11 +177,11 @@ export default class RoleCommand extends CommandInterface {
 						interaction.getHighestRole(user).position >=
 						interaction.getHighestRole(interaction.member).position
 					) {
-						return interaction.createError({ content: 'that user has higher/same role than you' });
+						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
 					}
 
 					if (role.position >= interaction.getHighestRole(interaction.member).position) {
-						return interaction.createError({ content: 'that role is higher/same role than you' });
+						return interaction.createError({ content: `${role.name} role is higher (or same) than you` });
 					}
 				}
 
@@ -156,31 +189,40 @@ export default class RoleCommand extends CommandInterface {
 					interaction.getHighestRole(user).position >=
 					interaction.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createError({ content: 'that user has higher/same role than me' });
+					return interaction.createError({
+						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+					});
 				}
 
 				if (role.position >= interaction.getHighestRole(interaction.guild.clientMember).position) {
-					return interaction.createError({ content: 'that role is higher/same role than me' });
+					return interaction.createError({
+						content: `${role.name} role is higher (or same) than me, please ask an admin or the owner to fix this`,
+					});
 				}
 
 				try {
 					user.removeRole(role.id, reason);
-					interaction.createSuccess({ content: 'successfully removed the role to the member!' });
+					interaction.createSuccess({ content: `successfully removed ${role.name} role from ${user.tag}!` });
 				} catch (error: any) {
-					interaction.createError({ content: "i can't remove that role from the member sorry! :(" });
+					interaction.createError({
+						content: `i can't remove ${role.name} role from ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;
 			}
 			case 'view': {
-				const role: Lib.Role | undefined = interaction.options.getRole('role', false);
-
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (!interaction.member.permissions.has('MANAGE_ROLES')) {
-						return interaction.createError({ content: 'you need manage roles permission to do that...' });
+						return interaction.createError({
+							content:
+								"you need manage roles permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+						});
 					}
 				}
+
+				const role: Lib.Role | undefined = interaction.options.getRole('role', false);
 
 				if (!role) {
 					const roles: Array<string> = [];
