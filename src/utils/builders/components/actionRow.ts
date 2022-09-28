@@ -1,4 +1,4 @@
-import { ActionRowBase, Component, TextInput } from 'oceanic.js';
+import { ActionRowBase, Component } from 'oceanic.js';
 
 export default class ActionRowBuilder {
 	private json: ActionRowBase;
@@ -8,12 +8,12 @@ export default class ActionRowBuilder {
 		this.json.type = 1;
 	}
 
-	public addComponent(options: Component | TextInput): this {
+	public addComponent(options: Component): this {
 		this.json.components = [...(this.json.components ?? []), options];
 		return this;
 	}
 
-	public addComponents(components:  Component[] | TextInput[]): this {
+	public addComponents(components:  Component[]): this {
 		components.forEach((arg: any) => this.addComponent(arg));
 		return this;
 	}
@@ -23,7 +23,7 @@ export default class ActionRowBuilder {
 		return this;
 	}
 
-	public toJSON(): ActionRowBase {
+	public toJSON(): any {
 		return this.json;
 	}
 }

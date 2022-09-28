@@ -3,7 +3,7 @@ import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
 import EventInterface from '../../interfaces/event';
 import InteractionWrapper from '../../utils/interactionWrapper';
-import Lib from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 
 export default class InteractionCreateEvent extends EventInterface<'interactionCreate'> {
 	public override data = new Builders.Event('interactionCreate', false).toJSON();

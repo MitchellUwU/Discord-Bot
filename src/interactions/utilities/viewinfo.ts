@@ -2,7 +2,7 @@ import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-ap
 import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
-import Lib from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 import ms from 'ms';
 import InteractionWrapper from '../../utils/interactionWrapper';
 

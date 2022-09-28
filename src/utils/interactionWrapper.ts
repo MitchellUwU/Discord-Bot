@@ -1,12 +1,16 @@
 import BotClient from '../client';
 import { Builders } from './builders';
-import Lib from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 
 // Wrapper for interaction (which is also a wrapper of raw interaction) to make things easier (i don't want to use Object.defineProperty, it makes my life hell).
 
 export default class InteractionWrapper {
 	private client: BotClient; // [INTERNAL] The main client.
-	public raw: Lib.CommandInteraction<Lib.TextChannel>; // Unmodified interaction value.
+	// Unmodified interaction value.
+	public raw:
+		| Lib.CommandInteraction<Lib.TextChannel>
+		| Lib.ComponentInteraction<Lib.TextChannel>
+		| Lib.ModalSubmitInteraction<Lib.TextChannel>;
 	public options: Lib.InteractionOptionsWrapper; // Alias for interaction.raw.data.options
 	public channel: Lib.TextChannel; // Alias for interaction.raw.channel
 	public guild: Lib.Guild; // Alias for interaction.raw.guild
@@ -20,10 +24,27 @@ export default class InteractionWrapper {
 	 * @param interaction Unmodified interaction value.
 	 */
 
-	public constructor(client: BotClient, interaction: Lib.CommandInteraction<Lib.TextChannel>) {
+	public constructor(
+		client: BotClient,
+		interaction:
+			| Lib.CommandInteraction<Lib.TextChannel>
+			| Lib.ComponentInteraction<Lib.TextChannel>
+			| Lib.ModalSubmitInteraction<Lib.TextChannel>
+	) {
+		let options;
+
+		if (
+			interaction instanceof Lib.ComponentInteraction ||
+			interaction instanceof Lib.ModalSubmitInteraction
+		) {
+			options = new Lib.InteractionOptionsWrapper(client, [] as Lib.InteractionOptions[], null);
+		} else {
+			options = interaction.data.options;
+		}
+
 		this.client = client;
 		this.raw = interaction;
-		this.options = interaction.data.options;
+		this.options = options;
 		this.channel = interaction.channel;
 		this.guild = interaction.guild;
 		this.guildID = interaction.guildID;

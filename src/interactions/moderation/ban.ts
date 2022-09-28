@@ -1,9 +1,9 @@
-import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandType, ApplicationCommandOptionType, ButtonStyle } from 'discord-api-types/v10';
 import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
 import InteractionWrapper from '../../utils/interactionWrapper';
-import Lib from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
 export default class BanCommand extends CommandInterface {
@@ -199,6 +199,10 @@ export default class BanCommand extends CommandInterface {
 						return interaction.createError({ content: 'that member is not banned!' });
 					}
 
+					const component = (state: boolean) => {
+						return new Builders.Button(ButtonStyle.Danger, 'unban', 'unban user').setDisabled(state);
+					};
+
 					interaction.createMessage({
 						embeds: [
 							new Builders.Embed()
@@ -218,7 +222,42 @@ export default class BanCommand extends CommandInterface {
 								.setTimestamp()
 								.toJSON(),
 						],
+						components: [new Builders.ActionRow().addComponent(component(false).toJSON()).toJSON()],
 						flags: 64,
+					});
+
+					const collector = client.collectors.createNewCollector({
+						client: client,
+						authorID: interaction.user.id,
+						interaction: interaction,
+						interactionType: Lib.ComponentInteraction,
+						componentType: 2,
+						time: 20000,
+						max: 1,
+					});
+
+					collector.on('collect', async (i: Lib.ComponentInteraction<Lib.TextChannel>) => {
+						const helper = new InteractionWrapper(client, i);
+
+						if (interaction.user.id !== interaction.guild.ownerID) {
+							if (!interaction.member.permissions.has('BAN_MEMBERS')) {
+								return interaction.createError({ content: 'you need ban members permission to do that...' });
+							}
+						}
+
+						try {
+							await interaction.guild.removeBan(user, 'unban using button in view command');
+							helper.createSuccess({ content: 'successfully unbanned the member!' });
+						} catch (error: any) {
+							helper.createError({ content: "i can't unban that member sorry! :(" });
+							client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+						}
+					});
+
+					collector.once('end', async () => {
+						interaction.editOriginal({
+							components: [new Builders.ActionRow().addComponent(component(true).toJSON()).toJSON()],
+						});
 					});
 				}
 

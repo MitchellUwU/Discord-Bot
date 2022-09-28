@@ -1,5 +1,5 @@
 import BotClient from '../client';
-import Lib from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 
 // Logger configuration interface.
 

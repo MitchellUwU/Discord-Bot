@@ -1,9 +1,9 @@
-import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandType, ApplicationCommandOptionType, ButtonStyle } from 'discord-api-types/v10';
 import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
 import InteractionWrapper from '../../utils/interactionWrapper';
-import Lib from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
 export default class TimeoutCommand extends CommandInterface {
@@ -37,6 +37,15 @@ export default class TimeoutCommand extends CommandInterface {
 						.setDescription('why did you untimeout the user?')
 						.toJSON(),
 				])
+				.toJSON(),
+			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'view')
+				.setDescription('view someone timeout')
+				.addOption(
+					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+						.setDescription('user to view timeout')
+						.setRequired(true)
+						.toJSON()
+				)
 				.toJSON(),
 		])
 		.toJSON();
@@ -148,10 +157,6 @@ export default class TimeoutCommand extends CommandInterface {
 						return interaction.createError({ content: 'you need moderate members permission to do that...' });
 					}
 
-					if (user.id === interaction.user.id) {
-						return interaction.createError({ content: "you can't untimeout yourself" });
-					}
-
 					if (user.id === interaction.guild.ownerID) {
 						return interaction.createError({ content: "i can't untimeout the owner" });
 					}
@@ -168,13 +173,17 @@ export default class TimeoutCommand extends CommandInterface {
 					) {
 						return interaction.createError({ content: 'that user has higher/same role than you' });
 					}
+				}
 
-					if (
-						interaction.getHighestRole(user).position >=
-						interaction.getHighestRole(interaction.guild.clientMember).position
-					) {
-						return interaction.createError({ content: 'that user has higher/same role than me' });
-					}
+				if (user.id === interaction.user.id) {
+					return interaction.createError({ content: "you can't untimeout yourself" });
+				}
+
+				if (
+					interaction.getHighestRole(user).position >=
+					interaction.getHighestRole(interaction.guild.clientMember).position
+				) {
+					return interaction.createError({ content: 'that user has higher/same role than me' });
 				}
 
 				try {
@@ -187,6 +196,104 @@ export default class TimeoutCommand extends CommandInterface {
 					interaction.createError({ content: "i can't untimeout that member sorry! :(" });
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
+
+				break;
+			}
+			case 'view': {
+				const user: Lib.Member = interaction.options.getMember('user', true);
+
+				if (!user.communicationDisabledUntil) {
+					return interaction.createError({
+						content: 'that user is not in timeout!',
+					});
+				}
+
+				const component = (state: boolean) => {
+					return new Builders.Button(ButtonStyle.Danger, 'untimeout', 'untimeout user').setDisabled(state);
+				};
+
+				interaction.createMessage({
+					embeds: [
+						new Builders.Embed()
+							.setRandomColor()
+							.setAuthor({ name: `${user.tag}'s timeout`, iconURL: user.avatarURL() })
+							.setDescription(
+								`${user.tag} is timeout until <t:${Math.floor(
+									user.communicationDisabledUntil.getTime() / 1000
+								)}:f> (in ${ms(user.communicationDisabledUntil.getTime() - Date.now(), {
+									long: true,
+								})})`
+							)
+							.setTimestamp()
+							.toJSON(),
+					],
+					components: [new Builders.ActionRow().addComponent(component(false).toJSON()).toJSON()],
+				});
+
+				const collector = client.collectors.createNewCollector({
+					client: client,
+					authorID: interaction.user.id,
+					interaction: interaction,
+					interactionType: Lib.ComponentInteraction,
+					componentType: 2,
+					time: 20000,
+					max: 1,
+				});
+
+				collector.on('collect', async (i: Lib.ComponentInteraction<Lib.TextChannel>) => {
+					const helper = new InteractionWrapper(client, i);
+
+					if (interaction.user.id !== interaction.guild.ownerID) {
+						if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
+							return helper.createError({ content: 'you need moderate members permission to do that...' });
+						}
+
+						if (user.id === interaction.guild.ownerID) {
+							return helper.createError({ content: "i can't untimeout the owner" });
+						}
+
+						if (user.permissions.has('ADMINISTRATOR')) {
+							return helper.createError({
+								content: "i can't untimeout a user with administrator permission",
+							});
+						}
+
+						if (
+							interaction.getHighestRole(user).position >=
+							interaction.getHighestRole(interaction.member).position
+						) {
+							return helper.createError({ content: 'that user has higher/same role than you' });
+						}
+					}
+
+					if (user.id === interaction.user.id) {
+						return helper.createError({ content: "you can't untimeout yourself" });
+					}
+
+					if (
+						interaction.getHighestRole(user).position >=
+						interaction.getHighestRole(interaction.guild.clientMember).position
+					) {
+						return helper.createError({ content: 'that user has higher/same role than me' });
+					}
+
+					try {
+						await user.edit({
+							communicationDisabledUntil: new Date(Date.now()).toISOString(),
+							reason: 'untimeout using view timeout command',
+						});
+						helper.createSuccess({ content: 'successfully untimeout the member!' });
+					} catch (error: any) {
+						helper.createError({ content: "i can't untimeout that member sorry! :(" });
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					}
+				});
+
+				collector.once('end', async () => {
+					interaction.editOriginal({
+						components: [new Builders.ActionRow().addComponent(component(true).toJSON()).toJSON()],
+					});
+				});
 
 				break;
 			}

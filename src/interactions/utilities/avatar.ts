@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-ap
 import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
-import Lib from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 import InteractionWrapper from '../../utils/interactionWrapper';
 
 export default class AvatarCommand extends CommandInterface {

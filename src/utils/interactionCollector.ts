@@ -2,7 +2,7 @@
 
 import BotClient from '../client';
 import { EventEmitter } from 'events';
-import Lib from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 
 // Collector configuration interface.
 
@@ -13,7 +13,7 @@ export interface InteractionCollectorConfig {
 	interaction: any;
 	interactionType: any;
 	max?: number;
-	time: number;
+	time?: number;
 }
 
 // Collector manager.
@@ -74,7 +74,7 @@ export class InteractionCollector extends EventEmitter {
 		this.componentType = options.componentType;
 		this.interactionType = options.interactionType;
 		this.max = options.max || undefined;
-		this.time = options.time || 20000;
+		this.time = options.time || Infinity;
 
 		this.collected = [];
 		this.ended = false;
@@ -117,6 +117,7 @@ export class InteractionCollector extends EventEmitter {
 	 */
 
 	public extendTimeout(time: number): void {
+		if (!this.time) return;
 		clearTimeout(this.timer);
 		const extendedTime: number = time + this.time;
 		this.timer = setTimeout(() => this.stop('time limit reached'), extendedTime);
@@ -129,6 +130,7 @@ export class InteractionCollector extends EventEmitter {
 	 */
 
 	public changeTimeout(time: number): void {
+		this.time = time;
 		clearTimeout(this.timer);
 		this.timer = setTimeout(() => this.stop('time limit reached'), time);
 	}
@@ -139,6 +141,7 @@ export class InteractionCollector extends EventEmitter {
 	 */
 
 	public removeTimeout(): void {
+		if (!this.time) return;
 		clearTimeout(this.timer);
 	}
 

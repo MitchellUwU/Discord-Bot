@@ -1,4 +1,4 @@
-import { ButtonBase } from 'oceanic.js';
+import { ButtonComponent } from "oceanic.js";
 
 export default class ButtonBuilder {
 	private json: any;
@@ -41,7 +41,7 @@ export default class ButtonBuilder {
 		return this;
 	}
 
-	public toJSON(): ButtonBase {
+	public toJSON(): ButtonComponent {
 		return this.json;
 	}
 }

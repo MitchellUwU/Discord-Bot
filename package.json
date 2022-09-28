@@ -16,7 +16,7 @@
 	"dependencies": {
 		"discord-api-types": "^0.37.11",
 		"ms": "^2.1.3",
-		"oceanic.js": "^1.1.1-dev.35d1dc1",
+		"oceanic.js": "^1.1.2-dev.357cba3",
 		"pg": "^8.8.0",
 		"undici": "^5.10.0"
 	},
@@ -25,6 +25,6 @@
 		"@types/node": "^18.7.23",
 		"@types/pg": "^8.6.5",
 		"tslib": "^2.4.0",
-		"typescript": "^4.8.3"
+		"typescript": "^4.8.4"
 	}
 }

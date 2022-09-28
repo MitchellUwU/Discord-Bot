@@ -2,7 +2,7 @@ import { ApplicationCommandType } from 'discord-api-types/v10';
 import BotClient from '../../client';
 import { Builders } from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
-import Lib from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 import InteractionWrapper from '../../utils/interactionWrapper';
 import { performance } from 'perf_hooks';
 
@@ -26,6 +26,7 @@ export default class PingCommand extends CommandInterface {
 					.setDescription(
 						[
 							`**bot latency:** ${(endTime - startTime).toFixed(0)}ms`,
+							`**rest latency:** ${client.rest.handler.latencyRef.latency}ms`,
 							`**gateway latency:** ${interaction.guild.shard.latency}ms`.replace(
 								'Infinityms',
 								'wait for a minute and it should show up'
