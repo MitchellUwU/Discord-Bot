@@ -1,23 +1,24 @@
-import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import { request } from 'undici';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 
-export default class FetchCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'fetch')
+export default class FetchCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
 		.setDescription('fetch some random stuff from the internet')
 		.addOptions([
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'meme').setDescription('memes').toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'cat')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'meme')
+				.setDescription('memes')
+				.toJSON(),
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'cat')
 				.setDescription('a cat picture')
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'urban')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'urban')
 				.setDescription('search urban dictionary')
 				.addOption(
-					new Builders.Option(ApplicationCommandOptionType.String, 'word')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'word')
 						.setDescription('a word or sentence or whatever')
 						.setRequired(true)
 						.toJSON()

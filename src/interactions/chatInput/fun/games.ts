@@ -1,18 +1,17 @@
-import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 
-export default class EightBallCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'games')
+export default class EightBallCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'games')
 		.setDescription('games')
 		.addOptions([
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'rps')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'rps')
 				.setDescription('rock paper scissors')
 				.addOption(
-					new Builders.Option(ApplicationCommandOptionType.String, 'choice')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'choice')
 						.setDescription('choose one')
 						.addChoices([
 							new Builders.Choice('rock', 'rock').toJSON(),

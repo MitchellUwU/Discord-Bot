@@ -1,31 +1,30 @@
-import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 
-export default class NicknameCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'nickname')
+export default class NicknameCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'nickname')
 		.setDescription('manage nickname')
 		.addOptions([
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'change')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'change')
 				.setDescription('change someone nickname')
 				.addOptions([
-					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.String, 'name')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'name')
 						.setDescription('name')
 						.setRequired(true)
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'remove')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
 				.setDescription('remove someone nickname')
 				.addOptions([
-					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user')
 						.setRequired(true)
 						.toJSON(),

@@ -1,19 +1,18 @@
-import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
 
-export default class KickCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'kick')
+export default class KickCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'kick')
 		.setDescription('kick someone')
 		.addOptions([
-			new Builders.Option(ApplicationCommandOptionType.User, 'user')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 				.setDescription('user to kick')
 				.setRequired(true)
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.String, 'reason')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
 				.setDescription('why did you kick the user?')
 				.toJSON(),
 		])

@@ -1,50 +1,49 @@
-import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
 
-export default class RoleCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'role')
+export default class RoleCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'role')
 		.setDescription('manage role')
 		.addOptions([
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'add')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
 				.setDescription('add role to someone')
 				.addOptions([
-					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user to add role')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.Role, 'role')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.ROLE, 'role')
 						.setDescription('role to give')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.String, 'reason')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('reason that will appear in audit log')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'remove')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
 				.setDescription('remove role from someone')
 				.addOptions([
-					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user to remove role')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.Role, 'role')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.ROLE, 'role')
 						.setDescription('role to remove')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.String, 'reason')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('reason that will appear in audit log')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'view')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
 				.setDescription('view all roles')
 				.addOption(
-					new Builders.Option(ApplicationCommandOptionType.Role, 'role')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.ROLE, 'role')
 						.setDescription('role to view')
 						.toJSON()
 				)

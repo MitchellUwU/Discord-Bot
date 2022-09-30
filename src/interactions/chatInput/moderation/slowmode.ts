@@ -1,31 +1,30 @@
-import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 import ms from 'ms';
 
-export default class SlowmodeCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'slowmode')
+export default class SlowmodeCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'slowmode')
 		.setDescription('manage slowmode')
 		.addOptions([
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'change')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'change')
 				.setDescription('change channel slowmode')
 				.addOptions([
-					new Builders.Option(ApplicationCommandOptionType.String, 'time')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'time')
 						.setDescription('slowmode time (must be between 1 second and 6 hours)')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.Channel, 'channel')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.CHANNEL, 'channel')
 						.setDescription('channel to change slowmode')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'remove')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
 				.setDescription('remove channel slowmode')
 				.addOption(
-					new Builders.Option(ApplicationCommandOptionType.Channel, 'channel')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.CHANNEL, 'channel')
 						.setDescription('channel to remove slowmode')
 						.toJSON()
 				)

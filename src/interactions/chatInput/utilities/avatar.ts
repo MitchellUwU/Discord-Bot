@@ -1,27 +1,26 @@
-import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 
-export default class AvatarCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'avatar')
+export default class AvatarCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'avatar')
 		.setDescription('show avatar')
 		.addOptions([
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'user')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
 				.setDescription('show user avatar')
 				.addOption(
-					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('a user')
 						.setRequired(false)
 						.toJSON()
 				)
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'guild')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
 				.setDescription('show guild icon (and also banner)')
 				.addOption(
-					new Builders.Option(ApplicationCommandOptionType.String, 'id')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'id')
 						.setDescription('guild id')
 						.setRequired(false)
 						.toJSON()

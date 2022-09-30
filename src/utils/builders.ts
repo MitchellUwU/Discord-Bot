@@ -24,9 +24,7 @@ const SelectMenu = SelectMenuBuilder;
 const TextInput = TextInputBuilder;
 const Event = EventBuilder;
 
-// Export all builders.
-
-export const Builders = {
+const Builders = {
 	Choice,
 	Command,
 	Option,
@@ -38,3 +36,7 @@ export const Builders = {
 	TextInput,
 	Event,
 };
+
+// Export all builders.
+
+export default Builders;

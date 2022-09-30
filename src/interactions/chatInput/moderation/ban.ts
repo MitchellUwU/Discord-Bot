@@ -1,48 +1,47 @@
-import { ApplicationCommandType, ApplicationCommandOptionType, ButtonStyle } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
-export default class BanCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'ban')
+export default class BanCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'ban')
 		.setDescription('manage ban')
 		.addOptions([
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'add')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
 				.setDescription('timeout someone')
 				.addOptions([
-					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user to ban')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.String, 'reason')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('why did you ban the user?')
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.String, 'time')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'time')
 						.setDescription(
 							'delete messages in specified duration of time (must be between 1 second and 1 week)'
 						)
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'remove')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
 				.setDescription('unban someone')
 				.addOptions([
-					new Builders.Option(ApplicationCommandOptionType.String, 'id')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'id')
 						.setDescription('user id to unban')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.String, 'reason')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('why did you unban the user?')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'view')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
 				.setDescription('view banned members')
 				.addOption(
-					new Builders.Option(ApplicationCommandOptionType.String, 'id')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'id')
 						.setDescription('id of banned member (leave empty if you want to view all banned members)')
 						.toJSON()
 				)
@@ -254,7 +253,7 @@ export default class BanCommand extends CommandInterface {
 					}
 
 					const component = (state: boolean) => {
-						return new Builders.Button(ButtonStyle.Danger, 'unban', 'unban user').setDisabled(state);
+						return new Builders.Button(Lib.Constants.ButtonStyles.DANGER, 'unban', 'unban user').setDisabled(state);
 					};
 
 					interaction.createMessage({
@@ -285,7 +284,7 @@ export default class BanCommand extends CommandInterface {
 						authorID: interaction.user.id,
 						interaction: interaction,
 						interactionType: Lib.ComponentInteraction,
-						componentType: 2,
+						componentType: Lib.Constants.ComponentTypes.BUTTON,
 						time: 20000,
 						max: 1,
 					});

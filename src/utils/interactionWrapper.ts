@@ -1,5 +1,5 @@
 import BotClient from '../client';
-import { Builders } from './builders';
+import Builders from './builders';
 import * as Lib from 'oceanic.js';
 
 // Wrapper for interaction (which is also a wrapper of raw interaction) to make things easier (i don't want to use Object.defineProperty, it makes my life hell).

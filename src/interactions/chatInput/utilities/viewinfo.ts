@@ -1,34 +1,33 @@
-import { ApplicationCommandType, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 
-export default class ViewInfoCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'viewinfo')
+export default class ViewInfoCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
 		.setDescription('view user info or guild info')
 		.addOptions([
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'user')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
 				.setDescription('view user info')
 				.addOption(
-					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('a user')
 						.setRequired(false)
 						.toJSON()
 				)
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'guild')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
 				.setDescription('view guild info')
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'channel')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'channel')
 				.setDescription('view channel info')
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'role')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'role')
 				.setDescription('view role info')
 				.addOption(
-					new Builders.Option(ApplicationCommandOptionType.Role, 'role')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.ROLE, 'role')
 						.setDescription('a role')
 						.setRequired(true)
 						.toJSON()

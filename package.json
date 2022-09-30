@@ -15,9 +15,8 @@
 		"url": "git+https://github.com/MitchellUwU/Discord-Bot.git"
 	},
 	"dependencies": {
-		"discord-api-types": "^0.37.11",
 		"ms": "^2.1.3",
-		"oceanic.js": "^1.1.2-dev.357cba3",
+		"oceanic.js": "^1.1.2-dev.db7c3b1",
 		"pg": "^8.8.0",
 		"undici": "^5.10.0"
 	},

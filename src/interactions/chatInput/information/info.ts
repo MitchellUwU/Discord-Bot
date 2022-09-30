@@ -1,14 +1,13 @@
-import { ApplicationCommandType } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 import packageJSON from '../../../../package.json';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 
-export default class InfoCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'info')
+export default class InfoCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'info')
 		.setDescription('show a super duper cool information')
 		.toJSON();
 

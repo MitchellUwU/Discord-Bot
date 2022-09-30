@@ -1,47 +1,46 @@
-import { ApplicationCommandType, ApplicationCommandOptionType, ButtonStyle } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
-export default class TimeoutCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'timeout')
+export default class TimeoutCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'timeout')
 		.setDescription('manage timeout')
 		.addOptions([
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'add')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
 				.setDescription('timeout someone')
 				.addOptions([
-					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user to timeout')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.String, 'time')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'time')
 						.setDescription('duration of time (must be between 1 second and 1 week)')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.String, 'reason')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('why did you timeout the user?')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'remove')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
 				.setDescription('untimeout someone')
 				.addOptions([
-					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user to untimeout')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(ApplicationCommandOptionType.String, 'reason')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('why did you untimeout the user?')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(ApplicationCommandOptionType.Subcommand, 'view')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
 				.setDescription('view someone timeout')
 				.addOption(
-					new Builders.Option(ApplicationCommandOptionType.User, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user to view timeout')
 						.setRequired(true)
 						.toJSON()
@@ -273,7 +272,7 @@ export default class TimeoutCommand extends CommandInterface {
 				}
 
 				const component = (state: boolean) => {
-					return new Builders.Button(ButtonStyle.Danger, 'untimeout', 'untimeout user').setDisabled(state);
+					return new Builders.Button(Lib.Constants.ButtonStyles.DANGER, 'untimeout', 'untimeout user').setDisabled(state);
 				};
 
 				interaction.createMessage({
@@ -299,7 +298,7 @@ export default class TimeoutCommand extends CommandInterface {
 					authorID: interaction.user.id,
 					interaction: interaction,
 					interactionType: Lib.ComponentInteraction,
-					componentType: 2,
+					componentType: Lib.Constants.ComponentTypes.BUTTON,
 					time: 20000,
 					max: 1,
 				});

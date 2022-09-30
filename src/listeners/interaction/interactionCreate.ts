@@ -1,5 +1,5 @@
 import BotClient from '../../client';
-import { Builders } from '../../utils/builders';
+import Builders from '../../utils/builders';
 import CommandInterface from '../../interfaces/command';
 import EventInterface from '../../interfaces/event';
 import InteractionWrapper from '../../utils/interactionWrapper';

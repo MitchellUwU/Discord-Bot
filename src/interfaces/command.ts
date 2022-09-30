@@ -3,7 +3,7 @@ import { CreateApplicationCommandOptions } from 'oceanic.js';
 import InteractionWrapper from '../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
 
-export default class CommandInterface {
+export default class Command {
 	private client: BotClient;
 	public data: CreateApplicationCommandOptions = {} as CreateApplicationCommandOptions;
 

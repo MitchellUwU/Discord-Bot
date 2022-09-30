@@ -1,13 +1,12 @@
-import { ApplicationCommandType } from 'discord-api-types/v10';
 import BotClient from '../../../client';
-import { Builders } from '../../../utils/builders';
-import CommandInterface from '../../../interfaces/command';
+import Builders from '../../../utils/builders';
+import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 import { performance } from 'perf_hooks';
 
-export default class PingCommand extends CommandInterface {
-	public override data = new Builders.Command(ApplicationCommandType.ChatInput, 'ping')
+export default class PingCommand extends Command {
+	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'ping')
 		.setDescription('show latency statistic thing')
 		.toJSON();
 

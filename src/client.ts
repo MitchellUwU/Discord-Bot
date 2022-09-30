@@ -1,8 +1,8 @@
 import BotUtils from './utils/botUtils';
 import { Collectors } from './utils/interactionCollector';
-import CommandInterface from './interfaces/command';
+import Command from './interfaces/command';
 import Database from './utils/db';
-import EventInterface from './interfaces/event';
+import Event from './interfaces/event';
 import fs from 'fs/promises';
 import * as Lib from 'oceanic.js';
 import path from 'path';
@@ -39,8 +39,8 @@ export interface BotConfig {
  */
 
 export default class BotClient extends Lib.Client {
-	public eventListeners: Map<string, EventInterface> = new Map(); // Collection of event listeners.
-	public interactions: Map<string, CommandInterface> = new Map(); // Collection of commands.
+	public eventListeners: Map<string, Event> = new Map(); // Collection of event listeners.
+	public interactions: Map<string, Command> = new Map(); // Collection of commands.
 
 	private commandList: Lib.CreateApplicationCommandOptions[] = []; // [INTERNAL] Array of commands.
 	public collectors: Collectors = new Collectors(); // Collector manager.

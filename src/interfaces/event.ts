@@ -7,7 +7,7 @@ export interface EventOptions {
 	type: string;
 }
 
-export default class EventInterface<K extends keyof Lib.ClientEvents = keyof Lib.ClientEvents> {
+export default class Event<K extends keyof Lib.ClientEvents = keyof Lib.ClientEvents> {
 	private client: BotClient;
 	public data: EventOptions = {} as EventOptions;
 
