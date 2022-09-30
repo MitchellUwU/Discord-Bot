@@ -3,18 +3,17 @@
 This repository contains:
 
 - A really horrible code
-- A lot of "any"
+- Horrible typings
 - Stolen code
 - No documentation (except for stuff in src/utils, client.ts and index.ts)
 - Unreadable code
-- A lot of if else statement
 - and more
 
 **TLDR:** This is literally code gore.
 
 # About this bot
 
-It just a test, nothing special.
+It just a regular discord bot, nothing special.
 
 # FAQ
 
