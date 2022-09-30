@@ -113,18 +113,8 @@ export default class FetchCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createMessage({
-					embeds: [
-						new Builders.Embed()
-							.setRandomColor()
-							.setTitle('wait...')
-							.setDescription(
-								'how did you get here? use the command properly! you are not supposed to be here, go away!'
-							)
-							.setTimestamp()
-							.toJSON(),
-					],
-					flags: 64,
+				interaction.createError({
+					content: 'wait for a bit or until the bot restart and try again',
 				});
 			}
 		}

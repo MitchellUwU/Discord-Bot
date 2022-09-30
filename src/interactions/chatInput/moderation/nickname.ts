@@ -37,20 +37,20 @@ export default class NicknameCommand extends Command {
 		client: BotClient,
 		interaction: InteractionWrapper
 	): Promise<void | Lib.Message<Lib.TextChannel>> {
+		if (interaction.user.id !== interaction.guild.ownerID) {
+			if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
+				return interaction.createError({
+					content:
+						"you need manage nicknames permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+				});
+			}
+		}
+
 		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
 			case 'change': {
-				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
-						return interaction.createError({
-							content:
-								"you need manage nicknames permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
-						});
-					}
-				}
-
 				let user: Lib.Member;
 
 				try {
@@ -107,15 +107,6 @@ export default class NicknameCommand extends Command {
 				break;
 			}
 			case 'remove': {
-				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
-						return interaction.createError({
-							content:
-								"you need manage nicknames permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
-						});
-					}
-				}
-
 				let user: Lib.Member;
 
 				try {
@@ -177,18 +168,8 @@ export default class NicknameCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createMessage({
-					embeds: [
-						new Builders.Embed()
-							.setRandomColor()
-							.setTitle('wait...')
-							.setDescription(
-								'how did you get here? use the command properly! you are not supposed to be here, go away!'
-							)
-							.setTimestamp()
-							.toJSON(),
-					],
-					flags: 64,
+				interaction.createError({
+					content: 'wait for a bit or until the bot restart and try again',
 				});
 			}
 		}

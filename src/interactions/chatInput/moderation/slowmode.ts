@@ -36,20 +36,20 @@ export default class SlowmodeCommand extends Command {
 		client: BotClient,
 		interaction: InteractionWrapper
 	): Promise<void | Lib.Message<Lib.TextChannel>> {
+		if (interaction.user.id !== interaction.guild.ownerID) {
+			if (!interaction.member.permissions.has('MANAGE_CHANNELS')) {
+				return interaction.createError({
+					content:
+						"you need manage channels permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+				});
+			}
+		}
+
 		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
 			case 'change': {
-				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MANAGE_CHANNELS')) {
-						return interaction.createError({
-							content:
-								"you need manage channels permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
-						});
-					}
-				}
-
 				const channel =
 					interaction.options.getChannel('channel', false)?.completeChannel || interaction.channel;
 
@@ -87,15 +87,6 @@ export default class SlowmodeCommand extends Command {
 				break;
 			}
 			case 'remove': {
-				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MANAGE_CHANNELS')) {
-						return interaction.createError({
-							content:
-								"you need manage channels permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
-						});
-					}
-				}
-
 				const channel =
 					interaction.options.getChannel('channel', false)?.completeChannel || interaction.channel;
 
@@ -107,7 +98,7 @@ export default class SlowmodeCommand extends Command {
 
 				try {
 					channel.edit({ rateLimitPerUser: 0 });
-					interaction.createSuccess({ content:`successfully removed ${channel.name} slowmode!` });
+					interaction.createSuccess({ content: `successfully removed ${channel.name} slowmode!` });
 				} catch (error: any) {
 					interaction.createError({
 						content: `i can't remove ${channel.name} slowmode sorry! :(\n\n${error.name}: ${error.message}`,
@@ -118,18 +109,8 @@ export default class SlowmodeCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createMessage({
-					embeds: [
-						new Builders.Embed()
-							.setRandomColor()
-							.setTitle('wait...')
-							.setDescription(
-								'how did you get here? use the command properly! you are not supposed to be here, go away!'
-							)
-							.setTimestamp()
-							.toJSON(),
-					],
-					flags: 64,
+				interaction.createError({
+					content: 'wait for a bit or until the bot restart and try again',
 				});
 			}
 		}

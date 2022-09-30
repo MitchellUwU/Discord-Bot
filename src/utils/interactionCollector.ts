@@ -93,7 +93,7 @@ export class InteractionCollector extends EventEmitter {
 
 	private checkInteraction(interaction: any): boolean {
 		if (!(interaction instanceof this.interactionType)) return false;
-		if (!interaction.data.component_type == this.componentType) return false;
+		if (!interaction.data.component_type === this.componentType) return false;
 		if (interaction.user.id !== this.authorID) return false;
 
 		this.emit('collect', interaction);

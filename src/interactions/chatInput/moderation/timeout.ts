@@ -53,20 +53,20 @@ export default class TimeoutCommand extends Command {
 		client: BotClient,
 		interaction: InteractionWrapper
 	): Promise<void | Lib.Message<Lib.TextChannel>> {
+		if (interaction.user.id !== interaction.guild.ownerID) {
+			if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
+				return interaction.createError({
+					content:
+						"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+				});
+			}
+		}
+
 		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
 			case 'add': {
-				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
-						return interaction.createError({
-							content:
-								"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
-						});
-					}
-				}
-
 				let user: Lib.Member;
 
 				try {
@@ -171,15 +171,6 @@ export default class TimeoutCommand extends Command {
 				break;
 			}
 			case 'remove': {
-				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
-						return interaction.createError({
-							content:
-								"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
-						});
-					}
-				}
-
 				let user: Lib.Member;
 
 				try {
@@ -243,15 +234,6 @@ export default class TimeoutCommand extends Command {
 				break;
 			}
 			case 'view': {
-				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
-						return interaction.createError({
-							content:
-								"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
-						});
-					}
-				}
-				
 				let user: Lib.Member;
 
 				try {
@@ -272,7 +254,11 @@ export default class TimeoutCommand extends Command {
 				}
 
 				const component = (state: boolean) => {
-					return new Builders.Button(Lib.Constants.ButtonStyles.DANGER, 'untimeout', 'untimeout user').setDisabled(state);
+					return new Builders.Button(
+						Lib.Constants.ButtonStyles.DANGER,
+						'untimeout',
+						'untimeout user'
+					).setDisabled(state);
 				};
 
 				interaction.createMessage({
@@ -305,15 +291,6 @@ export default class TimeoutCommand extends Command {
 
 				collector.on('collect', async (i: Lib.ComponentInteraction<Lib.TextChannel>) => {
 					const helper = new InteractionWrapper(client, i);
-
-					if (interaction.user.id !== interaction.guild.ownerID) {
-						if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
-							return interaction.createError({
-								content:
-									"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
-							});
-						}
-					}
 
 					if (user.id === interaction.user.id) {
 						return helper.createError({ content: "you can't untimeout yourself" });
@@ -370,18 +347,8 @@ export default class TimeoutCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createMessage({
-					embeds: [
-						new Builders.Embed()
-							.setRandomColor()
-							.setTitle('wait...')
-							.setDescription(
-								'how did you get here? use the command properly! you are not supposed to be here, go away!'
-							)
-							.setTimestamp()
-							.toJSON(),
-					],
-					flags: 64,
+				interaction.createError({
+					content: 'wait for a bit or until the bot restart and try again',
 				});
 			}
 		}
