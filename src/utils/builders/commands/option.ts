@@ -1,5 +1,4 @@
-import { ChannelType, LocalizationMap } from 'discord-api-types/v10';
-import { ApplicationCommandOptions } from 'oceanic.js';
+import { ApplicationCommandOptions, ChannelTypes } from 'oceanic.js';
 
 export default class OptionBuilder {
 	private json: any;
@@ -10,7 +9,7 @@ export default class OptionBuilder {
 		this.json.name = name;
 	}
 
-	public setNameLocale(map: LocalizationMap): this {
+	public setNameLocale(map: Record<string, string>): this {
 		this.json.nameLocalizations = map;
 		return this;
 	}
@@ -20,7 +19,7 @@ export default class OptionBuilder {
 		return this;
 	}
 
-	public setDescriptionLocale(map: LocalizationMap): this {
+	public setDescriptionLocale(map: Record<string, string>): this {
 		this.json.descriptionLocalizations = map;
 		return this;
 	}
@@ -55,7 +54,7 @@ export default class OptionBuilder {
 		return this;
 	}
 
-	public setChannelTypes(types: ChannelType[]): this {
+	public setChannelTypes(types: ChannelTypes[]): this {
 		this.json.channel_types = types;
 		return this;
 	}

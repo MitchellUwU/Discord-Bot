@@ -1,5 +1,5 @@
 import BotClient from '../../client';
-import { Builders } from '../../utils/builders';
+import Builders from '../../utils/builders';
 import EventInterface from '../../interfaces/event';
 
 export default class DisconnectEvent extends EventInterface<'disconnect'> {

@@ -1,4 +1,3 @@
-import { LocalizationMap } from 'discord-api-types/v10';
 import { ApplicationCommandOptions, CreateApplicationCommandOptions } from 'oceanic.js';
 
 export default class CommandBuilder {
@@ -10,7 +9,7 @@ export default class CommandBuilder {
 		this.json.name = name;
 	}
 
-	public setNameLocale(map: LocalizationMap): this {
+	public setNameLocale(map: Record<string, string>): this {
 		this.json.nameLocalizations = map;
 		return this;
 	}
@@ -20,7 +19,7 @@ export default class CommandBuilder {
 		return this;
 	}
 
-	public setDescriptionLocale(map: LocalizationMap): this {
+	public setDescriptionLocale(map: Record<string, string>): this {
 		this.json.descriptionLocalizations = map;
 		return this;
 	}

@@ -1,4 +1,3 @@
-import { LocalizationMap } from 'discord-api-types/v10';
 import { ApplicationCommandOptionsChoice } from 'oceanic.js';
 
 export default class ChoiceBuilder {
@@ -10,7 +9,7 @@ export default class ChoiceBuilder {
 		this.json.value = value;
 	}
 
-	public setNameLocale(map: LocalizationMap): this {
+	public setNameLocale(map: Record<string, string>): this {
 		this.json.nameLocalizations = map;
 		return this;
 	}
