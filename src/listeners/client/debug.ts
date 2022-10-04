@@ -1,8 +1,8 @@
 import BotClient from '../../client';
 import Builders from '../../utils/builders';
-import EventInterface from '../../interfaces/event';
+import Event from '../../interfaces/event';
 
-export default class DebugEvent extends EventInterface<'debug'> {
+export default class DebugEvent extends Event<'debug'> {
 	public override data = new Builders.Event('debug', false).toJSON();
 
 	public async execute(client: BotClient, msg: string, id: number): Promise<void> {

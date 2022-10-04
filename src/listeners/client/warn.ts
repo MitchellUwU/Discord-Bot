@@ -1,8 +1,8 @@
 import BotClient from '../../client';
 import Builders from '../../utils/builders';
-import EventInterface from '../../interfaces/event';
+import Event from '../../interfaces/event';
 
-export default class WarnEvent extends EventInterface<'warn'> {
+export default class WarnEvent extends Event<'warn'> {
 	public override data = new Builders.Event('warn', false).toJSON();
 
 	public async execute(client: BotClient, msg: string, id: number): Promise<void> {

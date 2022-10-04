@@ -153,12 +153,11 @@ export default class BotClient extends Lib.Client {
 	 */
 
 	public shutdown(): void {
-		this.ready = false;
 		this.commandList = [];
 		this.interactions.clear();
 		this.eventListeners.clear();
 		this.removeAllListeners();
-		this.shards.forEach((shard: Lib.Shard) => shard.disconnect());
+		this.disconnect(false);
 
 		process.exit();
 	}

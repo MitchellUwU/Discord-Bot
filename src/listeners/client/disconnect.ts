@@ -1,8 +1,8 @@
 import BotClient from '../../client';
 import Builders from '../../utils/builders';
-import EventInterface from '../../interfaces/event';
+import Event from '../../interfaces/event';
 
-export default class DisconnectEvent extends EventInterface<'disconnect'> {
+export default class DisconnectEvent extends Event<'disconnect'> {
 	public override data = new Builders.Event('disconnect', false).toJSON();
 
 	public async execute(client: BotClient): Promise<void> {

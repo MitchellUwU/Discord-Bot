@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"ms": "^2.1.3",
-		"oceanic.js": "^1.1.2-dev.db7c3b1",
+		"oceanic.js": "^1.1.2-dev.3ca0efc",
 		"pg": "^8.8.0",
 		"undici": "^5.10.0"
 	},
