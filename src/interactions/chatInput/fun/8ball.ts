@@ -19,11 +19,9 @@ export default class EightBallCommand extends Command {
 		client: BotClient,
 		interaction: InteractionWrapper
 	): Promise<void | Lib.Message<Lib.TextChannel>> {
-		const message: string = interaction.options.getString('message', true);
+		const message = interaction.options.getString('message', true);
 		const config = client.config.answers;
-		const botAnswer: string = config.repliesTemplate[
-			Math.floor(Math.random() * config.repliesTemplate.length)
-		]
+		const botAnswer = config.repliesTemplate[Math.floor(Math.random() * config.repliesTemplate.length)]
 			.replace('{answer}', config.answers[Math.floor(Math.random() * config.answers.length)])
 			.replace('{pronouns}', config.pronouns[Math.floor(Math.random() * config.pronouns.length)])
 			.replace('{faces}', config.faces[Math.floor(Math.random() * config.faces.length)]);

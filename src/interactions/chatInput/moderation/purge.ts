@@ -30,7 +30,7 @@ export default class PurgeCommand extends Command {
 			}
 		}
 
-		const amount: number = interaction.options.getInteger('amount', true);
+		const amount = interaction.options.getInteger('amount', true);
 
 		try {
 			interaction.channel.purge({ limit: amount }).then((deleted: number) => {

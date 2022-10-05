@@ -34,8 +34,8 @@ export default class EightBallCommand extends Command {
 
 		switch (command.toString()) {
 			case 'rps': {
-				const choices: Array<string> = ['rock', 'paper', 'scissors'];
-				const playerChoice: string = interaction.options.getString('choice', true);
+				const choices = ['rock', 'paper', 'scissors'];
+				const playerChoice = interaction.options.getString('choice', true);
 				const botChoice = choices[Math.floor(Math.random() * choices.length)];
 				let result: string;
 

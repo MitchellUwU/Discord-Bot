@@ -31,7 +31,7 @@ export default class FetchCommand extends Command {
 		client: BotClient,
 		interaction: InteractionWrapper
 	): Promise<void | Lib.Message<Lib.TextChannel>> {
-		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
+		let command = interaction.options.getSubCommand(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
@@ -81,8 +81,8 @@ export default class FetchCommand extends Command {
 				break;
 			}
 			case 'urban': {
-				const message: string = interaction.options.getString('word', true);
-				const query: URLSearchParams = new URLSearchParams(message);
+				const message = interaction.options.getString('word', true);
+				const query = new URLSearchParams(message);
 				const data = await request(`https://api.urbandictionary.com/v0/define?term=${query}`);
 				const { list } = await client.utils.getJSONContent(data.body);
 

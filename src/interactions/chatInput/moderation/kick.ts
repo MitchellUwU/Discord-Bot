@@ -44,7 +44,7 @@ export default class KickCommand extends Command {
 			}
 		}
 
-		const reason: string = interaction.options.getString('reason', false) || 'no reason?';
+		const reason = interaction.options.getString('reason', false) || 'no reason?';
 
 		if (user.id === interaction.user.id) {
 			return interaction.createError({ content: "you can't kick yourself" });
@@ -84,7 +84,7 @@ export default class KickCommand extends Command {
 		let message: Lib.Message;
 
 		try {
-			const channel: Lib.PrivateChannel = await user.user.createDM();
+			const channel = await user.user.createDM();
 			message = await channel.createMessage({
 				embeds: [
 					new Builders.Embed()

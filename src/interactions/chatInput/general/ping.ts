@@ -17,6 +17,7 @@ export default class PingCommand extends Command {
 		const startTime = performance.now();
 		await interaction.deferResponse();
 		const endTime = performance.now();
+
 		interaction.editOriginal({
 			embeds: [
 				new Builders.Embed()

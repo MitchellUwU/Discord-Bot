@@ -45,9 +45,9 @@ export default class ViewInfoCommand extends Command {
 
 		switch (command.toString()) {
 			case 'user': {
-				const id: string = interaction.options.getUser('user', false)?.id || interaction.user.id;
+				const id = interaction.options.getUser('user', false)?.id || interaction.user.id;
 				try {
-					const user: Lib.Member = await interaction.getMember(id);
+					const user = await interaction.getMember(id);
 
 					interaction.createMessage({
 						embeds: [
@@ -74,7 +74,7 @@ export default class ViewInfoCommand extends Command {
 						],
 					});
 				} catch (error: any) {
-					const user: Lib.User = await interaction.getUser(id);
+					const user = await interaction.getUser(id);
 
 					interaction.createMessage({
 						embeds: [
@@ -100,9 +100,9 @@ export default class ViewInfoCommand extends Command {
 				break;
 			}
 			case 'guild': {
-				const verificationLevels: string[] = ['none', 'low', 'medium', 'high', 'very high'];
-				const mfaLevels: string[] = ['disabled', 'enabled'];
-				const guild: Lib.Guild = interaction.guild;
+				const verificationLevels = ['none', 'low', 'medium', 'high', 'very high'];
+				const mfaLevels = ['disabled', 'enabled'];
+				const guild = interaction.guild;
 				const channels = guild.channels;
 				const threads = guild.threads;
 				const members = guild.members;
@@ -192,7 +192,7 @@ export default class ViewInfoCommand extends Command {
 				break;
 			}
 			case 'channel': {
-				const type: Array<string> = [
+				const type = [
 					'text',
 					'dm',
 					'voice',
@@ -207,7 +207,7 @@ export default class ViewInfoCommand extends Command {
 					'forum',
 				];
 
-				const channel: Lib.TextChannel = interaction.channel;
+				const channel = interaction.channel;
 				let slowmode: string;
 
 				if (channel.rateLimitPerUser === 0) {
@@ -244,7 +244,7 @@ export default class ViewInfoCommand extends Command {
 				break;
 			}
 			case 'role': {
-				const role: Lib.Role = interaction.options.getRole('role', true);
+				const role = interaction.options.getRole('role', true);
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (role.position > interaction.getHighestRole(interaction.member).position) {

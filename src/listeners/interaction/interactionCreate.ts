@@ -1,6 +1,5 @@
 import BotClient from '../../client';
 import Builders from '../../utils/builders';
-import CommandInterface from '../../interfaces/command';
 import Event from '../../interfaces/event';
 import InteractionWrapper from '../../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
@@ -17,10 +16,10 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
 				if (!(rawInteraction instanceof Lib.CommandInteraction)) return;
 				if (!(rawInteraction.channel instanceof Lib.TextChannel)) return;
 
-				const cmd: CommandInterface | undefined = client.interactions.get(rawInteraction.data.name);
+				const cmd = client.interactions.get(rawInteraction.data.name);
 				if (!cmd) return;
 
-				const interaction: InteractionWrapper = new InteractionWrapper(client, rawInteraction);
+				const interaction = new InteractionWrapper(client, rawInteraction);
 
 				if (!client.config.devIDs.includes(interaction.user.id)) {
 					if (client.config.blockedUsers?.includes(interaction.user.id)) {

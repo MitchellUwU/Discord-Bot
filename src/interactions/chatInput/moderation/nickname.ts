@@ -46,7 +46,7 @@ export default class NicknameCommand extends Command {
 			}
 		}
 
-		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
+		let command = interaction.options.getSubCommand(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
@@ -64,7 +64,7 @@ export default class NicknameCommand extends Command {
 					}
 				}
 
-				const name: string = interaction.options.getString('name', true);
+				const name = interaction.options.getString('name', true);
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {

@@ -61,13 +61,13 @@ export default class BotUtils {
 	 */
 
 	public get getDate(): string {
-		const currentTime: Date = new Date();
-		const date: string = ('0' + currentTime.getDate()).slice(-2);
-		const month: string = ('0' + (currentTime.getMonth() + 1)).slice(-2);
-		const year: number = currentTime.getFullYear();
-		const hours: string = ('0' + currentTime.getHours()).slice(-2);
-		const minutes: string = ('0' + currentTime.getMinutes()).slice(-2);
-		const seconds: string = ('0' + currentTime.getSeconds()).slice(-2);
+		const currentTime = new Date();
+		const date = ('0' + currentTime.getDate()).slice(-2);
+		const month = ('0' + (currentTime.getMonth() + 1)).slice(-2);
+		const year = currentTime.getFullYear();
+		const hours = ('0' + currentTime.getHours()).slice(-2);
+		const minutes = ('0' + currentTime.getMinutes()).slice(-2);
+		const seconds = ('0' + currentTime.getSeconds()).slice(-2);
 		return `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
 	}
 
@@ -78,7 +78,7 @@ export default class BotUtils {
 	 */
 
 	public async getJSONContent(body: any): Promise<any> {
-		let parsedBody: string = '';
+		let parsedBody = '';
 
 		for await (const data of body) {
 			parsedBody += data.toString();
@@ -94,8 +94,8 @@ export default class BotUtils {
 	 */
 
 	public logger(options: LoggerOptions): void {
-		const title: string = options.title;
-		const content: unknown = options.content;
+		const title = options.title;
+		const content = options.content;
 
 		switch (options.type) {
 			case 1: {

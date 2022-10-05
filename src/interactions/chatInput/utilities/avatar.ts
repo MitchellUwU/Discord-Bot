@@ -38,7 +38,7 @@ export default class AvatarCommand extends Command {
 
 		switch (command.toString()) {
 			case 'user': {
-				const user: Lib.Member | Lib.User =
+				const user =
 					interaction.options.getMember('user', false) ||
 					interaction.options.getUser('user', false) ||
 					interaction.member;

@@ -64,7 +64,7 @@ export default class RoleCommand extends Command {
 			}
 		}
 
-		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
+		let command = interaction.options.getSubCommand(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
@@ -82,8 +82,8 @@ export default class RoleCommand extends Command {
 					}
 				}
 
-				const role: Lib.Role = interaction.options.getRole('role', true);
-				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
+				const role = interaction.options.getRole('role', true);
+				const reason = interaction.options.getString('reason', false) || 'no reason?';
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
@@ -149,8 +149,8 @@ export default class RoleCommand extends Command {
 					}
 				}
 
-				const role: Lib.Role = interaction.options.getRole('role', true);
-				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
+				const role = interaction.options.getRole('role', true);
+				const reason = interaction.options.getString('reason', false) || 'no reason?';
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
@@ -203,7 +203,7 @@ export default class RoleCommand extends Command {
 				break;
 			}
 			case 'view': {
-				const role: Lib.Role | undefined = interaction.options.getRole('role', false);
+				const role = interaction.options.getRole('role', false);
 
 				if (!role) {
 					const roles: Array<string> = [];

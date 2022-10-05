@@ -62,7 +62,7 @@ export default class BanCommand extends Command {
 			}
 		}
 
-		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
+		let command = interaction.options.getSubCommand(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
@@ -80,10 +80,8 @@ export default class BanCommand extends Command {
 					}
 				}
 
-				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
-				const deleteMessageTime: number = ms(
-					`${interaction.options.getString('deleteMessageTime', false) || 0}`
-				);
+				const reason = interaction.options.getString('reason', false) || 'no reason?';
+				const deleteMessageTime = ms(`${interaction.options.getString('deleteMessageTime', false) || 0}`);
 
 				if (user.id === interaction.user.id) {
 					return interaction.createError({ content: "you can't ban yourself" });
@@ -134,7 +132,7 @@ export default class BanCommand extends Command {
 				let message: Lib.Message;
 
 				try {
-					const channel: Lib.PrivateChannel = await user.user.createDM();
+					const channel = await user.user.createDM();
 					message = await channel.createMessage({
 						embeds: [
 							new Builders.Embed()
@@ -168,7 +166,7 @@ export default class BanCommand extends Command {
 				break;
 			}
 			case 'remove': {
-				const user: string = interaction.options.getString('id', true);
+				const user = interaction.options.getString('id', true);
 
 				try {
 					await interaction.getUser(user);
@@ -176,7 +174,7 @@ export default class BanCommand extends Command {
 					return interaction.createError({ content: "that user doesn't exist?" });
 				}
 
-				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
+				const reason = interaction.options.getString('reason', false) || 'no reason?';
 				let banned: Lib.Ban;
 
 				try {
@@ -202,8 +200,8 @@ export default class BanCommand extends Command {
 				const user = interaction.options.getString('id', false);
 
 				if (!user) {
-					const fetchedMembers: Lib.Ban[] = await interaction.guild.getBans();
-					const bannedMembers: string = fetchedMembers
+					const fetchedMembers = await interaction.guild.getBans();
+					const bannedMembers = fetchedMembers
 						.map(
 							(member: Lib.Ban) =>
 								`**${member.user.tag} (${member.user.id}) is banned for:** ${member.reason}`

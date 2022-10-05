@@ -28,12 +28,12 @@ export class Collectors {
 	 */
 
 	public createNewCollector(options: InteractionCollectorConfig): InteractionCollector {
-		const activeCollector: InteractionCollector = this.activeListeners[options.authorID];
+		const activeCollector = this.activeListeners[options.authorID];
 		activeCollector?.stop('another collector has been used');
 
 		delete this.activeListeners[options.authorID];
 
-		const collector: InteractionCollector = new InteractionCollector(options);
+		const collector = new InteractionCollector(options);
 		collector.once('end', () => delete this.activeListeners[options.authorID]);
 
 		this.activeListeners[options.authorID] = collector;

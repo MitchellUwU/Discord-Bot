@@ -2,7 +2,7 @@ import config from '../../config.json';
 import BotClient from '../client';
 import { Pool } from 'pg';
 
-const pool: Pool = new Pool(config.db);
+const pool = new Pool(config.db);
 
 // Database manager.
 

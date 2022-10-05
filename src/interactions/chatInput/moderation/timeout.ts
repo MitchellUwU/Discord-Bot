@@ -62,7 +62,7 @@ export default class TimeoutCommand extends Command {
 			}
 		}
 
-		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
+		let command = interaction.options.getSubCommand(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
@@ -80,9 +80,9 @@ export default class TimeoutCommand extends Command {
 					}
 				}
 
-				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
-				const time: number = ms(`${interaction.options.getString('time', true)}`);
-				const date: string = new Date(Date.now() + time).toISOString();
+				const reason = interaction.options.getString('reason', false) || 'no reason?';
+				const time = ms(`${interaction.options.getString('time', true)}`);
+				const date = new Date(Date.now() + time).toISOString();
 
 				if (user.id === interaction.user.id) {
 					return interaction.createError({ content: "you can't timeout yourself" });
@@ -133,7 +133,7 @@ export default class TimeoutCommand extends Command {
 				let message: Lib.Message;
 
 				try {
-					const channel: Lib.PrivateChannel = await user.user.createDM();
+					const channel = await user.user.createDM();
 					message = await channel.createMessage({
 						embeds: [
 							new Builders.Embed()
@@ -184,7 +184,7 @@ export default class TimeoutCommand extends Command {
 					}
 				}
 
-				const reason: string = interaction.options.getString('reason', false) || 'no reason?';
+				const reason = interaction.options.getString('reason', false) || 'no reason?';
 
 				if (user.id === interaction.user.id) {
 					return interaction.createError({ content: "you can't untimeout yourself" });

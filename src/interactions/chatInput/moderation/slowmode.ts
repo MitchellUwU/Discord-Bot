@@ -45,7 +45,7 @@ export default class SlowmodeCommand extends Command {
 			}
 		}
 
-		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
+		let command = interaction.options.getSubCommand(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
@@ -53,8 +53,8 @@ export default class SlowmodeCommand extends Command {
 				const channel =
 					interaction.options.getChannel('channel', false)?.completeChannel || interaction.channel;
 
-				const time: string = interaction.options.getString('time', true);
-				const realtime: number = ms(`${time}`);
+				const time = interaction.options.getString('time', true);
+				const realtime = ms(`${time}`);
 
 				if (!(channel instanceof Lib.TextableChannel)) {
 					return interaction.createError({

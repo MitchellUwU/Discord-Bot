@@ -43,6 +43,7 @@ export default class EmbedBuilder {
 	public setRandomColor(): this {
 		const base = '0123456789ABCDEF';
 		let color = '0x';
+		
 		for (let count = 0; count < 6; count++) {
 			color = color + base[Math.floor(Math.random() * 16)];
 		}

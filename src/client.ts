@@ -66,10 +66,10 @@ export default class BotClient extends Lib.Client {
 	 */
 
 	private async *loadFiles(dir: string): AsyncGenerator<string, void, void> {
-		const files: string[] = await fs.readdir(dir);
+		const files = await fs.readdir(dir);
 		for await (const file of files) {
-			const filePath: string = path.join(dir, file);
-			const fileIsDir: boolean = (await fs.stat(filePath)).isDirectory();
+			const filePath = path.join(dir, file);
+			const fileIsDir = (await fs.stat(filePath)).isDirectory();
 			if (fileIsDir) {
 				yield* this.loadFiles(filePath);
 			} else {
@@ -84,10 +84,10 @@ export default class BotClient extends Lib.Client {
 	 */
 
 	private async loadInteractions(): Promise<void> {
-		const files: AsyncGenerator<string, void, void> = this.loadFiles(`${__dirname}/interactions`);
+		const files = this.loadFiles(`${__dirname}/interactions`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
-			const cmd: typeof Command = new Command(this);
+			const cmd = new Command(this);
 			this.utils.logger({ title: 'InteractionsHandler', content: `Loaded ${cmd.data.name}!`, type: 1 });
 			this.interactions.set(cmd.data.name, cmd);
 			try {
@@ -124,10 +124,10 @@ export default class BotClient extends Lib.Client {
 	 */
 
 	private async loadListeners(): Promise<void> {
-		const files: AsyncGenerator<string, void, void> = this.loadFiles(`${__dirname}/listeners`);
+		const files = this.loadFiles(`${__dirname}/listeners`);
 		for await (const file of files) {
 			const Listener = (await import(file)).default;
-			const event: typeof Listener = new Listener(this);
+			const event = new Listener(this);
 			this.utils.logger({ title: 'EventListenersHandler', content: `Loaded ${event.data.name}!`, type: 1 });
 			this.eventListeners.set(event.data.name, event);
 			event.client[event.data.type](event.data.name, (...args: any) => event.execute(this, ...args));
