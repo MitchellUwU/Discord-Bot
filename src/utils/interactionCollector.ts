@@ -3,18 +3,7 @@
 import BotClient from '../client';
 import { EventEmitter } from 'events';
 import * as Lib from 'oceanic.js';
-
-// Collector configuration interface.
-
-export interface InteractionCollectorConfig {
-	authorID: string;
-	client: BotClient;
-	componentType: any;
-	interaction: any;
-	interactionType: any;
-	max?: number;
-	time?: number;
-}
+import { InteractionCollectorConfig } from '../types/options';
 
 // Collector manager.
 

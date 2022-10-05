@@ -28,7 +28,7 @@ export default class EightBallCommand extends Command {
 	public async execute(
 		client: BotClient,
 		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.TextChannel>> {
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 

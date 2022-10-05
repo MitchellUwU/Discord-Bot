@@ -1,13 +1,6 @@
 import BotClient from '../client';
 import * as Lib from 'oceanic.js';
-
-// Logger configuration interface.
-
-export interface LoggerOptions {
-	title: string;
-	content: unknown;
-	type: number;
-}
+import { LoggerOptions } from '../types/options';
 
 // Utility for the client.
 

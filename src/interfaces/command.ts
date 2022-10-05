@@ -14,7 +14,7 @@ export default class Command {
 	public async execute(
 		client: BotClient,
 		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.TextChannel>> {
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		this.client.utils.logger({ title: this.data.name, content: 'this works!', type: 1 });
 	}
 }

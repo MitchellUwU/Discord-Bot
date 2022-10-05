@@ -1,11 +1,6 @@
 import BotClient from '../client';
 import * as Lib from 'oceanic.js';
-
-export interface EventOptions {
-	name: string;
-	once: boolean;
-	type: string;
-}
+import { EventOptions } from '../types/options';
 
 export default class Event<K extends keyof Lib.ClientEvents = keyof Lib.ClientEvents> {
 	private client: BotClient;
@@ -18,7 +13,7 @@ export default class Event<K extends keyof Lib.ClientEvents = keyof Lib.ClientEv
 	public async execute(
 		client: BotClient,
 		...args: Lib.ClientEvents[K]
-	): Promise<void | Lib.Message<Lib.TextChannel>> {
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		this.client.utils.logger({ title: this.data.name, content: 'this works!', type: 1 });
 	}
 }

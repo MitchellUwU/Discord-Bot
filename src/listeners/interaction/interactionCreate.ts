@@ -10,11 +10,10 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
 	public async execute(
 		client: BotClient,
 		rawInteraction: Lib.Interaction
-	): Promise<void | Lib.Message<Lib.TextChannel>> {
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		switch (rawInteraction.type) {
 			case Lib.InteractionTypes.APPLICATION_COMMAND: {
 				if (!(rawInteraction instanceof Lib.CommandInteraction)) return;
-				if (!(rawInteraction.channel instanceof Lib.TextChannel)) return;
 
 				const cmd = client.interactions.get(rawInteraction.data.name);
 				if (!cmd) return;

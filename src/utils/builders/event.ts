@@ -1,5 +1,5 @@
 import * as Lib from 'oceanic.js';
-import { EventOptions } from '../../interfaces/event';
+import { EventOptions } from '../../types/options';
 
 export default class EventBuilder {
 	private json: EventOptions;

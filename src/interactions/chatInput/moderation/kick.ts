@@ -21,7 +21,7 @@ export default class KickCommand extends Command {
 	public async execute(
 		client: BotClient,
 		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.TextChannel>> {
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('KICK_MEMBERS')) {
 				return interaction.createError({

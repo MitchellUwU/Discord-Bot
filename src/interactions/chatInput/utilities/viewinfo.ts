@@ -39,7 +39,7 @@ export default class ViewInfoCommand extends Command {
 	public async execute(
 		client: BotClient,
 		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.TextChannel>> {
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 
@@ -199,6 +199,10 @@ export default class ViewInfoCommand extends Command {
 					'group dm',
 					'category',
 					'news/announcement',
+					'how did you even get here?',
+					'how did you even get here?',
+					'how did you even get here?',
+					'how did you even get here?',
 					'news/announcement thread',
 					'public thread',
 					'private thread',
@@ -210,35 +214,45 @@ export default class ViewInfoCommand extends Command {
 				const channel = interaction.channel;
 				let slowmode: string;
 
-				if (channel.rateLimitPerUser === 0) {
-					slowmode = 'none';
-				} else {
-					slowmode = ms(channel.rateLimitPerUser * 1000, { long: true });
+				const embed = new Builders.Embed()
+					.setRandomColor()
+					.setAuthor({
+						name: `${channel.name} information`,
+						iconURL: interaction.guild.iconURL()!,
+					})
+					.setDescription(
+						[
+							`**- name:** ${channel.name}`,
+							`**- type:** ${type[channel.type]}`,
+							`**- creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
+							`**- id:** ${channel.id}`,
+						].join('\n')
+					)
+					.setTimestamp();
+
+				if (channel instanceof Lib.TextableChannel) {
+					if (channel.rateLimitPerUser === 0) {
+						slowmode = 'none';
+					} else {
+						slowmode = ms(channel.rateLimitPerUser * 1000, { long: true });
+					}
+
+					embed.setDescription(
+						[
+							`**- name:** ${channel.name}`,
+							`**- type:** ${type[channel.type]}`,
+							`**- nsfw:** ${channel.nsfw ? 'yes' : 'no'}`,
+							`**- channel position:** ${channel.position}`,
+							`**- creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
+							`**- slowmode time:** ${slowmode}`,
+							`**- topic:** ${channel.topic || 'no topic'}`,
+							`**- id:** ${channel.id}`,
+						].join('\n')
+					);
 				}
 
 				interaction.createMessage({
-					embeds: [
-						new Builders.Embed()
-							.setRandomColor()
-							.setAuthor({
-								name: `${channel.name} information`,
-								iconURL: interaction.guild.iconURL()!,
-							})
-							.setDescription(
-								[
-									`**- name:** ${channel.name}`,
-									`**- type:** ${type[channel.type]}`,
-									`**- nsfw:** ${channel.nsfw ? 'yes' : 'no'}`,
-									`**- channel position:** ${channel.position}`,
-									`**- creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
-									`**- slowmode time:** ${slowmode}`,
-									`**- topic:** ${channel.topic || 'no topic'}`,
-									`**- id:** ${channel.id}`,
-								].join('\n')
-							)
-							.setTimestamp()
-							.toJSON(),
-					],
+					embeds: [embed.toJSON()],
 				});
 
 				break;

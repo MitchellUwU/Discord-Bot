@@ -1,3 +1,4 @@
+import { BotConfig } from './types/options';
 import BotUtils from './utils/botUtils';
 import { Collectors } from './utils/interactionCollector';
 import Command from './interfaces/command';
@@ -6,32 +7,6 @@ import Event from './interfaces/event';
 import fs from 'fs/promises';
 import * as Lib from 'oceanic.js';
 import path from 'path';
-import { PoolConfig } from 'pg';
-
-// Client configuration interface.
-
-export interface BotConfig {
-	answers: {
-		repliesTemplate: string[];
-		answers: string[];
-		pronouns: string[];
-		faces: string[];
-	};
-	ascii?: string[];
-	clientOptions: Lib.ClientOptions;
-	blockedGuilds?: string[];
-	blockedUsers?: string[];
-	db: PoolConfig;
-	devMode: boolean;
-	devIDs: string[];
-	disableDebug?: boolean;
-	guildID?: string;
-	requiredPermission: number;
-	statusOptions: {
-		type: string;
-		activities: Lib.BotActivity[];
-	};
-}
 
 /**
  * The main client.
@@ -39,15 +14,15 @@ export interface BotConfig {
  */
 
 export default class BotClient extends Lib.Client {
-	public eventListeners: Map<string, Event> = new Map(); // Collection of event listeners.
-	public interactions: Map<string, Command> = new Map(); // Collection of commands.
+	public eventListeners: Map<string, Event>; // Collection of event listeners.
+	public interactions: Map<string, Command>; // Collection of commands.
 
-	private commandList: Lib.CreateApplicationCommandOptions[] = []; // [INTERNAL] Array of commands.
-	public collectors: Collectors = new Collectors(); // Collector manager.
-	public onMaintenance: boolean = false; // Value telling client maintenance state.
+	private commandList: Lib.CreateApplicationCommandOptions[]; // [INTERNAL] Array of commands.
+	public collectors: Collectors; // Collector manager.
+	public onMaintenance: boolean; // Value telling client maintenance state.
 	public readonly config: BotConfig; // [READONLY] Configuration specified in constructor.
-	public utils: BotUtils = new BotUtils(this); // Utility for the client.
-	public db: Database = new Database(this); // Main database (PostgreSQL) manager.
+	public utils: BotUtils; // Utility for the client.
+	public db: Database; // Main database (PostgreSQL) manager.
 
 	/**
 	 * Client constructor.
@@ -56,7 +31,16 @@ export default class BotClient extends Lib.Client {
 
 	public constructor(options: BotConfig) {
 		super(options.clientOptions);
+
+		this.eventListeners = new Map();
+		this.interactions = new Map();
+
+		this.commandList = [];
+		this.collectors = new Collectors();
+		this.onMaintenance = false;
 		this.config = options;
+		this.utils = new BotUtils(this);
+		this.db = new Database(this);
 	}
 
 	/**
@@ -166,7 +150,7 @@ export default class BotClient extends Lib.Client {
 	 * [INTERNAL] Sync application commands.
 	 * @returns void
 	 */
-	
+
 	private syncCommands(): void {
 		try {
 			if (this.config.devMode && this.config.guildID) {

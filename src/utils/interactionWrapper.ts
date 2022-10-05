@@ -1,18 +1,15 @@
 import BotClient from '../client';
 import Builders from './builders';
 import * as Lib from 'oceanic.js';
+import { AnyGuildInteractionNonAutoComplete } from '../types/additional';
 
 // Wrapper for interaction (which is also a wrapper of raw interaction) to make things easier (i don't want to use Object.defineProperty, it makes my life hell).
 
 export default class InteractionWrapper {
 	private client: BotClient; // [INTERNAL] The main client.
-	// Unmodified interaction value.
-	public raw:
-		| Lib.CommandInteraction<Lib.TextChannel>
-		| Lib.ComponentInteraction<Lib.TextChannel>
-		| Lib.ModalSubmitInteraction<Lib.TextChannel>;
+	public raw: AnyGuildInteractionNonAutoComplete; // Unmodified interaction value.
 	public options: Lib.InteractionOptionsWrapper; // Alias for interaction.raw.data.options
-	public channel: Lib.TextChannel; // Alias for interaction.raw.channel
+	public channel: Lib.AnyGuildTextChannel; // Alias for interaction.raw.channel
 	public guild: Lib.Guild; // Alias for interaction.raw.guild
 	public guildID: string; // Alias for interaction.raw.guildID
 	public member: Lib.Member; // Alias for interaction.raw.member
@@ -24,13 +21,7 @@ export default class InteractionWrapper {
 	 * @param interaction Unmodified interaction value.
 	 */
 
-	public constructor(
-		client: BotClient,
-		interaction:
-			| Lib.CommandInteraction<Lib.TextChannel>
-			| Lib.ComponentInteraction<Lib.TextChannel>
-			| Lib.ModalSubmitInteraction<Lib.TextChannel>
-	) {
+	public constructor(client: BotClient, interaction: AnyGuildInteractionNonAutoComplete) {
 		let options;
 
 		if (
@@ -115,7 +106,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async editOriginal(content: Lib.InteractionContent): Promise<void | Lib.Message<Lib.TextChannel>> {
+	public async editOriginal(content: Lib.InteractionContent): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		content.content = this.cleanContent(content.content);
 		if (this.raw.acknowledged) {
 			return this.raw.editOriginal(content);
@@ -140,7 +131,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async createMessage(content: Lib.InteractionContent): Promise<void | Lib.Message<Lib.TextChannel>> {
+	public async createMessage(content: Lib.InteractionContent): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		content.content = this.cleanContent(content.content);
 		if (this.raw.acknowledged) {
 			return this.raw.createFollowup(content);
@@ -158,7 +149,7 @@ export default class InteractionWrapper {
 	public async createError(
 		content: Lib.InteractionContent,
 		hidden?: boolean
-	): Promise<void | Lib.Message<Lib.TextChannel>> {
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		const embed = new Builders.Embed()
 			.setColor('red')
 			.setTitle('❌ error!')
@@ -203,7 +194,7 @@ export default class InteractionWrapper {
 	public async createSuccess(
 		content: Lib.InteractionContent,
 		hidden?: boolean
-	): Promise<void | Lib.Message<Lib.TextChannel>> {
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		const embed = new Builders.Embed()
 			.setColor('green')
 			.setTitle('✅ success!')
@@ -248,7 +239,7 @@ export default class InteractionWrapper {
 	public async createWarn(
 		content: Lib.InteractionContent,
 		hidden?: boolean
-	): Promise<void | Lib.Message<Lib.TextChannel>> {
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		const embed = new Builders.Embed()
 			.setColor('yellow')
 			.setTitle('⚠️ warning!')

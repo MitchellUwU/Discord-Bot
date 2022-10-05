@@ -18,7 +18,7 @@ export default class EchoCommand extends Command {
 	public async execute(
 		client: BotClient,
 		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.TextChannel>> {
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()
