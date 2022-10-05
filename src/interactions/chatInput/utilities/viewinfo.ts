@@ -40,7 +40,7 @@ export default class ViewInfoCommand extends Command {
 		client: BotClient,
 		interaction: InteractionWrapper
 	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
-		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
+		let command = interaction.options.getSubCommand(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
