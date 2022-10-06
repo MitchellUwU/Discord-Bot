@@ -289,7 +289,7 @@ export default class TimeoutCommand extends Command {
 					max: 1,
 				});
 
-				collector.on('collect', async (i: Lib.ComponentInteraction<Lib.TextChannel>) => {
+				collector.on('collect', async (i: Lib.ComponentInteraction<Lib.AnyGuildTextChannel>) => {
 					const helper = new InteractionWrapper(client, i);
 
 					if (user.id === interaction.user.id) {

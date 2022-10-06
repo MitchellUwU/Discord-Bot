@@ -23,6 +23,11 @@ export default class ViewInfoCommand extends Command {
 				.toJSON(),
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'channel')
 				.setDescription('view channel info')
+				.addOption(
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.CHANNEL, 'channel')
+						.setDescription('a channel')
+						.toJSON()
+				)
 				.toJSON(),
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'role')
 				.setDescription('view role info')
@@ -211,7 +216,15 @@ export default class ViewInfoCommand extends Command {
 					'forum',
 				];
 
-				const channel = interaction.channel;
+				const channel =
+					interaction.options.getChannel('channel', false)?.completeChannel || interaction.channel;
+
+				if (channel instanceof Lib.PrivateChannel) {
+					return interaction.createError({
+						content: 'the channel must be a guild channel',
+					});
+				}
+
 				let slowmode: string;
 
 				const embed = new Builders.Embed()
