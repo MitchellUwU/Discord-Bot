@@ -15,6 +15,9 @@ export default class KickCommand extends Command {
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
 				.setDescription('why did you kick the user?')
 				.toJSON(),
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
+				.setDescription('dm the user (default to true)')
+				.toJSON(),
 		])
 		.toJSON();
 
@@ -45,6 +48,9 @@ export default class KickCommand extends Command {
 		}
 
 		const reason = interaction.options.getString('reason', false) || 'no reason?';
+		let dmOption = interaction.options.getBoolean('dm', false);
+
+		if (dmOption === undefined) dmOption = true;
 
 		if (user.id === interaction.user.id) {
 			return interaction.createError({ content: "you can't kick yourself" });
@@ -82,28 +88,36 @@ export default class KickCommand extends Command {
 		}
 
 		let message: Lib.Message;
+		let dmSuccess = true;
 
-		try {
-			const channel = await user.user.createDM();
-			message = await channel.createMessage({
-				embeds: [
-					new Builders.Embed()
-						.setRandomColor()
-						.setTitle(`you got kicked from ${interaction.guild.name} :(`)
-						.setDescription(
-							`you broke the rules, didn't you?\n\n**guild name:** ${interaction.guild.name}\n**responsible moderator:** ${interaction.user.tag}\n**reason:** ${reason}\n**time:** no time specified`
-						)
-						.setTimestamp()
-						.toJSON(),
-				],
-			});
-		} catch (error: any) {
-			client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+		if (dmOption) {
+			try {
+				const channel = await user.user.createDM();
+				message = await channel.createMessage({
+					embeds: [
+						new Builders.Embed()
+							.setRandomColor()
+							.setTitle(`you got kicked from ${interaction.guild.name} :(`)
+							.setDescription(
+								`you broke the rules, didn't you?\n\n**guild name:** ${interaction.guild.name}\n**responsible moderator:** ${interaction.user.tag}\n**reason:** ${reason}\n**time:** no time specified`
+							)
+							.setTimestamp()
+							.toJSON(),
+					],
+				});
+			} catch (error: any) {
+				dmSuccess = false;
+				client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+			}
 		}
 
 		try {
 			await user.kick(reason);
-			interaction.createSuccess({ content: `successfully kicked ${user.tag}!` });
+			interaction.createSuccess({
+				content: `successfully kicked ${user.tag}!${
+					dmOption ? (dmSuccess ? " but i can't dm them" : '') : ''
+				}`,
+			});
 		} catch (error: any) {
 			message!.delete();
 			interaction.createError({

@@ -24,6 +24,12 @@ export default class BanCommand extends Command {
 							'delete messages in specified duration of time (must be between 1 second and 1 week)'
 						)
 						.toJSON(),
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'soft')
+						.setDescription('softban the user')
+						.toJSON(),
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
+						.setDescription('dm the user (default to true)')
+						.toJSON(),
 				])
 				.toJSON(),
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
@@ -82,6 +88,11 @@ export default class BanCommand extends Command {
 
 				const reason = interaction.options.getString('reason', false) || 'no reason?';
 				const deleteMessageTime = ms(`${interaction.options.getString('deleteMessageTime', false) || 0}`);
+				let softOption = interaction.options.getBoolean('soft', false);
+				let dmOption = interaction.options.getBoolean('dm', false);
+
+				if (softOption === undefined) softOption = false;
+				if (dmOption === undefined) dmOption = true;
 
 				if (user.id === interaction.user.id) {
 					return interaction.createError({ content: "you can't ban yourself" });
@@ -130,37 +141,70 @@ export default class BanCommand extends Command {
 				}
 
 				let message: Lib.Message;
+				let dmSuccess = true;
 
-				try {
-					const channel = await user.user.createDM();
-					message = await channel.createMessage({
-						embeds: [
-							new Builders.Embed()
-								.setRandomColor()
-								.setTitle(`you got banned from ${interaction.guild.name} :(`)
-								.setDescription(
-									`you broke the rules, didn't you?\n\n**guild name:** ${interaction.guild.name}\n**responsible moderator:** ${interaction.user.tag}\n**reason:** ${reason}\n**time:** no time specified`
-								)
-								.setTimestamp()
-								.toJSON(),
-						],
-					});
-				} catch (error: any) {
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+				if (dmOption) {
+					try {
+						const channel = await user.user.createDM();
+						message = await channel.createMessage({
+							embeds: [
+								new Builders.Embed()
+									.setRandomColor()
+									.setTitle(
+										`you got ${softOption ? 'softbanned' : 'banned'} from ${interaction.guild.name} :(`
+									)
+									.setDescription(
+										`you broke the rules, didn't you?\n\n**guild name:** ${interaction.guild.name}\n**responsible moderator:** ${interaction.user.tag}\n**reason:** ${reason}\n**time:** no time specified`
+									)
+									.setTimestamp()
+									.toJSON(),
+							],
+						});
+					} catch (error: any) {
+						dmSuccess = false;
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					}
 				}
 
-				try {
-					await user.ban({
-						deleteMessageSeconds: deleteMessageTime / 1000,
-						reason: reason,
-					});
-					interaction.createSuccess({ content: `successfully banned ${user.tag}!` });
-				} catch (error: any) {
-					message!.delete();
-					interaction.createError({
-						content: `i can't ban ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
-					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+				if (softOption) {
+					try {
+						await user.ban({
+							deleteMessageSeconds: deleteMessageTime / 1000,
+							reason: reason,
+						});
+						await interaction.guild.removeBan(user.id, 'softban');
+
+						interaction.createSuccess({
+							content: `successfully softbanned ${user.tag}!${
+								dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
+							}`,
+						});
+					} catch (error: any) {
+						message!.delete();
+						interaction.createError({
+							content: `i can't softban ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+						});
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					}
+				} else {
+					try {
+						await user.ban({
+							deleteMessageSeconds: deleteMessageTime / 1000,
+							reason: reason,
+						});
+
+						interaction.createSuccess({
+							content: `successfully banned ${user.tag}!${
+								dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
+							}`,
+						});
+					} catch (error: any) {
+						message!.delete();
+						interaction.createError({
+							content: `i can't ban ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+						});
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					}
 				}
 
 				break;

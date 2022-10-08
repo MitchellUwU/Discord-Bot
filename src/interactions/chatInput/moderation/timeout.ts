@@ -23,6 +23,9 @@ export default class TimeoutCommand extends Command {
 					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('why did you timeout the user?')
 						.toJSON(),
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
+						.setDescription('dm the user (default to true)')
+						.toJSON(),
 				])
 				.toJSON(),
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
@@ -82,7 +85,10 @@ export default class TimeoutCommand extends Command {
 
 				const reason = interaction.options.getString('reason', false) || 'no reason?';
 				const time = ms(`${interaction.options.getString('time', true)}`);
+				let dmOption = interaction.options.getBoolean('dm', false);
 				const date = new Date(Date.now() + time).toISOString();
+
+				if (dmOption === undefined) dmOption = true;
 
 				if (user.id === interaction.user.id) {
 					return interaction.createError({ content: "you can't timeout yourself" });
@@ -131,27 +137,31 @@ export default class TimeoutCommand extends Command {
 				}
 
 				let message: Lib.Message;
+				let dmSuccess = true;
 
-				try {
-					const channel = await user.user.createDM();
-					message = await channel.createMessage({
-						embeds: [
-							new Builders.Embed()
-								.setRandomColor()
-								.setTitle(`you got timeout from ${interaction.guild.name} :(`)
-								.setDescription(
-									`you broke the rules, didn't you?\n\n**guild name:** ${
-										interaction.guild.name
-									}\n**responsible moderator:** ${
-										interaction.user.tag
-									}\n**reason:** ${reason}\n**time:** ${ms(time, { long: true })}`
-								)
-								.setTimestamp()
-								.toJSON(),
-						],
-					});
-				} catch (error: any) {
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+				if (dmOption) {
+					try {
+						const channel = await user.user.createDM();
+						message = await channel.createMessage({
+							embeds: [
+								new Builders.Embed()
+									.setRandomColor()
+									.setTitle(`you got timeout from ${interaction.guild.name} :(`)
+									.setDescription(
+										`you broke the rules, didn't you?\n\n**guild name:** ${
+											interaction.guild.name
+										}\n**responsible moderator:** ${
+											interaction.user.tag
+										}\n**reason:** ${reason}\n**time:** ${ms(time, { long: true })}`
+									)
+									.setTimestamp()
+									.toJSON(),
+							],
+						});
+					} catch (error: any) {
+						dmSuccess = false;
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					}
 				}
 
 				try {
@@ -159,7 +169,12 @@ export default class TimeoutCommand extends Command {
 						communicationDisabledUntil: date,
 						reason: reason,
 					});
-					interaction.createSuccess({ content: `successfully timeout ${user.tag}!` });
+					
+					interaction.createSuccess({
+						content: `successfully timeout ${user.tag}!${
+							dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
+						}`,
+					});
 				} catch (error: any) {
 					message!.delete();
 					interaction.createError({
