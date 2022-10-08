@@ -152,7 +152,7 @@ export default class InteractionWrapper {
 	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
 		const embed = new Builders.Embed()
 			.setColor('red')
-			.setTitle('❌ error!')
+			.setTitle('⛔ error!')
 			.setDescription(this.cleanContent(content.content) || 'idk what went wrong sorry :(')
 			.setTimestamp();
 
