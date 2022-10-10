@@ -17,6 +17,43 @@ export default class BotUtils {
 	}
 
 	/**
+	 * Remove token from content.
+	 * @param content Any content.
+	 * @returns string
+	 */
+
+	public cleanContent(content: any): string {
+		let cleaned: string;
+
+		cleaned = content?.replaceAll(this.client.config.clientOptions.auth, 'ClientToken');
+		cleaned = content?.replaceAll(this.client.config.db.password, 'DatabaseToken');
+
+		return cleaned;
+	}
+
+	/**
+	 * Get all member roles.
+	 * @param user Guild member.
+	 * @returns any
+	 */
+
+	public getRoles(user: Lib.Member): any {
+		return user.roles.map((roleID: string) => user.guild.roles.get(roleID));
+	}
+
+	/**
+	 * Get member highest role.
+	 * @param user Guild member.
+	 * @returns Lib.Role
+	 */
+
+	public getHighestRole(user: Lib.Member): Lib.Role {
+		return this.getRoles(user).reduce((prev: Lib.Role, role: Lib.Role) =>
+			!prev || role.position >= prev.position ? role : prev
+		);
+	}
+
+	/**
 	 * Get guild.
 	 * @param guildID ID of the guild.
 	 * @returns Promise<Lib.Guild>

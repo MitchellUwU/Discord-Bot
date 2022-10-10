@@ -72,15 +72,15 @@ export default class KickCommand extends Command {
 			}
 
 			if (
-				interaction.getHighestRole(user).position >= interaction.getHighestRole(interaction.member).position
+				client.utils.getHighestRole(user).position >= client.utils.getHighestRole(interaction.member).position
 			) {
 				return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
 			}
 		}
 
 		if (
-			interaction.getHighestRole(user).position >=
-			interaction.getHighestRole(interaction.guild.clientMember).position
+			client.utils.getHighestRole(user).position >=
+			client.utils.getHighestRole(interaction.guild.clientMember).position
 		) {
 			return interaction.createError({
 				content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,

@@ -114,16 +114,16 @@ export default class BanCommand extends Command {
 					}
 
 					if (
-						interaction.getHighestRole(user).position >=
-						interaction.getHighestRole(interaction.member).position
+						client.utils.getHighestRole(user).position >=
+						client.utils.getHighestRole(interaction.member).position
 					) {
 						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
 					}
 				}
 
 				if (
-					interaction.getHighestRole(user).position >=
-					interaction.getHighestRole(interaction.guild.clientMember).position
+					client.utils.getHighestRole(user).position >=
+					client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
 					return interaction.createError({
 						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
@@ -213,7 +213,7 @@ export default class BanCommand extends Command {
 				const user = interaction.options.getString('id', true);
 
 				try {
-					await interaction.getUser(user);
+					await client.utils.getUser(user);
 				} catch (error) {
 					return interaction.createError({ content: "that user doesn't exist?" });
 				}
@@ -224,7 +224,7 @@ export default class BanCommand extends Command {
 				try {
 					banned = await interaction.guild.getBan(user);
 				} catch (error: any) {
-					const name = await interaction.getUser(user);
+					const name = await client.utils.getUser(user);
 					return interaction.createError({ content: `${name} is not banned!` });
 				}
 

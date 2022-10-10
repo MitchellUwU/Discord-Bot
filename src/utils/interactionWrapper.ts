@@ -3,7 +3,7 @@ import Builders from './builders';
 import * as Lib from 'oceanic.js';
 import { AnyGuildInteractionNonAutoComplete } from '../types/additional';
 
-// Wrapper for interaction (which is also a wrapper of raw interaction) to make things easier (i don't want to use Object.defineProperty, it makes my life hell).
+// Wrapper for interaction (which is also a wrapper of raw interaction) to make things easier (i don't want to do monkey patch shit, it makes my life hell).
 
 export default class InteractionWrapper {
 	private client: BotClient; // [INTERNAL] The main client.
@@ -44,70 +44,15 @@ export default class InteractionWrapper {
 	}
 
 	/**
-	 * Remove any token from content.
-	 * @param content Any content.
-	 * @returns string
-	 */
-
-	public cleanContent(content: any): string {
-		let cleaned: string;
-
-		cleaned = content?.replaceAll(this.client.config.clientOptions.auth, 'ClientToken');
-		cleaned = content?.replaceAll(this.client.config.db.password, 'DatabaseToken');
-
-		return cleaned;
-	}
-
-	/**
-	 * Get all roles in a member.
-	 * @param user Guild member.
-	 * @returns any
-	 */
-
-	public getRoles(user: Lib.Member): any {
-		return user.roles.map((roleID: string) => user.guild.roles.get(roleID));
-	}
-
-	/**
-	 * Get member highest role.
-	 * @param user Anything.
-	 * @returns Lib.Role
-	 */
-
-	public getHighestRole(user: any): Lib.Role {
-		return this.getRoles(user).reduce((prev: Lib.Role, role: Lib.Role) =>
-			!prev || role.position >= prev.position ? role : prev
-		);
-	}
-
-	/**
-	 * Get member in a guild.
-	 * @param id User ID of the member.
-	 * @returns Promise<Lib.Member>
-	 */
-
-	public async getMember(id: string): Promise<Lib.Member> {
-		return this.client.utils.getMember(this.raw.guildID, id);
-	}
-
-	/**
-	 * Get user.
-	 * @param id User ID of the user.
-	 * @returns Promise<Lib.User>
-	 */
-
-	public async getUser(id: string): Promise<Lib.User> {
-		return this.client.utils.getUser(id);
-	}
-
-	/**
 	 * Edit interaction response.
 	 * @param content Content of interaction.
 	 * @returns Promise<void>
 	 */
 
-	public async editOriginal(content: Lib.InteractionContent): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
-		content.content = this.cleanContent(content.content);
+	public async editOriginal(
+		content: Lib.InteractionContent
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+		content.content = this.client.utils.cleanContent(content.content);
 		if (this.raw.acknowledged) {
 			return this.raw.editOriginal(content);
 		} else {
@@ -131,8 +76,10 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async createMessage(content: Lib.InteractionContent): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
-		content.content = this.cleanContent(content.content);
+	public async createMessage(
+		content: Lib.InteractionContent
+	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+		content.content = this.client.utils.cleanContent(content.content);
 		if (this.raw.acknowledged) {
 			return this.raw.createFollowup(content);
 		} else {
@@ -153,20 +100,22 @@ export default class InteractionWrapper {
 		const embed = new Builders.Embed()
 			.setColor('red')
 			.setTitle('⛔ error!')
-			.setDescription(this.cleanContent(content.content) || 'idk what went wrong sorry :(')
+			.setDescription(this.client.utils.cleanContent(content.content) || 'idk what went wrong sorry :(')
 			.setTimestamp();
+
+		content.content = '';
 
 		if (this.raw.acknowledged) {
 			if (hidden === undefined || hidden) {
 				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
 					flags: 64,
-					files: content.files,
+					...content,
 				});
 			} else {
 				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
-					files: content.files,
+					...content,
 				});
 			}
 		} else {
@@ -174,12 +123,13 @@ export default class InteractionWrapper {
 				return this.raw.createMessage({
 					embeds: [embed.toJSON()],
 					flags: 64,
-					files: content.files,
+					...content,
 				});
 			} else {
 				return this.raw.createMessage({
 					embeds: [embed.toJSON()],
 					files: content.files,
+					...content,
 				});
 			}
 		}
@@ -198,20 +148,24 @@ export default class InteractionWrapper {
 		const embed = new Builders.Embed()
 			.setColor('green')
 			.setTitle('✅ success!')
-			.setDescription(this.cleanContent(content.content) || 'idk what thing successfully been done sorry :(')
+			.setDescription(
+				this.client.utils.cleanContent(content.content) || 'idk what thing successfully been done sorry :('
+			)
 			.setTimestamp();
+
+		content.content = '';
 
 		if (this.raw.acknowledged) {
 			if (hidden === undefined || hidden) {
 				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
 					flags: 64,
-					files: content.files,
+					...content,
 				});
 			} else {
 				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
-					files: content.files,
+					...content,
 				});
 			}
 		} else {
@@ -219,12 +173,13 @@ export default class InteractionWrapper {
 				return this.raw.createMessage({
 					embeds: [embed.toJSON()],
 					flags: 64,
-					files: content.files,
+					...content,
 				});
 			} else {
 				return this.raw.createMessage({
 					embeds: [embed.toJSON()],
 					files: content.files,
+					...content,
 				});
 			}
 		}
@@ -243,20 +198,22 @@ export default class InteractionWrapper {
 		const embed = new Builders.Embed()
 			.setColor('yellow')
 			.setTitle('⚠️ warning!')
-			.setDescription(this.cleanContent(content.content) || 'idk what thing warned you sorry :(')
+			.setDescription(this.client.utils.cleanContent(content.content) || 'idk what thing warned you sorry :(')
 			.setTimestamp();
+
+		content.content = '';
 
 		if (this.raw.acknowledged) {
 			if (hidden === undefined || hidden) {
 				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
 					flags: 64,
-					files: content.files,
+					...content,
 				});
 			} else {
 				return this.raw.createFollowup({
 					embeds: [embed.toJSON()],
-					files: content.files,
+					...content,
 				});
 			}
 		} else {
@@ -264,12 +221,13 @@ export default class InteractionWrapper {
 				return this.raw.createMessage({
 					embeds: [embed.toJSON()],
 					flags: 64,
-					files: content.files,
+					...content,
 				});
 			} else {
 				return this.raw.createMessage({
 					embeds: [embed.toJSON()],
 					files: content.files,
+					...content,
 				});
 			}
 		}

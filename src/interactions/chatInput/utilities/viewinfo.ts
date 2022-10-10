@@ -52,7 +52,7 @@ export default class ViewInfoCommand extends Command {
 			case 'user': {
 				const id = interaction.options.getUser('user', false)?.id || interaction.user.id;
 				try {
-					const user = await interaction.getMember(id);
+					const user = await client.utils.getMember(interaction.guildID, id);
 
 					interaction.createMessage({
 						embeds: [
@@ -79,7 +79,7 @@ export default class ViewInfoCommand extends Command {
 						],
 					});
 				} catch (error: any) {
-					const user = await interaction.getUser(id);
+					const user = await client.utils.getUser(id);
 
 					interaction.createMessage({
 						embeds: [
@@ -274,7 +274,7 @@ export default class ViewInfoCommand extends Command {
 				const role = interaction.options.getRole('role', true);
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (role.position > interaction.getHighestRole(interaction.member).position) {
+					if (role.position > client.utils.getHighestRole(interaction.member).position) {
 						return interaction.createError({ content: 'that role is higher/same role than you' });
 					}
 				}
