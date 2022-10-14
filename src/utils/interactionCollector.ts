@@ -40,7 +40,7 @@ export class InteractionCollector extends EventEmitter {
 	public authorID: string; // User ID that triggers the collector.
 	private client: BotClient; // [INTERNAL] The main client.
 	private collected: { interaction: Lib.AnyInteractionGateway }[]; // [INTERNAL] All collected interactions.
-	public componentType: boolean; // Component type.
+	public componentType: number; // Component type.
 	private ended: boolean; // [INTERNAL] Value telling collector state.
 	public interaction: Lib.AnyInteractionGateway; // Interaction that triggers the collector.
 	public interactionType: any; // Interaction type.
@@ -80,10 +80,16 @@ export class InteractionCollector extends EventEmitter {
 	 * @returns boolean
 	 */
 
-	private checkInteraction(interaction: any): boolean {
-		if (!(interaction instanceof this.interactionType)) return false;
-		if (!interaction.data.component_type === this.componentType) return false;
-		if (interaction.user.id !== this.authorID) return false;
+	private checkInteraction(interaction: Lib.AnyInteractionGateway): boolean {
+		if (!(interaction instanceof Lib.AutocompleteInteraction)) {
+			if (!(interaction instanceof this.interactionType)) return false;
+			if (interaction.user.id !== this.authorID) return false;
+			if (!(interaction instanceof Lib.CommandInteraction)) {
+				if (!(interaction instanceof Lib.ModalSubmitInteraction)) {
+					if (interaction.data.componentType !== this.componentType) return false;
+				}
+			}
+		}
 
 		this.emit('collect', interaction);
 

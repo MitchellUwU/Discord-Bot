@@ -90,6 +90,7 @@ export default class InteractionWrapper {
 	/**
 	 * Send error respond to interaction.
 	 * @param content Content of interaction.
+	 * @param hidden Response with ephemeral message or not.
 	 * @returns Promise<void>
 	 */
 
@@ -105,39 +106,25 @@ export default class InteractionWrapper {
 
 		content.content = '';
 
-		if (this.raw.acknowledged) {
-			if (hidden === undefined || hidden) {
-				return this.raw.createFollowup({
-					embeds: [embed.toJSON()],
-					flags: 64,
-					...content,
-				});
-			} else {
-				return this.raw.createFollowup({
-					embeds: [embed.toJSON()],
-					...content,
-				});
-			}
+		if (hidden === undefined || hidden) {
+			return this.createMessage({
+				embeds: [embed.toJSON()],
+				flags: 64,
+				...content,
+			});
 		} else {
-			if (hidden === undefined || hidden) {
-				return this.raw.createMessage({
-					embeds: [embed.toJSON()],
-					flags: 64,
-					...content,
-				});
-			} else {
-				return this.raw.createMessage({
-					embeds: [embed.toJSON()],
-					files: content.files,
-					...content,
-				});
-			}
+			return this.createMessage({
+				embeds: [embed.toJSON()],
+				files: content.files,
+				...content,
+			});
 		}
 	}
 
 	/**
 	 * Send success respond to interaction.
 	 * @param content Content of interaction.
+	 * @param hidden Response with ephemeral message or not.
 	 * @returns Promise<void>
 	 */
 
@@ -155,39 +142,25 @@ export default class InteractionWrapper {
 
 		content.content = '';
 
-		if (this.raw.acknowledged) {
-			if (hidden === undefined || hidden) {
-				return this.raw.createFollowup({
-					embeds: [embed.toJSON()],
-					flags: 64,
-					...content,
-				});
-			} else {
-				return this.raw.createFollowup({
-					embeds: [embed.toJSON()],
-					...content,
-				});
-			}
+		if (hidden === undefined || hidden) {
+			return this.createMessage({
+				embeds: [embed.toJSON()],
+				flags: 64,
+				...content,
+			});
 		} else {
-			if (hidden === undefined || hidden) {
-				return this.raw.createMessage({
-					embeds: [embed.toJSON()],
-					flags: 64,
-					...content,
-				});
-			} else {
-				return this.raw.createMessage({
-					embeds: [embed.toJSON()],
-					files: content.files,
-					...content,
-				});
-			}
+			return this.createMessage({
+				embeds: [embed.toJSON()],
+				files: content.files,
+				...content,
+			});
 		}
 	}
 
 	/**
 	 * Send warning respond to interaction.
 	 * @param content Content of interaction.
+	 * @param hidden Response with ephemeral message or not.
 	 * @returns Promise<void>
 	 */
 
@@ -203,33 +176,18 @@ export default class InteractionWrapper {
 
 		content.content = '';
 
-		if (this.raw.acknowledged) {
-			if (hidden === undefined || hidden) {
-				return this.raw.createFollowup({
-					embeds: [embed.toJSON()],
-					flags: 64,
-					...content,
-				});
-			} else {
-				return this.raw.createFollowup({
-					embeds: [embed.toJSON()],
-					...content,
-				});
-			}
+		if (hidden === undefined || hidden) {
+			return this.createMessage({
+				embeds: [embed.toJSON()],
+				flags: 64,
+				...content,
+			});
 		} else {
-			if (hidden === undefined || hidden) {
-				return this.raw.createMessage({
-					embeds: [embed.toJSON()],
-					flags: 64,
-					...content,
-				});
-			} else {
-				return this.raw.createMessage({
-					embeds: [embed.toJSON()],
-					files: content.files,
-					...content,
-				});
-			}
+			return this.createMessage({
+				embeds: [embed.toJSON()],
+				files: content.files,
+				...content,
+			});
 		}
 	}
 }
