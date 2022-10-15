@@ -206,20 +206,19 @@ export default class RoleCommand extends Command {
 				const role = interaction.options.getRole('role', false);
 
 				if (!role) {
-					const roles: Array<string> = [];
-
-					interaction.guild.roles.forEach((role: Lib.Role) => {
-						if (!(role.name == '@everyone')) {
-							roles.push(`<@${role.id}>`);
-						}
-					});
+					const roles = interaction.guild.roles.toArray().sort((prev, next) => next.position - prev.position);
 
 					interaction.createMessage({
 						embeds: [
 							new Builders.Embed()
 								.setRandomColor()
 								.setTitle('list of roles')
-								.setDescription(roles.join('\n') || 'no role?')
+								.setDescription(
+									roles
+										.filter((role) => role.name !== '@everyone')
+										.map((role) => role.mention)
+										.join('\n') || 'no role?'
+								)
 								.setTimestamp()
 								.toJSON(),
 						],

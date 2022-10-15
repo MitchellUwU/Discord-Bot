@@ -53,6 +53,10 @@ export default class ViewInfoCommand extends Command {
 				const id = interaction.options.getUser('user', false)?.id || interaction.user.id;
 				try {
 					const user = await client.utils.getMember(interaction.guildID, id);
+					const roles = interaction.guild.roles
+						.toArray()
+						.filter((role) => user.roles.includes(role.id))
+						.sort((prev, next) => next.position - prev.position);
 
 					interaction.createMessage({
 						embeds: [
@@ -68,9 +72,7 @@ export default class ViewInfoCommand extends Command {
 										`**- is bot:** ${user.bot ? 'yes' : 'no'}`,
 										`**- is system:** ${user.user.system ? 'yes' : 'no'}`,
 										`**- id:** ${user.id}`,
-										`**- roles (${user.roles.length}):** <@&${
-											user.roles.join('><@&').replace('@everyone', '') || 'none'
-										}>`.replace('<@&>', ''),
+										`**- roles (${user.roles.length}):** ${roles.map((role) => role.mention).join(' ')}`,
 									].join('\n')
 								)
 								.setThumbnail(user.avatarURL())
