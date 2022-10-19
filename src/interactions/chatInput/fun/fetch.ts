@@ -88,23 +88,6 @@ export default class FetchCommand extends Command {
 
 				if (!list.length) return interaction.createError({ content: 'no result found :(' });
 
-				console.log(						new Builders.Embed()
-				.setRandomColor()
-				.setTitle(`${list[0].word} defined by ${list[0].author}`)
-				.setURL(list[0].permalink)
-				.setDescription(`👍 ${list[0].thumbs_up} upvotes | 👎 ${list[0].thumbs_down} downvotes`)
-				.addFields([
-					{
-						name: 'definition:',
-						value: list[0].definition,
-					},
-					{
-						name: 'example:',
-						value: list[0].example,
-					},
-				] as any)
-				.setTimestamp()
-				.toJSON(),)
 				interaction.createMessage({
 					embeds: [
 						new Builders.Embed()
