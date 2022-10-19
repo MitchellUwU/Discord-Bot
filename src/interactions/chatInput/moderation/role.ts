@@ -229,7 +229,7 @@ export default class RoleCommand extends Command {
 						embeds: [
 							new Builders.Embed()
 								.setRandomColor()
-								.setAuthor({ name: `${role.name} information`, iconURL: interaction.guild.iconURL()! })
+								.setAuthor(`${role.name} information`, interaction.guild.iconURL()!)
 								.setDescription(
 									[
 										`**- name:** ${role.name}`,

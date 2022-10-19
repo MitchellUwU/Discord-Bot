@@ -23,10 +23,7 @@ export default class EchoCommand extends Command {
 			embeds: [
 				new Builders.Embed()
 					.setRandomColor()
-					.setAuthor({
-						name: `${interaction.user.tag} said:`,
-						iconURL: interaction.user.avatarURL(),
-					})
+					.setAuthor(`${interaction.user.tag} said:`, interaction.user.avatarURL())
 					.setDescription(`${interaction.options.getString('message', true)}`)
 					.setTimestamp()
 					.toJSON(),

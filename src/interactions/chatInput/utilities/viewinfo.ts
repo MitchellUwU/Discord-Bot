@@ -62,7 +62,7 @@ export default class ViewInfoCommand extends Command {
 						embeds: [
 							new Builders.Embed()
 								.setRandomColor()
-								.setAuthor({ name: `${user.tag} information`, iconURL: user.avatarURL() })
+								.setAuthor(`${user.tag} information`, user.avatarURL())
 								.setDescription(
 									[
 										`**- name:** ${user.tag}`,
@@ -87,7 +87,7 @@ export default class ViewInfoCommand extends Command {
 						embeds: [
 							new Builders.Embed()
 								.setRandomColor()
-								.setAuthor({ name: `${user.tag} information`, iconURL: user.avatarURL() })
+								.setAuthor(`${user.tag} information`, user.avatarURL())
 								.setDescription(
 									[
 										`**- name:** ${user.tag}`,
@@ -126,7 +126,7 @@ export default class ViewInfoCommand extends Command {
 					embeds: [
 						new Builders.Embed()
 							.setRandomColor()
-							.setAuthor({ name: `${guild.name}'s information`, iconURL: guild.iconURL()! })
+							.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
 							.addFields([
 								{
 									name: '📃 | general',
@@ -231,10 +231,7 @@ export default class ViewInfoCommand extends Command {
 
 				const embed = new Builders.Embed()
 					.setRandomColor()
-					.setAuthor({
-						name: `${channel.name} information`,
-						iconURL: interaction.guild.iconURL()!,
-					})
+					.setAuthor(`${channel.name} information`, interaction.guild.iconURL()!)
 					.setDescription(
 						[
 							`**- name:** ${channel.name}`,
@@ -285,7 +282,7 @@ export default class ViewInfoCommand extends Command {
 					embeds: [
 						new Builders.Embed()
 							.setRandomColor()
-							.setAuthor({ name: `${role.name} information`, iconURL: interaction.guild.iconURL()! })
+							.setAuthor(`${role.name} information`, interaction.guild.iconURL()!)
 							.setDescription(
 								[
 									`**- name:** ${role.name}`,

@@ -28,7 +28,7 @@ export default class InteractionWrapper {
 			interaction instanceof Lib.ComponentInteraction ||
 			interaction instanceof Lib.ModalSubmitInteraction
 		) {
-			options = new Lib.InteractionOptionsWrapper(client, [] as Lib.InteractionOptions[], null);
+			options = new Lib.InteractionOptionsWrapper([] as Lib.InteractionOptions[], null);
 		} else {
 			options = interaction.data.options;
 		}

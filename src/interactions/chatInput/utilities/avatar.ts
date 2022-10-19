@@ -47,7 +47,7 @@ export default class AvatarCommand extends Command {
 					embeds: [
 						new Builders.Embed()
 							.setRandomColor()
-							.setAuthor({ name: `${user.tag}'s avatar`, iconURL: user.avatarURL() })
+							.setAuthor(`${user.tag}'s avatar`, user.avatarURL())
 							.setImage(user.avatarURL())
 							.setTimestamp()
 							.toJSON(),
@@ -68,7 +68,7 @@ export default class AvatarCommand extends Command {
 
 				const embed = new Builders.Embed()
 					.setRandomColor()
-					.setAuthor({ name: `${guild.name}'s icon and banner`, iconURL: guild.iconURL()! })
+					.setAuthor(`${guild.name}'s icon and banner`, guild.iconURL()!)
 					.setDescription('icon link (unavailable)\nbanner link (unavailable)')
 					.setImage(guild.bannerURL()!)
 					.setThumbnail(guild.iconURL()!)

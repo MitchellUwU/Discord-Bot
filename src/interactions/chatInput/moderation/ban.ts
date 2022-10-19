@@ -278,16 +278,21 @@ export default class BanCommand extends Command {
 					}
 
 					const component = (state: boolean) => {
-						return new Builders.Button(Lib.Constants.ButtonStyles.DANGER, 'unban', 'unban user').setDisabled(
-							state
-						);
+						return new Builders.ActionRow()
+							.addInteractionButton({
+								label: 'unban user',
+								disabled: state,
+								customID: 'unban',
+								style: Lib.ButtonStyles.DANGER,
+							})
+							.toJSON();
 					};
 
 					interaction.createMessage({
 						embeds: [
 							new Builders.Embed()
 								.setRandomColor()
-								.setAuthor({ name: `${member.user.tag} information`, iconURL: member.user.avatarURL() })
+								.setAuthor(`${member.user.tag} information`, member.user.avatarURL())
 								.setDescription(
 									[
 										`**- name:** ${member.user.tag}`,
@@ -302,7 +307,7 @@ export default class BanCommand extends Command {
 								.setTimestamp()
 								.toJSON(),
 						],
-						components: [new Builders.ActionRow().addComponent(component(false).toJSON()).toJSON()],
+						components: component(false),
 						flags: 64,
 					});
 
@@ -317,22 +322,24 @@ export default class BanCommand extends Command {
 					});
 
 					collector.on('collect', async (i: Lib.ComponentInteraction<Lib.AnyGuildTextChannel>) => {
-						const helper = new InteractionWrapper(client, i);
+						if (i.data.customID === 'unban') {
+							const helper = new InteractionWrapper(client, i);
 
-						try {
-							await interaction.guild.removeBan(user, 'unban using button in view command');
-							helper.createSuccess({ content: `successfully unbanned ${member.user.tag}!` });
-						} catch (error: any) {
-							helper.createError({
-								content: `i can't unban ${member.user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
-							});
-							client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+							try {
+								await interaction.guild.removeBan(user, 'unban using button in view command');
+								helper.createSuccess({ content: `successfully unbanned ${member.user.tag}!` });
+							} catch (error: any) {
+								helper.createError({
+									content: `i can't unban ${member.user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+								});
+								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+							}
 						}
 					});
 
 					collector.once('end', async () => {
 						interaction.editOriginal({
-							components: [new Builders.ActionRow().addComponent(component(true).toJSON()).toJSON()],
+							components: component(true),
 						});
 					});
 				}
