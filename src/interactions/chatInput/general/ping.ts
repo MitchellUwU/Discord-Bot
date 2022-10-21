@@ -8,6 +8,7 @@ import { performance } from 'perf_hooks';
 export default class PingCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'ping')
 		.setDescription('show latency statistic thing')
+		.setDMPermission(false)
 		.toJSON();
 
 	public async execute(

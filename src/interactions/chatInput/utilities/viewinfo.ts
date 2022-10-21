@@ -8,6 +8,7 @@ import InteractionWrapper from '../../../utils/interactionWrapper';
 export default class ViewInfoCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
 		.setDescription('view user info or guild info')
+		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
 				.setDescription('view user info')

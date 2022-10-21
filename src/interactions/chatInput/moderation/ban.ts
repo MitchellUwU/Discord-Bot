@@ -8,6 +8,7 @@ import ms from 'ms';
 export default class BanCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'ban')
 		.setDescription('manage ban')
+		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
 				.setDescription('timeout someone')

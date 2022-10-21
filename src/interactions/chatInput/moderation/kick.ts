@@ -7,6 +7,7 @@ import * as Lib from 'oceanic.js';
 export default class KickCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'kick')
 		.setDescription('kick someone')
+		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 				.setDescription('user to kick')

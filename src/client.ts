@@ -76,7 +76,7 @@ export default class BotClient extends Lib.Client {
 			this.interactions.set(cmd.data.name, cmd);
 			try {
 				if (this.config.devMode && this.config.guildID) {
-					this.application.createGuildCommand(this.config.guildID, cmd.data);
+					await this.application.createGuildCommand(this.config.guildID, cmd.data);
 					this.commandList.push(cmd.data);
 					this.utils.logger({
 						title: 'InteractionsHandler',
@@ -84,7 +84,7 @@ export default class BotClient extends Lib.Client {
 						type: 1,
 					});
 				} else {
-					this.application.createGlobalCommand(cmd.data);
+					await this.application.createGlobalCommand(cmd.data);
 					this.commandList.push(cmd.data);
 					this.utils.logger({
 						title: 'InteractionsHandler',

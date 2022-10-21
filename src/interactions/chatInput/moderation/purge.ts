@@ -7,14 +7,18 @@ import InteractionWrapper from '../../../utils/interactionWrapper';
 export default class PurgeCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'purge')
 		.setDescription('purge messages')
-		.addOption(
+		.setDMPermission(false)
+		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.INTEGER, 'amount')
 				.setDescription('amount of messages')
 				.setMinValue(1)
 				.setMaxValue(100)
 				.setRequired(true)
-				.toJSON()
-		)
+				.toJSON(),
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+				.setDescription('delete messages from user')
+				.toJSON(),
+		])
 		.toJSON();
 
 	public async execute(
@@ -30,12 +34,28 @@ export default class PurgeCommand extends Command {
 			}
 		}
 
+		let user: Lib.User;
+
+		try {
+			user = interaction.options.getUser('user', true);
+		} catch (error) {
+			return interaction.createError({ content: "that user doesn't exist?" });
+		}
+
 		const amount = interaction.options.getInteger('amount', true);
 
 		try {
-			interaction.channel.purge({ limit: amount }).then((deleted: number) => {
-				interaction.createSuccess({ content: `successfully deleted ${deleted} messages!` });
-			});
+			if (!user) {
+				interaction.channel.purge({ limit: amount }).then((deleted: number) => {
+					interaction.createSuccess({ content: `successfully deleted ${deleted} messages!` });
+				});
+			} else {
+				interaction.channel
+					.purge({ limit: amount, filter: (m) => m.author.id === user.id })
+					.then((deleted: number) => {
+						interaction.createSuccess({ content: `successfully deleted ${deleted} messages!` });
+					});
+			}
 		} catch (error: any) {
 			client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 			interaction.createError({

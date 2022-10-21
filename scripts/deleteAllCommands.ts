@@ -1,7 +1,7 @@
-import { Client, Shard } from 'oceanic.js';
+import { Client } from 'oceanic.js';
 import options from '../config.json';
 
-const client: Client = new Client(options.clientOptions);
+const client = new Client(options.clientOptions);
 
 client.once('ready', () => {
 	try {
@@ -10,7 +10,7 @@ client.once('ready', () => {
 			console.log('deleting all guild commands...');
 			setTimeout(() => {
 				console.log('deleted all guild commands!');
-				client.shards.forEach((shard: Shard) => shard.disconnect());
+				client.disconnect(false);
 				process.exit();
 			}, 30000);
 		} else {
@@ -18,7 +18,7 @@ client.once('ready', () => {
 			console.log('deleting all global commands...');
 			setTimeout(() => {
 				console.log('deleted all global commands!');
-				client.shards.forEach((shard: Shard) => shard.disconnect());
+				client.disconnect(false);
 				process.exit();
 			}, 30000);
 		}

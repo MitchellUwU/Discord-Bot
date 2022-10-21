@@ -8,6 +8,7 @@ import InteractionWrapper from '../../../utils/interactionWrapper';
 export default class FetchCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
 		.setDescription('fetch some random stuff from the internet')
+		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'meme')
 				.setDescription('memes')

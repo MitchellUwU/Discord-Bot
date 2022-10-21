@@ -1,4 +1,4 @@
-import { ApplicationCommandOptions, ChannelTypes } from 'oceanic.js';
+import { ApplicationCommandOptions, ApplicationCommandOptionsChoice, ChannelTypes } from 'oceanic.js';
 
 export default class OptionBuilder {
 	private json: any;
@@ -39,12 +39,12 @@ export default class OptionBuilder {
 		return this;
 	}
 
-	public addChoice(choices: any): this {
+	public addChoice(choices: ApplicationCommandOptionsChoice): this {
 		this.json.choices = [...(this.json.choices ?? []), choices];
 		return this;
 	}
 
-	public addChoices(choices: any[]): this {
+	public addChoices(choices: ApplicationCommandOptionsChoice[]): this {
 		choices.forEach((choice) => this.addChoice(choice));
 		return this;
 	}
@@ -55,27 +55,27 @@ export default class OptionBuilder {
 	}
 
 	public setChannelTypes(types: ChannelTypes[]): this {
-		this.json.channel_types = types;
+		this.json.channelTypes = types;
 		return this;
 	}
 
 	public setMaxValue(number: number): this {
-		this.json.max_value = number;
+		this.json.maxValue = number;
 		return this;
 	}
 
 	public setMinValue(number: number): this {
-		this.json.min_value = number;
+		this.json.minValue = number;
 		return this;
 	}
 
 	public setMaxLength(number: number): this {
-		this.json.max_length = number;
+		this.json.maxLength = number;
 		return this;
 	}
 
 	public setMinLength(number: number): this {
-		this.json.min_length = number;
+		this.json.minLength = number;
 		return this;
 	}
 

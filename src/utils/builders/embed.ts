@@ -8,11 +8,13 @@ import type {
 
 export default class EmbedBuilder {
 	private json: EmbedOptions = {};
+
 	/**
-	 * create an embed builder instance (or multiple) from the provided json
+	 * Create an embed builder instance (or multiple) from the provided json
 	 * @param json - the embed json - accepts singular & array
 	 * @param forceSingular - force a singular return when an array is supplied
 	 */
+
 	static loadFromJSON(json: EmbedOptions): EmbedBuilder;
 	static loadFromJSON<T extends boolean = false>(
 		json: Array<EmbedOptions>,
@@ -31,7 +33,7 @@ export default class EmbedBuilder {
 	}
 
 	/**
-	 * load json into this embed builder instance - use static loadFromJSON method
+	 * Load json into this embed builder instance - use static loadFromJSON method
 	 * @private
 	 * @param {EmbedOptions} json - the json to load
 	 * @returns {this}

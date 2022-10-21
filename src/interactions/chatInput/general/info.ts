@@ -9,6 +9,7 @@ import InteractionWrapper from '../../../utils/interactionWrapper';
 export default class InfoCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'info')
 		.setDescription('show a super duper cool information')
+		.setDMPermission(false)
 		.toJSON();
 
 	public async execute(

@@ -7,6 +7,7 @@ import InteractionWrapper from '../../../utils/interactionWrapper';
 export default class NicknameCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'nickname')
 		.setDescription('manage nickname')
+		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'change')
 				.setDescription('change someone nickname')

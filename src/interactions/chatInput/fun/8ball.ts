@@ -7,6 +7,7 @@ import InteractionWrapper from '../../../utils/interactionWrapper';
 export default class EightBallCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, '8ball')
 		.setDescription('an 8ball, what do you expect?')
+		.setDMPermission(false)
 		.addOption(
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'message')
 				.setDescription('what do you want to tell 8ball?')

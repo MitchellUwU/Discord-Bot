@@ -7,6 +7,7 @@ import InteractionWrapper from '../../../utils/interactionWrapper';
 export default class EchoCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'echo')
 		.setDescription('echo your message')
+		.setDMPermission(false)
 		.addOption(
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'message')
 				.setDescription('a message')

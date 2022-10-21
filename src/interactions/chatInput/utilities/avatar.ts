@@ -7,6 +7,7 @@ import InteractionWrapper from '../../../utils/interactionWrapper';
 export default class AvatarCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'avatar')
 		.setDescription('show avatar')
+		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
 				.setDescription('show user avatar')

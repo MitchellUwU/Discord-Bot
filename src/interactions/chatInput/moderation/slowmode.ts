@@ -8,6 +8,7 @@ import ms from 'ms';
 export default class SlowmodeCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'slowmode')
 		.setDescription('manage slowmode')
+		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'change')
 				.setDescription('change channel slowmode')
