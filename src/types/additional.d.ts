@@ -9,3 +9,10 @@ export type AnyInteractionNonAutoComplete =
 	| Lib.CommandInteraction
 	| Lib.ComponentInteraction
 	| Lib.ModalSubmitInteraction;
+
+export type EventListener = (
+	client: BotClient,
+	...args: Lib.ClientEvents[K]
+) => Promise<void | Lib.Message<Lib.AnyGuildTextChannel>>;
+
+export type ExecuteReturnType = Promise<void | Lib.Message<Lib.AnyGuildTextChannel>>;

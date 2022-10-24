@@ -4,6 +4,7 @@ import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import { request } from 'undici';
 import InteractionWrapper from '../../../utils/interactionWrapper';
+import { ExecuteReturnType } from '../../../types/additional';
 
 export default class FetchCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
@@ -28,10 +29,7 @@ export default class FetchCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(
-		client: BotClient,
-		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		let command = interaction.options.getSubCommand(false);
 		if (!command) command = ['unknown'];
 

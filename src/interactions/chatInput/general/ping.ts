@@ -4,6 +4,7 @@ import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 import { performance } from 'perf_hooks';
+import { ExecuteReturnType } from '../../../types/additional';
 
 export default class PingCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'ping')
@@ -11,10 +12,7 @@ export default class PingCommand extends Command {
 		.setDMPermission(false)
 		.toJSON();
 
-	public async execute(
-		client: BotClient,
-		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		const startTime = performance.now();
 		await interaction.deferResponse();
 		const endTime = performance.now();

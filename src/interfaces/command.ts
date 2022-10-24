@@ -2,6 +2,7 @@ import BotClient from '../client';
 import { CreateApplicationCommandOptions } from 'oceanic.js';
 import InteractionWrapper from '../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
+import { ExecuteReturnType } from '../types/additional';
 
 export default class Command {
 	private client: BotClient;
@@ -11,10 +12,7 @@ export default class Command {
 		this.client = client;
 	}
 
-	public async execute(
-		client: BotClient,
-		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		this.client.utils.logger({ title: this.data.name, content: 'this works!', type: 1 });
 	}
 }

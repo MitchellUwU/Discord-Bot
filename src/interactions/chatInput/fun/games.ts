@@ -3,6 +3,7 @@ import Builders from '../../../utils/builders';
 import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import InteractionWrapper from '../../../utils/interactionWrapper';
+import { ExecuteReturnType } from '../../../types/additional';
 
 export default class EightBallCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'games')
@@ -26,10 +27,7 @@ export default class EightBallCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(
-		client: BotClient,
-		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 

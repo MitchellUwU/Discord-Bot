@@ -114,7 +114,7 @@ export default class BotClient extends Lib.Client {
 			const event = new Listener(this);
 			this.utils.logger({ title: 'EventListenersHandler', content: `Loaded ${event.data.name}!`, type: 1 });
 			this.eventListeners.set(event.data.name, event);
-			event.client[event.data.type](event.data.name, (...args: any) => event.execute(this, ...args));
+			event.client[event.data.type](event.data.name, event.listener.bind(this));
 		}
 	}
 

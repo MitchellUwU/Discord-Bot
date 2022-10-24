@@ -1,11 +1,12 @@
 import BotClient from '../../client';
 import Builders from '../../utils/builders';
 import Event from '../../interfaces/event';
+import { ExecuteReturnType } from '../../types/additional';
 
 export default class DisconnectEvent extends Event<'disconnect'> {
 	public override data = new Builders.Event('disconnect', false).toJSON();
 
-	public async execute(client: BotClient): Promise<void> {
+	public async execute(client: BotClient): ExecuteReturnType {
 		client.utils.logger({ title: 'Disconnect', content: 'Client disconnected', type: 2 });
 	}
 }

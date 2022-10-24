@@ -3,14 +3,12 @@ import Builders from '../../utils/builders';
 import Event from '../../interfaces/event';
 import InteractionWrapper from '../../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
+import { ExecuteReturnType } from '../../types/additional';
 
 export default class InteractionCreateEvent extends Event<'interactionCreate'> {
 	public override data = new Builders.Event('interactionCreate', false).toJSON();
 
-	public async execute(
-		client: BotClient,
-		rawInteraction: Lib.Interaction
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	public async execute(client: BotClient, rawInteraction: Lib.Interaction): ExecuteReturnType {
 		switch (rawInteraction.type) {
 			case Lib.InteractionTypes.APPLICATION_COMMAND: {
 				if (!(rawInteraction instanceof Lib.CommandInteraction)) return;

@@ -4,6 +4,7 @@ import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 import ms from 'ms';
+import { ExecuteReturnType } from '../../../types/additional';
 
 export default class SlowmodeCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'slowmode')
@@ -33,10 +34,7 @@ export default class SlowmodeCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(
-		client: BotClient,
-		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('MANAGE_CHANNELS')) {
 				return interaction.createError({

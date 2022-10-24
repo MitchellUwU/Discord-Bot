@@ -4,6 +4,7 @@ import Command from '../../../interfaces/command';
 import InteractionWrapper from '../../../utils/interactionWrapper';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
+import { ExecuteReturnType } from '../../../types/additional';
 
 export default class BanCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'ban')
@@ -56,10 +57,7 @@ export default class BanCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(
-		client: BotClient,
-		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('BAN_MEMBERS')) {
 				return interaction.createError({

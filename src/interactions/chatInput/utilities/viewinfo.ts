@@ -4,6 +4,7 @@ import Command from '../../../interfaces/command';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 import InteractionWrapper from '../../../utils/interactionWrapper';
+import { ExecuteReturnType } from '../../../types/additional';
 
 export default class ViewInfoCommand extends Command {
 	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
@@ -42,10 +43,7 @@ export default class ViewInfoCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(
-		client: BotClient,
-		interaction: InteractionWrapper
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		let command = interaction.options.getSubCommand(false);
 		if (!command) command = ['unknown'];
 
