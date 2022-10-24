@@ -32,11 +32,13 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
 					}
 				}
 
-				if (!interaction.guild.clientMember.permissions.has(BigInt(client.config.requiredPermission))) {
-					return interaction.createError({
-						content:
-							"i don't have enough permissions! please give me following permission:\n\n**- view channels**\n**- manage channels**\n**- manage roles**\n**- manage server**\n**- create invite**\n**- change nickname**\n**- manage nicknames**\n**- kick members**\n**- ban members**\n**- moderate members**\n**- send messages**\n**- send messages in threads**\n**- create public threads**\n**- create private threads**\n**- embed links**\n**- attach files**\n**- add reactions**\n**- use external emoji**\n**- use external stickers**\n**- manage messages**\n**- read message history**\n**- connect**\n**- speak**\n**- mute members**\n**- deafen members**\n**- move members**",
-					});
+				if (!interaction.guild.clientMember.permissions.has('ADMINISTRATOR')) {
+					if (!interaction.guild.clientMember.permissions.has(BigInt(client.config.requiredPermission))) {
+						return interaction.createError({
+							content:
+								"i don't have enough permissions! please give me following permission:\n\n**- view channels**\n**- manage channels**\n**- manage roles**\n**- manage server**\n**- create invite**\n**- change nickname**\n**- manage nicknames**\n**- kick members**\n**- ban members**\n**- moderate members**\n**- send messages**\n**- send messages in threads**\n**- create public threads**\n**- create private threads**\n**- embed links**\n**- attach files**\n**- add reactions**\n**- use external emoji**\n**- use external stickers**\n**- manage messages**\n**- read message history**\n**- connect**\n**- speak**\n**- mute members**\n**- deafen members**\n**- move members**",
+						});
+					}
 				}
 
 				try {
