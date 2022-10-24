@@ -8,24 +8,24 @@ import { InteractionCollectorConfig } from '../types/options';
 // Collector manager.
 
 export class Collectors {
-	private activeListeners: any = []; // [INTERNAL] Array of active listeners.
+	private activeListeners: Map<string, InteractionCollector> = new Map(); // [INTERNAL] Array of active listeners.
 
 	/**
 	 * Create a new collector.
-	 * @param options Any content.
+	 * @param options Collector configuration.
 	 * @returns InteractionCollector
 	 */
 
 	public createNewCollector(options: InteractionCollectorConfig): InteractionCollector {
-		const activeCollector = this.activeListeners[options.authorID];
+		const activeCollector = this.activeListeners.get(options.authorID);
 		activeCollector?.stop('another collector has been used');
 
-		delete this.activeListeners[options.authorID];
+		this.activeListeners.delete(options.authorID);
 
 		const collector = new InteractionCollector(options);
-		collector.once('end', () => delete this.activeListeners[options.authorID]);
+		collector.once('end', () => this.activeListeners.delete(options.authorID));
 
-		this.activeListeners[options.authorID] = collector;
+		this.activeListeners.set(options.authorID, collector);
 
 		return collector;
 	}
@@ -81,14 +81,10 @@ export class InteractionCollector extends EventEmitter {
 	 */
 
 	private checkInteraction(interaction: Lib.AnyInteractionGateway): boolean {
-		if (!(interaction instanceof Lib.AutocompleteInteraction)) {
-			if (!(interaction instanceof this.interactionType)) return false;
-			if (interaction.user.id !== this.authorID) return false;
-			if (!(interaction instanceof Lib.CommandInteraction)) {
-				if (!(interaction instanceof Lib.ModalSubmitInteraction)) {
-					if (interaction.data.componentType !== this.componentType) return false;
-				}
-			}
+		if (!(interaction instanceof this.interactionType)) return false;
+		if (interaction.user.id !== this.authorID) return false;
+		if (interaction instanceof Lib.ComponentInteraction) {
+			if (interaction.data.componentType !== this.componentType) return false;
 		}
 
 		this.emit('collect', interaction);
@@ -114,7 +110,7 @@ export class InteractionCollector extends EventEmitter {
 	public extendTimeout(time: number): void {
 		if (!this.time) return;
 		clearTimeout(this.timer);
-		const extendedTime: number = time + this.time;
+		const extendedTime = time + this.time;
 		this.timer = setTimeout(() => this.stop('time limit reached'), extendedTime);
 	}
 

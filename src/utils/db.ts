@@ -1,6 +1,6 @@
 import config from '../../config.json';
 import BotClient from '../client';
-import { Pool } from 'pg';
+import { Pool, QueryResult } from 'pg';
 
 const pool = new Pool(config.db);
 
@@ -32,7 +32,7 @@ export default class Database {
 	 * @returns Promise<void>
 	 */
 
-	public async query(text: any, params?: any, callback?: any): Promise<void> {
+	public async query(text: string, params: any, callback: (err: Error, result: QueryResult) => void): Promise<void> {
 		return pool.query(text, params, (error, res) => {
 			callback(error, res);
 		});
