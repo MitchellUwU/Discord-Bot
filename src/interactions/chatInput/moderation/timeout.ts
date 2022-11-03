@@ -1,7 +1,7 @@
-import BotClient from '../../../client';
-import Builders from '../../../utils/builders';
-import Command from '../../../interfaces/command';
-import InteractionWrapper from '../../../utils/interactionWrapper';
+import BotClient from '../../../classes/Client';
+import Builders from '../../../classes/Builders';
+import Command from '../../../classes/Command';
+import InteractionWrapper from '../../../classes/InteractionWrapper';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 import { ExecuteReturnType } from '../../../types/additional';
@@ -296,7 +296,7 @@ export default class TimeoutCommand extends Command {
 					components: component(false),
 				});
 
-				const collector = client.collectors.createNewCollector({
+				const collector = client.utils.collectors.create({
 					client: client,
 					authorID: interaction.user.id,
 					interaction: interaction,
@@ -306,56 +306,59 @@ export default class TimeoutCommand extends Command {
 					max: 1,
 				});
 
-				collector.on('collect', async (i: Lib.ComponentInteraction<Lib.AnyGuildTextChannel>) => {
-					if (i.data.customID === 'untimeout') {
-						const helper = new InteractionWrapper(client, i);
+				collector.on(
+					'collect',
+					async (i: Lib.ComponentInteraction<Lib.ComponentTypes.BUTTON, Lib.AnyGuildTextChannel>) => {
+						if (i.data.customID === 'untimeout') {
+							const helper = new InteractionWrapper(client, i);
 
-						if (user.id === interaction.user.id) {
-							return helper.createError({ content: "you can't untimeout yourself" });
-						}
-
-						if (interaction.user.id !== interaction.guild.ownerID) {
-							if (user.id === interaction.guild.ownerID) {
-								return helper.createError({ content: "i can't untimeout the owner" });
+							if (user.id === interaction.user.id) {
+								return helper.createError({ content: "you can't untimeout yourself" });
 							}
 
-							if (user.permissions.has('ADMINISTRATOR')) {
-								return helper.createError({
-									content: `${user.tag} have administrator permission, i can't untimeout them!`,
-								});
+							if (interaction.user.id !== interaction.guild.ownerID) {
+								if (user.id === interaction.guild.ownerID) {
+									return helper.createError({ content: "i can't untimeout the owner" });
+								}
+
+								if (user.permissions.has('ADMINISTRATOR')) {
+									return helper.createError({
+										content: `${user.tag} have administrator permission, i can't untimeout them!`,
+									});
+								}
+
+								if (
+									client.utils.getHighestRole(user).position >=
+									client.utils.getHighestRole(interaction.member).position
+								) {
+									return helper.createError({ content: `${user.tag} have higher (or same) role than you` });
+								}
 							}
 
 							if (
 								client.utils.getHighestRole(user).position >=
-								client.utils.getHighestRole(interaction.member).position
+								client.utils.getHighestRole(interaction.guild.clientMember).position
 							) {
-								return helper.createError({ content: `${user.tag} have higher (or same) role than you` });
+								return helper.createError({
+									content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+								});
+							}
+
+							try {
+								await user.edit({
+									communicationDisabledUntil: new Date(Date.now()).toISOString(),
+									reason: 'untimeout using button in view command',
+								});
+								helper.createSuccess({ content: `successfully untimeout ${user.tag}!` });
+							} catch (error: any) {
+								helper.createError({
+									content: `i can't untimeout ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+								});
+								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 							}
 						}
-
-						if (
-							client.utils.getHighestRole(user).position >=
-							client.utils.getHighestRole(interaction.guild.clientMember).position
-						) {
-							return helper.createError({
-								content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
-							});
-						}
-
-						try {
-							await user.edit({
-								communicationDisabledUntil: new Date(Date.now()).toISOString(),
-								reason: 'untimeout using button in view command',
-							});
-							helper.createSuccess({ content: `successfully untimeout ${user.tag}!` });
-						} catch (error: any) {
-							helper.createError({
-								content: `i can't untimeout ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
-							});
-							client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
-						}
 					}
-				});
+				);
 
 				collector.once('end', async () => {
 					interaction.editOriginal({

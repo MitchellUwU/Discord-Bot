@@ -1,5 +1,5 @@
-import BotClient from '../client';
-import Builders from './builders';
+import BotClient from './Client';
+import Builders from './Builders';
 import * as Lib from 'oceanic.js';
 import { AnyGuildInteractionNonAutoComplete } from '../types/additional';
 

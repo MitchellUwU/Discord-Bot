@@ -1,7 +1,7 @@
-import BotClient from '../../client';
-import Builders from '../../utils/builders';
-import Event from '../../interfaces/event';
-import InteractionWrapper from '../../utils/interactionWrapper';
+import BotClient from '../../classes/Client';
+import Builders from '../../classes/Builders';
+import Event from '../../classes/Event';
+import InteractionWrapper from '../../classes/InteractionWrapper';
 import * as Lib from 'oceanic.js';
 import { ExecuteReturnType } from '../../types/additional';
 
@@ -13,7 +13,7 @@ export default class InteractionCreateEvent extends Event<'interactionCreate'> {
 			case Lib.InteractionTypes.APPLICATION_COMMAND: {
 				if (!(rawInteraction instanceof Lib.CommandInteraction)) return;
 
-				const cmd = client.interactions.get(rawInteraction.data.name);
+				const cmd = client.handler.chatInputCommands.get(rawInteraction.data.name);
 				if (!cmd) return;
 
 				const interaction = new InteractionWrapper(client, rawInteraction);

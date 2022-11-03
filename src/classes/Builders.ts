@@ -5,11 +5,11 @@ import {
 	TextInput as TextInputBuilder,
 } from '@oceanicjs/builders';
 import { MessageActionRow, ModalActionRow } from 'oceanic.js';
-import ChoiceBuilder from './builders/commands/choice';
-import CommandBuilder from './builders/commands/command';
-import OptionBuilder from './builders/commands/option';
-import EmbedBuilder from './builders/embed';
-import EventBuilder from './builders/event';
+import ChoiceBuilder from './builders/commands/Choice';
+import CommandBuilder from './builders/commands/Command';
+import OptionBuilder from './builders/commands/Option';
+import EmbedBuilder from './builders/Embed';
+import EventBuilder from './builders/Event';
 
 // Aliases for the builders.
 

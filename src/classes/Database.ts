@@ -1,5 +1,5 @@
 import config from '../../config.json';
-import BotClient from '../client';
+import BotClient from './Client';
 import { Pool, QueryResult } from 'pg';
 
 const pool = new Pool(config.db);

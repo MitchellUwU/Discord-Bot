@@ -1,7 +1,7 @@
-import BotClient from '../../../client';
-import Builders from '../../../utils/builders';
-import Command from '../../../interfaces/command';
-import InteractionWrapper from '../../../utils/interactionWrapper';
+import BotClient from '../../../classes/Client';
+import Builders from '../../../classes/Builders';
+import Command from '../../../classes/Command';
+import InteractionWrapper from '../../../classes/InteractionWrapper';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 import { ExecuteReturnType } from '../../../types/additional';
@@ -310,7 +310,7 @@ export default class BanCommand extends Command {
 						flags: 64,
 					});
 
-					const collector = client.collectors.createNewCollector({
+					const collector = client.utils.collectors.create({
 						client: client,
 						authorID: interaction.user.id,
 						interaction: interaction,
@@ -320,21 +320,24 @@ export default class BanCommand extends Command {
 						max: 1,
 					});
 
-					collector.on('collect', async (i: Lib.ComponentInteraction<Lib.AnyGuildTextChannel>) => {
-						if (i.data.customID === 'unban') {
-							const helper = new InteractionWrapper(client, i);
+					collector.on(
+						'collect',
+						async (i: Lib.ComponentInteraction<Lib.ComponentTypes.BUTTON, Lib.AnyGuildTextChannel>) => {
+							if (i.data.customID === 'unban') {
+								const helper = new InteractionWrapper(client, i);
 
-							try {
-								await interaction.guild.removeBan(user, 'unban using button in view command');
-								helper.createSuccess({ content: `successfully unbanned ${member.user.tag}!` });
-							} catch (error: any) {
-								helper.createError({
-									content: `i can't unban ${member.user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
-								});
-								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+								try {
+									await interaction.guild.removeBan(user, 'unban using button in view command');
+									helper.createSuccess({ content: `successfully unbanned ${member.user.tag}!` });
+								} catch (error: any) {
+									helper.createError({
+										content: `i can't unban ${member.user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+									});
+									client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+								}
 							}
 						}
-					});
+					);
 
 					collector.once('end', async () => {
 						interaction.editOriginal({

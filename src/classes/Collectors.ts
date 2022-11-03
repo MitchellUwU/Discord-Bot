@@ -1,9 +1,10 @@
 // (yes, i do know about the oceanic-collectors package but i prefer using my own version)
 
-import BotClient from '../client';
+import BotClient from './Client';
 import { EventEmitter } from 'events';
 import * as Lib from 'oceanic.js';
 import { InteractionCollectorConfig } from '../types/options';
+import { ComponentTypes, SelectMenuTypes } from 'oceanic.js';
 
 // Collector manager.
 
@@ -16,7 +17,7 @@ export class Collectors {
 	 * @returns InteractionCollector
 	 */
 
-	public createNewCollector(options: InteractionCollectorConfig): InteractionCollector {
+	public create(options: InteractionCollectorConfig): InteractionCollector {
 		const activeCollector = this.activeListeners.get(options.authorID);
 		activeCollector?.stop('another collector has been used');
 
@@ -36,14 +37,15 @@ export class Collectors {
  * @extends Lib.EventEmitter from node.js events.
  */
 
-export class InteractionCollector extends EventEmitter {
+export class InteractionCollector<
+	T extends ComponentTypes.BUTTON | SelectMenuTypes = ComponentTypes.BUTTON | SelectMenuTypes
+> extends EventEmitter {
 	public authorID: string; // User ID that triggers the collector.
 	private client: BotClient; // [INTERNAL] The main client.
 	private collected: { interaction: Lib.AnyInteractionGateway }[]; // [INTERNAL] All collected interactions.
-	public componentType: number; // Component type.
 	private ended: boolean; // [INTERNAL] Value telling collector state.
 	public interaction: Lib.AnyInteractionGateway; // Interaction that triggers the collector.
-	public interactionType: any; // Interaction type.
+	public interactionType: any;
 	private listenerValue: (interaction: Lib.AnyInteractionGateway) => void; // [INTERNAL] Listener function.
 	public max: number | undefined; // Max interaction limit.
 	public time: number; // Collector time.
@@ -60,8 +62,6 @@ export class InteractionCollector extends EventEmitter {
 		this.authorID = options.authorID;
 		this.client = options.client;
 		this.interaction = options.interaction;
-		this.componentType = options.componentType;
-		this.interactionType = options.interactionType;
 		this.max = options.max || undefined;
 		this.time = options.time || Infinity;
 
@@ -84,7 +84,7 @@ export class InteractionCollector extends EventEmitter {
 		if (!(interaction instanceof this.interactionType)) return false;
 		if (interaction.user.id !== this.authorID) return false;
 		if (interaction instanceof Lib.ComponentInteraction) {
-			if (interaction.data.componentType !== this.componentType) return false;
+			if (!(interaction instanceof Lib.ComponentInteraction<T>)) return false;
 		}
 
 		this.emit('collect', interaction);

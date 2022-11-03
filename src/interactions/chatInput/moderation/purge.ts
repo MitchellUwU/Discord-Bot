@@ -1,8 +1,8 @@
-import BotClient from '../../../client';
-import Builders from '../../../utils/builders';
-import Command from '../../../interfaces/command';
+import BotClient from '../../../classes/Client';
+import Builders from '../../../classes/Builders';
+import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
-import InteractionWrapper from '../../../utils/interactionWrapper';
+import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class PurgeCommand extends Command {

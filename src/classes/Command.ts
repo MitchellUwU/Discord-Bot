@@ -1,7 +1,6 @@
-import BotClient from '../client';
+import BotClient from './Client';
 import { CreateApplicationCommandOptions } from 'oceanic.js';
-import InteractionWrapper from '../utils/interactionWrapper';
-import * as Lib from 'oceanic.js';
+import InteractionWrapper from './InteractionWrapper';
 import { ExecuteReturnType } from '../types/additional';
 
 export default class Command {

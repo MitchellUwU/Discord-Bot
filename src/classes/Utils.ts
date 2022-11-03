@@ -1,11 +1,15 @@
-import BotClient from '../client';
+import BotClient from './Client';
 import * as Lib from 'oceanic.js';
 import { LoggerOptions } from '../types/options';
+import * as fs from 'fs/promises';
+import path from 'path';
+import { Collectors } from './Collectors';
 
 // Utility for the client.
 
-export default class BotUtils {
+export default class Utils {
 	private client: BotClient; // [INTERNAL] The main client.
+	public collectors: Collectors; // Collector manager.
 
 	/**
 	 * Utility constructor.
@@ -14,6 +18,7 @@ export default class BotUtils {
 
 	public constructor(client: BotClient) {
 		this.client = client;
+		this.collectors = new Collectors();
 	}
 
 	/**
@@ -29,6 +34,25 @@ export default class BotUtils {
 		cleaned = content?.replaceAll(this.client.config.db.password, 'DatabaseToken');
 
 		return cleaned;
+	}
+
+	/**
+	 * Recursive file loader.
+	 * @param dir Directory to load.
+	 * @returns AsyncGenerator<string, void, void>
+	 */
+
+	public async *loadFiles(dir: string): AsyncGenerator<string, void, void> {
+		const files = await fs.readdir(dir);
+		for await (const file of files) {
+			const filePath = path.join(dir, file);
+			const fileIsDir = (await fs.stat(filePath)).isDirectory();
+			if (fileIsDir) {
+				yield* this.loadFiles(filePath);
+			} else {
+				yield filePath;
+			}
+		}
 	}
 
 	/**

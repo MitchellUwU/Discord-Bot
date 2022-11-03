@@ -1,6 +1,6 @@
-import BotClient from '../../client';
-import Builders from '../../utils/builders';
-import Event from '../../interfaces/event';
+import BotClient from '../../classes/Client';
+import Builders from '../../classes/Builders';
+import Event from '../../classes/Event';
 import { ExecuteReturnType } from '../../types/additional';
 
 export default class ShardReadyEvent extends Event<'shardReady'> {

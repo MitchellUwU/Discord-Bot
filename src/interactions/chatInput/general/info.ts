@@ -1,10 +1,10 @@
-import BotClient from '../../../client';
-import Builders from '../../../utils/builders';
-import Command from '../../../interfaces/command';
+import BotClient from '../../../classes/Client';
+import Builders from '../../../classes/Builders';
+import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 import packageJSON from '../../../../package.json';
-import InteractionWrapper from '../../../utils/interactionWrapper';
+import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class InfoCommand extends Command {
@@ -25,7 +25,7 @@ export default class InfoCommand extends Command {
 							value: [
 								`**developer:** ${packageJSON.author}`,
 								`**bot version:** ${packageJSON.version}`,
-								`**total commands:** ${client.interactions.size}`,
+								`**total commands:** ${client.handler.chatInputCommands.size}`,
 								`**total guilds:** ${client.guilds.size}`,
 								`**total shards:** ${client.shards.size} (this guild is in shard ${
 									interaction.guild.shard.id + 1

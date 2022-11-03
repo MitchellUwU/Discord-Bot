@@ -1,6 +1,6 @@
 {
 	"name": "mitchell-bot",
-	"version": "1.0.0-beta.8",
+	"version": "1.0.0-beta.10",
 	"description": "A experimental discord bot, doesn't have a name though...",
 	"main": "dist/src/index.js",
 	"scripts": {
@@ -17,9 +17,9 @@
 	"dependencies": {
 		"@oceanicjs/builders": "^1.1.0",
 		"ms": "^2.1.3",
-		"oceanic.js": "^1.2.1-dev.27af5a5",
+		"oceanic.js": "^1.3.1-dev.6b10dda",
 		"pg": "^8.8.0",
-		"undici": "^5.10.0"
+		"undici": "^5.12.0"
 	},
 	"devDependencies": {
 		"@types/ms": "^0.7.31",
