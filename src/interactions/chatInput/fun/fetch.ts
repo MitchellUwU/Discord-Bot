@@ -7,7 +7,7 @@ import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class FetchCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
 		.setDescription('fetch some random stuff from the internet')
 		.setDMPermission(false)
 		.addOptions([
@@ -29,9 +29,8 @@ export default class FetchCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
-		let command = interaction.options.getSubCommand(false);
-		if (!command) command = ['unknown'];
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+		const command = interaction.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'meme': {

@@ -8,15 +8,9 @@ import { Collectors } from './Collectors';
 // Utility for the client.
 
 export default class Utils {
-	private client: BotClient; // [INTERNAL] The main client.
-	public collectors: Collectors; // Collector manager.
-
-	/**
-	 * Utility constructor.
-	 * @param client The main client.
-	 */
-
-	public constructor(client: BotClient) {
+	private client: BotClient;
+	collectors: Collectors;
+	constructor(client: BotClient) {
 		this.client = client;
 		this.collectors = new Collectors();
 	}
@@ -27,7 +21,7 @@ export default class Utils {
 	 * @returns string
 	 */
 
-	public cleanContent(content: any): string {
+	cleanContent(content: any): string {
 		let cleaned: string;
 
 		cleaned = content?.replaceAll(this.client.config.clientOptions.auth, 'ClientToken');
@@ -42,7 +36,7 @@ export default class Utils {
 	 * @returns AsyncGenerator<string, void, void>
 	 */
 
-	public async *loadFiles(dir: string): AsyncGenerator<string, void, void> {
+	async *loadFiles(dir: string): AsyncGenerator<string, void, void> {
 		const files = await fs.readdir(dir);
 		for await (const file of files) {
 			const filePath = path.join(dir, file);
@@ -61,7 +55,7 @@ export default class Utils {
 	 * @returns any
 	 */
 
-	public getRoles(user: Lib.Member): any {
+	getRoles(user: Lib.Member): any {
 		return user.roles.map((roleID: string) => user.guild.roles.get(roleID));
 	}
 
@@ -71,7 +65,7 @@ export default class Utils {
 	 * @returns Lib.Role
 	 */
 
-	public getHighestRole(user: Lib.Member): Lib.Role {
+	getHighestRole(user: Lib.Member): Lib.Role {
 		return this.getRoles(user).reduce((prev: Lib.Role, role: Lib.Role) =>
 			!prev || role.position >= prev.position ? role : prev
 		);
@@ -83,7 +77,7 @@ export default class Utils {
 	 * @returns Promise<Lib.Guild>
 	 */
 
-	public async getGuild(guildID: string): Promise<Lib.Guild> {
+	async getGuild(guildID: string): Promise<Lib.Guild> {
 		return this.client.guilds.get(guildID) || (await this.client.rest.guilds.get(guildID));
 	}
 
@@ -94,7 +88,7 @@ export default class Utils {
 	 * @returns Promise<Lib.Member>
 	 */
 
-	public async getMember(guildID: string, userID: string): Promise<Lib.Member> {
+	async getMember(guildID: string, userID: string): Promise<Lib.Member> {
 		const guild = await this.getGuild(guildID);
 		return guild.members.get(userID) || (await this.client.rest.guilds.getMember(guildID, userID));
 	}
@@ -105,7 +99,7 @@ export default class Utils {
 	 * @returns Promise<Lib.User>
 	 */
 
-	public async getUser(id: string): Promise<Lib.User> {
+	async getUser(id: string): Promise<Lib.User> {
 		return this.client.users.get(id) || (await this.client.rest.users.get(id));
 	}
 
@@ -114,7 +108,7 @@ export default class Utils {
 	 * @returns string
 	 */
 
-	public get getDate(): string {
+	get getDate(): string {
 		const currentTime = new Date();
 		const date = ('0' + currentTime.getDate()).slice(-2);
 		const month = ('0' + (currentTime.getMonth() + 1)).slice(-2);
@@ -131,7 +125,7 @@ export default class Utils {
 	 * @returns Promise<any>
 	 */
 
-	public async getJSONContent(body: any): Promise<any> {
+	async getJSONContent(body: any): Promise<any> {
 		let parsedBody = '';
 
 		for await (const data of body) {
@@ -147,7 +141,7 @@ export default class Utils {
 	 * @returns void
 	 */
 
-	public logger(options: LoggerOptions): void {
+	logger(options: LoggerOptions): void {
 		const title = options.title;
 		const content = options.content;
 
@@ -178,7 +172,7 @@ export default class Utils {
 	 * @returns string
 	 */
 
-	public trim(str: string, max: number): string {
+	trim(str: string, max: number): string {
 		return str.length > max ? `${str.slice(0, max - 3)}...` : str;
 	}
 }

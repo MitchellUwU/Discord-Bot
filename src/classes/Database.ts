@@ -2,21 +2,14 @@ import config from '../../config.json';
 import BotClient from './Client';
 import { Pool, QueryResult } from 'pg';
 
-const pool = new Pool(config.db);
-
 // Database manager.
 
 export default class Database {
-	private client: BotClient; // [INTERNAL] The main client.
-
-	/**
-	 * Database Manager constructor.
-	 * @param client The main client.
-	 */
-
-	public constructor(client: BotClient) {
+	private client: BotClient;
+	pool: Pool;
+	constructor(client: BotClient) {
 		this.client = client;
-
+		this.pool = new Pool(config.db);
 		this.client.utils.logger({
 			title: 'Database',
 			content: 'Connected to PostgreSQL database!',
@@ -26,14 +19,14 @@ export default class Database {
 
 	/**
 	 * Query the database.
-	 * @param text Anything.
-	 * @param params [OPTIONAL] Anything.
-	 * @param callback [OPTIONAL] Anything.
+	 * @param text String to query.
+	 * @param params Extra parameters.
+	 * @param callback Callback function.
 	 * @returns Promise<void>
 	 */
 
-	public async query(text: string, params: any, callback: (err: Error, result: QueryResult) => void): Promise<void> {
-		return pool.query(text, params, (error, res) => {
+	async query(text: string, params: any, callback: (err: Error, result: QueryResult) => void): Promise<void> {
+		return this.pool.query(text, params, (error, res) => {
 			callback(error, res);
 		});
 	}

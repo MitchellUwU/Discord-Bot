@@ -9,7 +9,6 @@ import ChoiceBuilder from './builders/commands/Choice';
 import CommandBuilder from './builders/commands/Command';
 import OptionBuilder from './builders/commands/Option';
 import EmbedBuilder from './builders/Embed';
-import EventBuilder from './builders/Event';
 
 // Aliases for the builders.
 
@@ -22,7 +21,6 @@ const ActionRow = ComponentBuilder<MessageActionRow>;
 const Button = ButtonBuilder;
 const SelectMenu = SelectMenuBuilder;
 const TextInput = TextInputBuilder;
-const Event = EventBuilder;
 
 const Builders = {
 	Choice,
@@ -34,7 +32,6 @@ const Builders = {
 	Button,
 	SelectMenu,
 	TextInput,
-	Event,
 };
 
 // Export all builders.

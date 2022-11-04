@@ -1,27 +1,20 @@
-import BotClient from '../../classes/Client';
-import Builders from '../../classes/Builders';
 import Event from '../../classes/Event';
-import { ExecuteReturnType } from '../../types/additional';
 
-export default class DebugEvent extends Event<'debug'> {
-	public override data = new Builders.Event('debug', false).toJSON();
+export default new Event('debug', false, async (client, msg, id) => {
+	if (client.config.disableDebug === true) return;
+	if (msg.startsWith('{"op"')) return;
 
-	public async execute(client: BotClient, msg: string, id: number): ExecuteReturnType {
-		if (client.config.disableDebug === true) return;
-		if (msg.startsWith('{"op"')) return;
-
-		if (!id) {
-			return client.utils.logger({
-				title: 'Debug',
-				content: `Client: ${msg}`.replace(' undefined', ''),
-				type: 4,
-			});
-		} else {
-			client.utils.logger({
-				title: 'Debug',
-				content: `Shard ${id}: ${msg}`.replace(' undefined', ''),
-				type: 4,
-			});
-		}
+	if (!id) {
+		return client.utils.logger({
+			title: 'Debug',
+			content: `Client: ${msg}`.replace(' undefined', ''),
+			type: 4,
+		});
+	} else {
+		client.utils.logger({
+			title: 'Debug',
+			content: `Shard ${id}: ${msg}`.replace(' undefined', ''),
+			type: 4,
+		});
 	}
-}
+});

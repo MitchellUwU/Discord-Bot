@@ -8,12 +8,12 @@ import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class InfoCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'info')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'info')
 		.setDescription('show a super duper cool information')
 		.setDMPermission(false)
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()

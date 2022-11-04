@@ -7,7 +7,7 @@ import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class ViewInfoCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
 		.setDescription('view user info or guild info')
 		.setDMPermission(false)
 		.addOptions([
@@ -43,9 +43,8 @@ export default class ViewInfoCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
-		let command = interaction.options.getSubCommand(false);
-		if (!command) command = ['unknown'];
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+		const command = interaction.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'user': {
@@ -210,7 +209,7 @@ export default class ViewInfoCommand extends Command {
 					'how did you even get here?',
 					'how did you even get here?',
 					'news/announcement thread',
-					'public thread',
+					'thread',
 					'private thread',
 					'stage voice',
 					'directory',

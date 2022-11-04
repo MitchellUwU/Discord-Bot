@@ -17,7 +17,7 @@ export class Collectors {
 	 * @returns InteractionCollector
 	 */
 
-	public create(options: InteractionCollectorConfig): InteractionCollector {
+	create(options: InteractionCollectorConfig): InteractionCollector {
 		const activeCollector = this.activeListeners.get(options.authorID);
 		activeCollector?.stop('another collector has been used');
 
@@ -40,23 +40,17 @@ export class Collectors {
 export class InteractionCollector<
 	T extends ComponentTypes.BUTTON | SelectMenuTypes = ComponentTypes.BUTTON | SelectMenuTypes
 > extends EventEmitter {
-	public authorID: string; // User ID that triggers the collector.
-	private client: BotClient; // [INTERNAL] The main client.
-	private collected: { interaction: Lib.AnyInteractionGateway }[]; // [INTERNAL] All collected interactions.
-	private ended: boolean; // [INTERNAL] Value telling collector state.
-	public interaction: Lib.AnyInteractionGateway; // Interaction that triggers the collector.
-	public interactionType: any;
-	private listenerValue: (interaction: Lib.AnyInteractionGateway) => void; // [INTERNAL] Listener function.
-	public max: number | undefined; // Max interaction limit.
-	public time: number; // Collector time.
-	private timer: NodeJS.Timeout; // [INTERNAL] Collector timer.
-
-	/**
-	 * Interaction Collector constructor.
-	 * @param options Collector configuration.
-	 */
-
-	public constructor(options: InteractionCollectorConfig) {
+	private client: BotClient;
+	private collected: { interaction: Lib.AnyInteractionGateway }[];
+	private listenerValue: (interaction: Lib.AnyInteractionGateway) => void;
+	private timer: NodeJS.Timeout;
+	private ended: boolean;
+	authorID: string;
+	interaction: Lib.AnyInteractionGateway;
+	interactionType: any;
+	max: number | undefined;
+	time: number;
+	constructor(options: InteractionCollectorConfig) {
 		super();
 
 		this.authorID = options.authorID;
@@ -80,7 +74,7 @@ export class InteractionCollector<
 	 * @returns boolean
 	 */
 
-	private checkInteraction(interaction: Lib.AnyInteractionGateway): boolean {
+	checkInteraction(interaction: Lib.AnyInteractionGateway): boolean {
 		if (!(interaction instanceof this.interactionType)) return false;
 		if (interaction.user.id !== this.authorID) return false;
 		if (interaction instanceof Lib.ComponentInteraction) {
@@ -107,7 +101,7 @@ export class InteractionCollector<
 	 * @returns void
 	 */
 
-	public extendTimeout(time: number): void {
+	extendTimeout(time: number): void {
 		if (!this.time) return;
 		clearTimeout(this.timer);
 		const extendedTime = time + this.time;
@@ -120,7 +114,7 @@ export class InteractionCollector<
 	 * @returns void
 	 */
 
-	public changeTimeout(time: number): void {
+	changeTimeout(time: number): void {
 		this.time = time;
 		clearTimeout(this.timer);
 		this.timer = setTimeout(() => this.stop('time limit reached'), time);
@@ -131,7 +125,7 @@ export class InteractionCollector<
 	 * @returns void
 	 */
 
-	public removeTimeout(): void {
+	removeTimeout(): void {
 		if (!this.time) return;
 		clearTimeout(this.timer);
 	}
@@ -142,7 +136,7 @@ export class InteractionCollector<
 	 * @returns void
 	 */
 
-	public stop(reason: string): void {
+	stop(reason: string): void {
 		if (this.ended) return;
 		this.ended = true;
 		this.client.removeListener('interactionCreate', this.listenerValue);

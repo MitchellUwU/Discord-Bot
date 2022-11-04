@@ -10,18 +10,12 @@ import Handler from './Handler';
  */
 
 export default class BotClient extends Lib.Client {
-	public handler: Handler;
-	public onMaintenance: boolean; // Value telling client maintenance state.
-	public readonly config: BotConfig; // [READONLY] Configuration specified in constructor.
-	public utils: Utils; // Utility for the client.
-	public db: Database; // Main database (PostgreSQL) manager.
-
-	/**
-	 * Client constructor.
-	 * @param options Client configuration.
-	 */
-
-	public constructor(options: BotConfig) {
+	readonly config: BotConfig;
+	onMaintenance: boolean;
+	handler: Handler;
+	utils: Utils;
+	db: Database;
+	constructor(options: BotConfig) {
 		super(options.clientOptions);
 
 		this.onMaintenance = false;
@@ -32,11 +26,11 @@ export default class BotClient extends Lib.Client {
 	}
 
 	/**
-	 * Start and connect the client.
+	 * Load handlers and connect the client.
 	 * @returns Promise<void>
 	 */
 
-	public async run(): Promise<void> {
+	async run(): Promise<void> {
 		this.once('ready', () => this.handler.handleChatInputCommands().then(() => this.handler.syncCommands()));
 		this.handler.handleEvents();
 
@@ -49,7 +43,7 @@ export default class BotClient extends Lib.Client {
 	 * @returns void
 	 */
 
-	public shutdown(): void {
+	shutdown(): void {
 		this.handler.reset();
 		this.removeAllListeners();
 		this.disconnect(false);

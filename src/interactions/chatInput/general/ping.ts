@@ -7,12 +7,12 @@ import { performance } from 'perf_hooks';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class PingCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'ping')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'ping')
 		.setDescription('show latency statistic thing')
 		.setDMPermission(false)
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		const startTime = performance.now();
 		await interaction.deferResponse();
 		const endTime = performance.now();

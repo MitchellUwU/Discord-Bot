@@ -1,27 +1,20 @@
 import BotClient from './Client';
 import Builders from './Builders';
 import * as Lib from 'oceanic.js';
-import { AnyGuildInteractionNonAutoComplete } from '../types/additional';
+import { AnyGuildInteractionNonAutoComplete, ExecuteReturnType } from '../types/additional';
 
 // Wrapper for interaction (which is also a wrapper of raw interaction) to make things easier (i don't want to do monkey patch shit, it makes my life hell).
 
 export default class InteractionWrapper {
-	private client: BotClient; // [INTERNAL] The main client.
-	public raw: AnyGuildInteractionNonAutoComplete; // Unmodified interaction value.
-	public options: Lib.InteractionOptionsWrapper; // Alias for interaction.raw.data.options
-	public channel: Lib.AnyGuildTextChannel; // Alias for interaction.raw.channel
-	public guild: Lib.Guild; // Alias for interaction.raw.guild
-	public guildID: string; // Alias for interaction.raw.guildID
-	public member: Lib.Member; // Alias for interaction.raw.member
-	public user: Lib.User; // Alias for interaction.raw.user
-
-	/**
-	 * Interaction Wrapper constructor.
-	 * @param client The main client.
-	 * @param interaction Unmodified interaction value.
-	 */
-
-	public constructor(client: BotClient, interaction: AnyGuildInteractionNonAutoComplete) {
+	private client: BotClient;
+	raw: AnyGuildInteractionNonAutoComplete;
+	options: Lib.InteractionOptionsWrapper;
+	channel: Lib.AnyGuildTextChannel;
+	guild: Lib.Guild;
+	guildID: string;
+	member: Lib.Member;
+	user: Lib.User;
+	constructor(client: BotClient, interaction: AnyGuildInteractionNonAutoComplete) {
 		let options;
 
 		if (
@@ -49,9 +42,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async editOriginal(
-		content: Lib.InteractionContent
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	async editOriginal(content: Lib.InteractionContent): ExecuteReturnType {
 		content.content = this.client.utils.cleanContent(content.content);
 		if (this.raw.acknowledged) {
 			return this.raw.editOriginal(content);
@@ -66,7 +57,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async deferResponse(flag?: number): Promise<void> {
+	async deferResponse(flag?: number): Promise<void> {
 		return this.raw.defer(flag);
 	}
 
@@ -76,9 +67,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async createMessage(
-		content: Lib.InteractionContent
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	async createMessage(content: Lib.InteractionContent): ExecuteReturnType {
 		content.content = this.client.utils.cleanContent(content.content);
 		if (this.raw.acknowledged) {
 			return this.raw.createFollowup(content);
@@ -94,10 +83,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async createError(
-		content: Lib.InteractionContent,
-		hidden?: boolean
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	async createError(content: Lib.InteractionContent, hidden?: boolean): ExecuteReturnType {
 		const embed = new Builders.Embed()
 			.setColor('red')
 			.setTitle('⛔ error!')
@@ -128,10 +114,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async createSuccess(
-		content: Lib.InteractionContent,
-		hidden?: boolean
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	async createSuccess(content: Lib.InteractionContent, hidden?: boolean): ExecuteReturnType {
 		const embed = new Builders.Embed()
 			.setColor('green')
 			.setTitle('✅ success!')
@@ -164,10 +147,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	public async createWarn(
-		content: Lib.InteractionContent,
-		hidden?: boolean
-	): Promise<void | Lib.Message<Lib.AnyGuildTextChannel>> {
+	async createWarn(content: Lib.InteractionContent, hidden?: boolean): ExecuteReturnType {
 		const embed = new Builders.Embed()
 			.setColor('yellow')
 			.setTitle('⚠️ warning!')

@@ -6,7 +6,7 @@ import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class AvatarCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'avatar')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'avatar')
 		.setDescription('show avatar')
 		.setDMPermission(false)
 		.addOptions([
@@ -31,9 +31,8 @@ export default class AvatarCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
-		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
-		if (!command) command = ['unknown'];
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+		const command = interaction.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'user': {

@@ -6,14 +6,13 @@ import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class PurgeCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'purge')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'purge')
 		.setDescription('purge messages')
 		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.INTEGER, 'amount')
 				.setDescription('amount of messages')
-				.setMinValue(1)
-				.setMaxValue(100)
+				.setMinMax(1, 100)
 				.setRequired(true)
 				.toJSON(),
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
@@ -22,7 +21,7 @@ export default class PurgeCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('MANAGE_MESSAGES')) {
 				return interaction.createError({

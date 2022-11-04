@@ -1,50 +1,13 @@
-import { ApplicationCommandOptions, CreateApplicationCommandOptions } from 'oceanic.js';
+import { ApplicationCommandBuilder } from '@oceanicjs/builders';
+import { ApplicationCommandOptions, ApplicationCommandTypes } from 'oceanic.js';
 
-export default class CommandBuilder {
-	private json: any;
-
-	constructor(type: number, name: string) {
-		this.json = {};
-		this.json.type = type;
-		this.json.name = name;
+export default class CommandBuilder extends ApplicationCommandBuilder {
+	constructor(type: ApplicationCommandTypes, name: string) {
+		super(type, name);
 	}
 
-	public setNameLocale(map: Record<string, string>): this {
-		this.json.nameLocalizations = map;
-		return this;
-	}
-
-	public setDescription(content: string): this {
-		this.json.description = content;
-		return this;
-	}
-
-	public setDescriptionLocale(map: Record<string, string>): this {
-		this.json.descriptionLocalizations = map;
-		return this;
-	}
-
-	public addOption(options: ApplicationCommandOptions): this {
-		this.json.options = [...(this.json.options ?? []), options];
-		return this;
-	}
-
-	public addOptions(options: ApplicationCommandOptions[]): this {
+	addOptions(options: ApplicationCommandOptions[]): this {
 		options.forEach((option) => this.addOption(option));
 		return this;
-	}
-
-	public setDefaultMemberPermission(permission: string): this {
-		this.json.defaultMemberPermissions = permission;
-		return this;
-	}
-
-	public setDMPermission(permission: boolean): this {
-		this.json.dmPermission = permission;
-		return this;
-	}
-
-	public toJSON(): CreateApplicationCommandOptions {
-		return this.json;
 	}
 }

@@ -6,7 +6,7 @@ import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class EchoCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'echo')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'echo')
 		.setDescription('echo your message')
 		.setDMPermission(false)
 		.addOption(
@@ -17,7 +17,7 @@ export default class EchoCommand extends Command {
 		)
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()

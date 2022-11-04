@@ -6,7 +6,7 @@ import * as Lib from 'oceanic.js';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class RoleCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'role')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'role')
 		.setDescription('manage role')
 		.setDMPermission(false)
 		.addOptions([
@@ -53,7 +53,7 @@ export default class RoleCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('MANAGE_ROLES')) {
 				return interaction.createError({
@@ -63,8 +63,7 @@ export default class RoleCommand extends Command {
 			}
 		}
 
-		let command = interaction.options.getSubCommand(false);
-		if (!command) command = ['unknown'];
+		const command = interaction.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'add': {

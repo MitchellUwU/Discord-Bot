@@ -7,7 +7,7 @@ import ms from 'ms';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class SlowmodeCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'slowmode')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'slowmode')
 		.setDescription('manage slowmode')
 		.setDMPermission(false)
 		.addOptions([
@@ -34,7 +34,7 @@ export default class SlowmodeCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('MANAGE_CHANNELS')) {
 				return interaction.createError({
@@ -44,8 +44,7 @@ export default class SlowmodeCommand extends Command {
 			}
 		}
 
-		let command = interaction.options.getSubCommand(false);
-		if (!command) command = ['unknown'];
+		const command = interaction.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'change': {

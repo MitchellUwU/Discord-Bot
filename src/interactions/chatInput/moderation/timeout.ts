@@ -7,7 +7,7 @@ import ms from 'ms';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class TimeoutCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'timeout')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'timeout')
 		.setDescription('manage timeout')
 		.setDMPermission(false)
 		.addOptions([
@@ -54,7 +54,7 @@ export default class TimeoutCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
 				return interaction.createError({
@@ -64,8 +64,7 @@ export default class TimeoutCommand extends Command {
 			}
 		}
 
-		let command = interaction.options.getSubCommand(false);
-		if (!command) command = ['unknown'];
+		const command = interaction.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'add': {

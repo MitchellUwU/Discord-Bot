@@ -5,14 +5,13 @@ import Event from './Event';
 
 export default class Handler {
 	private client: BotClient;
-	public events: Map<string, Event>;
-	public chatInputCommands: Map<string, Command>;
-	public messageCommands: Map<string, Command>;
-	public components: Map<string, any>;
-	public chatInputCommandList: CreateChatInputApplicationCommandOptions[];
-	public messageCommandList: CreateMessageApplicationCommandOptions[];
-
-	public constructor(client: BotClient) {
+	events: Map<string, Event>;
+	chatInputCommands: Map<string, Command>;
+	messageCommands: Map<string, Command>;
+	components: Map<string, any>;
+	chatInputCommandList: CreateChatInputApplicationCommandOptions[];
+	messageCommandList: CreateMessageApplicationCommandOptions[];
+	constructor(client: BotClient) {
 		this.client = client;
 
 		this.events = new Map();
@@ -23,7 +22,7 @@ export default class Handler {
 		this.components = new Map();
 	}
 
-	public reset(): void {
+	reset(): void {
 		this.events.clear();
 		this.chatInputCommands.clear();
 		this.messageCommands.clear();
@@ -33,22 +32,21 @@ export default class Handler {
 		this.messageCommandList = [];
 	}
 
-	public async handleEvents(): Promise<void> {
+	async handleEvents(): Promise<void> {
 		const files = this.client.utils.loadFiles(`${__dirname}/../listeners`);
 		for await (const file of files) {
-			const Listener = (await import(file)).default;
-			const event = new Listener(this);
+			const event: Event = (await import(file)).default;
 			this.client.utils.logger({
 				title: 'EventListenersHandler',
-				content: `Loaded ${event.data.name}!`,
+				content: `Loaded ${event.name}!`,
 				type: 1,
 			});
-			this.events.set(event.data.name, event);
-			this.client.on(event.data.name, (...args: any) => event.execute(this.client,...args));
+			this.events.set(event.name, event);
+			this.client[event.type](event.name, event.listener.bind(this, this.client));
 		}
 	}
 
-	public async handleChatInputCommands(): Promise<void> {
+	async handleChatInputCommands(): Promise<void> {
 		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/chatInput`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
@@ -87,7 +85,7 @@ export default class Handler {
 		}
 	}
 
-	public async handleMessageCommands(): Promise<void> {
+	async handleMessageCommands(): Promise<void> {
 		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/message`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
@@ -126,7 +124,7 @@ export default class Handler {
 		}
 	}
 
-	public async handleComponents(): Promise<void> {
+	async handleComponents(): Promise<void> {
 		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/components`);
 		for await (const file of files) {
 			const Component = (await import(file)).default;
@@ -136,7 +134,7 @@ export default class Handler {
 		}
 	}
 
-	public syncCommands(): void {
+	syncCommands(): void {
 		try {
 			if (this.client.config.devMode && this.client.config.guildID) {
 				this.client.application.bulkEditGuildCommands(this.client.config.guildID, this.chatInputCommandList);

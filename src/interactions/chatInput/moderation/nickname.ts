@@ -6,7 +6,7 @@ import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class NicknameCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'nickname')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'nickname')
 		.setDescription('manage nickname')
 		.setDMPermission(false)
 		.addOptions([
@@ -35,7 +35,7 @@ export default class NicknameCommand extends Command {
 		])
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
 				return interaction.createError({
@@ -45,8 +45,7 @@ export default class NicknameCommand extends Command {
 			}
 		}
 
-		let command = interaction.options.getSubCommand(false);
-		if (!command) command = ['unknown'];
+		const command = interaction.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'change': {

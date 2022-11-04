@@ -18,6 +18,6 @@ export type AnyInteractionNonAutoComplete =
 export type EventListener = (
 	client: BotClient,
 	...args: Lib.ClientEvents[K]
-) => Promise<void | Lib.Message<Lib.AnyGuildTextChannel>>;
+) => ExecuteReturnType;
 
 export type ExecuteReturnType = Promise<void | Lib.Message<Lib.AnyGuildTextChannel>>;

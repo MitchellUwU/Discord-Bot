@@ -6,7 +6,7 @@ import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class EightBallCommand extends Command {
-	public override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, '8ball')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, '8ball')
 		.setDescription('an 8ball, what do you expect?')
 		.setDMPermission(false)
 		.addOption(
@@ -17,7 +17,7 @@ export default class EightBallCommand extends Command {
 		)
 		.toJSON();
 
-	public async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
 		const message = interaction.options.getString('message', true);
 		const config = client.config.answers;
 		const botAnswer = config.repliesTemplate[Math.floor(Math.random() * config.repliesTemplate.length)]

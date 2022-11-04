@@ -1,20 +1,20 @@
 import { ApplicationCommandOptionsChoice } from 'oceanic.js';
 
 export default class ChoiceBuilder {
-	private json: any;
-
-	constructor(name: string, value: string | number) {
-		this.json = {};
-		this.json.name = name;
-		this.json.value = value;
+	name: string;
+	nameLocalizations?: Record<string, string>;
+	value: string | number;
+	constructor(name: string, value: string | number, locale?: Record<string, string>) {
+		this.name = name;
+		this.nameLocalizations = locale;
+		this.value = value;
 	}
 
-	public setNameLocale(map: Record<string, string>): this {
-		this.json.nameLocalizations = map;
-		return this;
-	}
-
-	public toJSON(): ApplicationCommandOptionsChoice {
-		return this.json;
+	toJSON(): ApplicationCommandOptionsChoice {
+		return {
+			name: this.name,
+			nameLocalizations: this.nameLocalizations,
+			value: this.value,
+		};
 	}
 }
