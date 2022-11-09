@@ -2,9 +2,8 @@
 
 import BotClient from './Client';
 import { EventEmitter } from 'events';
-import * as Lib from 'oceanic.js';
 import { InteractionCollectorConfig } from '../types/options';
-import { ComponentTypes, SelectMenuTypes } from 'oceanic.js';
+import { AnyInteractionGateway, ComponentInteraction, ComponentTypes } from 'oceanic.js';
 
 // Collector manager.
 
@@ -37,16 +36,15 @@ export class Collectors {
  * @extends Lib.EventEmitter from node.js events.
  */
 
-export class InteractionCollector<
-	T extends ComponentTypes.BUTTON | SelectMenuTypes = ComponentTypes.BUTTON | SelectMenuTypes
-> extends EventEmitter {
+export class InteractionCollector extends EventEmitter {
 	private client: BotClient;
-	private collected: { interaction: Lib.AnyInteractionGateway }[];
-	private listenerValue: (interaction: Lib.AnyInteractionGateway) => void;
+	private collected: { interaction: AnyInteractionGateway }[];
+	private listenerValue: (interaction: AnyInteractionGateway) => void;
 	private timer: NodeJS.Timeout;
 	private ended: boolean;
 	authorID: string;
-	interaction: Lib.AnyInteractionGateway;
+	componentType: ComponentTypes
+	interaction: AnyInteractionGateway;
 	interactionType: any;
 	max: number | undefined;
 	time: number;
@@ -55,14 +53,16 @@ export class InteractionCollector<
 
 		this.authorID = options.authorID;
 		this.client = options.client;
+		this.componentType = options.componentType;
 		this.interaction = options.interaction;
+		this.interactionType = options.interactionType;
 		this.max = options.max || undefined;
 		this.time = options.time || Infinity;
 
 		this.collected = [];
 		this.ended = false;
 
-		this.listenerValue = (interaction: Lib.AnyInteractionGateway) => this.checkInteraction(interaction);
+		this.listenerValue = (interaction) => this.checkInteraction(interaction);
 		this.client.on('interactionCreate', this.listenerValue);
 
 		this.timer = setTimeout(() => this.stop('time limit reached'), this.time);
@@ -74,11 +74,11 @@ export class InteractionCollector<
 	 * @returns boolean
 	 */
 
-	checkInteraction(interaction: Lib.AnyInteractionGateway): boolean {
+	checkInteraction(interaction: AnyInteractionGateway): boolean {
 		if (!(interaction instanceof this.interactionType)) return false;
 		if (interaction.user.id !== this.authorID) return false;
-		if (interaction instanceof Lib.ComponentInteraction) {
-			if (!(interaction instanceof Lib.ComponentInteraction<T>)) return false;
+		if (interaction instanceof ComponentInteraction) {
+			if (interaction.data.componentType !== this.componentType) return false;
 		}
 
 		this.emit('collect', interaction);

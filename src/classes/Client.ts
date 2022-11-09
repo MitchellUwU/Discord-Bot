@@ -1,15 +1,10 @@
 import { BotConfig } from '../types/options';
 import Utils from './Utils';
 import Database from './Database';
-import * as Lib from 'oceanic.js';
+import { Client, SendStatuses } from 'oceanic.js';
 import Handler from './Handler';
 
-/**
- * The main client.
- * @extends Lib.Client from oceanic.js library.
- */
-
-export default class BotClient extends Lib.Client {
+export default class BotClient extends Client {
 	readonly config: BotConfig;
 	onMaintenance: boolean;
 	handler: Handler;
@@ -35,7 +30,7 @@ export default class BotClient extends Lib.Client {
 		this.handler.handleEvents();
 
 		await this.connect();
-		this.editStatus(this.config.statusOptions.type as Lib.SendStatuses, this.config.statusOptions.activities);
+		this.editStatus(this.config.statusOptions.type as SendStatuses, this.config.statusOptions.activities);
 	}
 
 	/**

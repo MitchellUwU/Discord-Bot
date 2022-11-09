@@ -1,3 +1,4 @@
+import { ComponentTypes } from 'oceanic.js';
 import { PoolConfig } from 'pg';
 
 // Client configuration interface.

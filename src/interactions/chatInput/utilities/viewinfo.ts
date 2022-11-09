@@ -1,40 +1,40 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import * as Lib from 'oceanic.js';
-import ms from 'ms';
+import { PrivateChannel, Constants, TextableChannel } from 'oceanic.js';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
+import ms from 'ms';
 
 export default class ViewInfoCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
+	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
 		.setDescription('view user info or guild info')
 		.setDMPermission(false)
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
 				.setDescription('view user info')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('a user')
 						.setRequired(false)
 						.toJSON()
 				)
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
 				.setDescription('view guild info')
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'channel')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'channel')
 				.setDescription('view channel info')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.CHANNEL, 'channel')
+					new Builders.Option(Constants.ApplicationCommandOptionTypes.CHANNEL, 'channel')
 						.setDescription('a channel')
 						.toJSON()
 				)
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'role')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'role')
 				.setDescription('view role info')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.ROLE, 'role')
+					new Builders.Option(Constants.ApplicationCommandOptionTypes.ROLE, 'role')
 						.setDescription('a role')
 						.setRequired(true)
 						.toJSON()
@@ -115,8 +115,8 @@ export default class ViewInfoCommand extends Command {
 				const emojis = guild.emojis;
 
 				if (
-					members.filter((member: Lib.Member) => !member.bot).length === 1 &&
-					members.filter((member: Lib.Member) => member.bot).length === 1
+					members.filter((member) => !member.bot).length === 1 &&
+					members.filter((member) => member.bot).length === 1
 				)
 					await guild.fetchMembers();
 
@@ -219,7 +219,7 @@ export default class ViewInfoCommand extends Command {
 				const channel =
 					interaction.options.getChannel('channel', false)?.completeChannel || interaction.channel;
 
-				if (channel instanceof Lib.PrivateChannel) {
+				if (channel instanceof PrivateChannel) {
 					return interaction.createError({
 						content: 'the channel must be a guild channel',
 					});
@@ -240,7 +240,7 @@ export default class ViewInfoCommand extends Command {
 					)
 					.setTimestamp();
 
-				if (channel instanceof Lib.TextableChannel) {
+				if (channel instanceof TextableChannel) {
 					if (channel.rateLimitPerUser === 0) {
 						slowmode = 'none';
 					} else {

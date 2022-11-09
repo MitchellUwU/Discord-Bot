@@ -1,14 +1,14 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import * as Lib from 'oceanic.js';
-import ms from 'ms';
+import { Constants, VERSION } from 'oceanic.js';
 import packageJSON from '../../../../package.json';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
+import ms from 'ms';
 
 export default class InfoCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'info')
+	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'info')
 		.setDescription('show a super duper cool information')
 		.setDMPermission(false)
 		.toJSON();
@@ -36,9 +36,9 @@ export default class InfoCommand extends Command {
 						{
 							name: '💻 more info for nerds',
 							value: [
-								`**gateway version:** v${Lib.Constants.GATEWAY_VERSION}`,
-								`**rest version:** v${Lib.Constants.REST_VERSION}`,
-								`**library used:** oceanic v${Lib.VERSION}`,
+								`**gateway version:** v${Constants.GATEWAY_VERSION}`,
+								`**rest version:** v${Constants.REST_VERSION}`,
+								`**library used:** oceanic v${VERSION}`,
 								`**written in:** typescript version ${packageJSON.devDependencies.typescript}`,
 								`**node.js version:** ${process.version}`,
 							].join('\n'),

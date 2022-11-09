@@ -1,26 +1,26 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import * as Lib from 'oceanic.js';
+import { Constants } from 'oceanic.js';
 import { request } from 'undici';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class FetchCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
+	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
 		.setDescription('fetch some random stuff from the internet')
 		.setDMPermission(false)
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'meme')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'meme')
 				.setDescription('memes')
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'cat')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'cat')
 				.setDescription('a cat picture')
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'urban')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'urban')
 				.setDescription('search urban dictionary')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'word')
+					new Builders.Option(Constants.ApplicationCommandOptionTypes.STRING, 'word')
 						.setDescription('a word or sentence or whatever')
 						.setRequired(true)
 						.toJSON()

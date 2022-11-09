@@ -1,11 +1,11 @@
+import { InteractionTypes, CommandInteraction } from 'oceanic.js';
 import Event from '../../classes/Event';
 import InteractionWrapper from '../../classes/InteractionWrapper';
-import * as Lib from 'oceanic.js';
 
 export default new Event('interactionCreate', false, async (client, rawInteraction) => {
 	switch (rawInteraction.type) {
-		case Lib.InteractionTypes.APPLICATION_COMMAND: {
-			if (!(rawInteraction instanceof Lib.CommandInteraction)) return;
+		case InteractionTypes.APPLICATION_COMMAND: {
+			if (!(rawInteraction instanceof CommandInteraction)) return;
 
 			const cmd = client.handler.chatInputCommands.get(rawInteraction.data.name);
 			if (!cmd) return;

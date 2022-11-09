@@ -5,8 +5,6 @@ import * as fs from 'fs/promises';
 import path from 'path';
 import { Collectors } from './Collectors';
 
-// Utility for the client.
-
 export default class Utils {
 	private client: BotClient;
 	collectors: Collectors;

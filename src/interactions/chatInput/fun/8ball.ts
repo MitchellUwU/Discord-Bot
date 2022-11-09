@@ -1,16 +1,16 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import * as Lib from 'oceanic.js';
+import { Constants } from 'oceanic.js';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class EightBallCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, '8ball')
+	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, '8ball')
 		.setDescription('an 8ball, what do you expect?')
 		.setDMPermission(false)
 		.addOption(
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'message')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.STRING, 'message')
 				.setDescription('what do you want to tell 8ball?')
 				.setRequired(true)
 				.toJSON()

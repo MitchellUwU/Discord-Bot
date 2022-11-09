@@ -1,19 +1,19 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import * as Lib from 'oceanic.js';
+import { Constants, SubCommandArray } from 'oceanic.js';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class EightBallCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'games')
+	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'games')
 		.setDescription('games')
 		.setDMPermission(false)
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'rps')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'rps')
 				.setDescription('rock paper scissors')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'choice')
+					new Builders.Option(Constants.ApplicationCommandOptionTypes.STRING, 'choice')
 						.setDescription('choose one')
 						.addChoices([
 							new Builders.Choice('rock', 'rock').toJSON(),
@@ -28,7 +28,7 @@ export default class EightBallCommand extends Command {
 		.toJSON();
 
 	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
-		let command = interaction.options.getSubCommand<Lib.SubCommandArray>(false);
+		let command = interaction.options.getSubCommand<SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {

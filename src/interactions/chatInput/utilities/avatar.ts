@@ -1,28 +1,28 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import * as Lib from 'oceanic.js';
+import { Constants, Guild} from 'oceanic.js';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
 import { ExecuteReturnType } from '../../../types/additional';
 
 export default class AvatarCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'avatar')
+	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'avatar')
 		.setDescription('show avatar')
 		.setDMPermission(false)
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
 				.setDescription('show user avatar')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('a user')
 						.setRequired(false)
 						.toJSON()
 				)
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
+			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
 				.setDescription('show guild icon (and also banner)')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'id')
+					new Builders.Option(Constants.ApplicationCommandOptionTypes.STRING, 'id')
 						.setDescription('guild id')
 						.setRequired(false)
 						.toJSON()
@@ -56,7 +56,7 @@ export default class AvatarCommand extends Command {
 			}
 			case 'guild': {
 				const id = interaction.options.getString('guild', false) || interaction.guildID;
-				let guild: Lib.Guild;
+				let guild: Guild;
 
 				try {
 					guild = await client.utils.getGuild(id);

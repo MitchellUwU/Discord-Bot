@@ -1,7 +1,7 @@
-import * as Lib from 'oceanic.js';
+import { ClientEvents } from 'oceanic.js';
 import { EventListener } from '../types/additional';
 
-export default class Event<T extends keyof Lib.ClientEvents = keyof Lib.ClientEvents> {
+export default class Event<T extends keyof ClientEvents = keyof ClientEvents> {
 	name: T;
 	type: 'once' | 'on';
 	listener: EventListener;
