@@ -2,6 +2,7 @@ import {
 	CreateApplicationCommandOptions,
 	CreateChatInputApplicationCommandOptions,
 	CreateMessageApplicationCommandOptions,
+	CreateUserApplicationCommandOptions,
 } from 'oceanic.js';
 import BotClient from './Client';
 import Command from './Command';
@@ -12,10 +13,12 @@ export default class Handler {
 	events: Map<string, Event>;
 	chatInputCommands: Map<string, Command>;
 	messageCommands: Map<string, Command>;
+	userCommands: Map<string, Command>;
 	components: Map<string, any>;
 	commandList: CreateApplicationCommandOptions[];
 	chatInputCommandList: CreateChatInputApplicationCommandOptions[];
 	messageCommandList: CreateMessageApplicationCommandOptions[];
+	userCommandList: CreateUserApplicationCommandOptions[];
 	constructor(client: BotClient) {
 		this.client = client;
 
@@ -25,6 +28,8 @@ export default class Handler {
 		this.chatInputCommandList = [];
 		this.messageCommands = new Map();
 		this.messageCommandList = [];
+		this.userCommands = new Map();
+		this.userCommandList = [];
 		this.components = new Map();
 	}
 
@@ -80,6 +85,22 @@ export default class Handler {
 			});
 			this.messageCommands.set(cmd.data.name, cmd);
 			this.messageCommandList.push(cmd.data);
+			this.commandList.push(cmd.data);
+		}
+	}
+
+	async handleUserCommands() {
+		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/user`);
+		for await (const file of files) {
+			const Command = (await import(file)).default;
+			const cmd = new Command(this);
+			this.client.utils.logger({
+				title: 'UserCommandsHandler',
+				content: `Loaded ${cmd.data.name}!`,
+				type: 1,
+			});
+			this.userCommands.set(cmd.data.name, cmd);
+			this.userCommandList.push(cmd.data);
 			this.commandList.push(cmd.data);
 		}
 	}
