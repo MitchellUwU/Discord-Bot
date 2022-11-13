@@ -4,7 +4,6 @@ import Command from '../../../classes/Command';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
-import { ExecuteReturnType } from '../../../types/additional';
 
 export default class TimeoutCommand extends Command {
 	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'timeout')
@@ -54,7 +53,7 @@ export default class TimeoutCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper) {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
 				return interaction.createError({

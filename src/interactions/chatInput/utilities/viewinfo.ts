@@ -3,7 +3,6 @@ import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import { PrivateChannel, Constants, TextableChannel } from 'oceanic.js';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
-import { ExecuteReturnType } from '../../../types/additional';
 import ms from 'ms';
 
 export default class ViewInfoCommand extends Command {
@@ -43,7 +42,7 @@ export default class ViewInfoCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper) {
 		const command = interaction.options.getSubCommand(true);
 
 		switch (command.toString()) {

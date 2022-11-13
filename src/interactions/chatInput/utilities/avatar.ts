@@ -3,7 +3,6 @@ import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import { Constants, Guild} from 'oceanic.js';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
-import { ExecuteReturnType } from '../../../types/additional';
 
 export default class AvatarCommand extends Command {
 	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'avatar')
@@ -31,7 +30,7 @@ export default class AvatarCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper) {
 		const command = interaction.options.getSubCommand(true);
 
 		switch (command.toString()) {

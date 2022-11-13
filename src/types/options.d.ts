@@ -17,7 +17,6 @@ export interface BotConfig {
 	db: PoolConfig;
 	devMode: boolean;
 	devIDs: string[];
-	disableDebug?: boolean;
 	guildID?: string;
 	requiredPermission: number;
 	statusOptions: {
@@ -44,12 +43,4 @@ export interface InteractionCollectorConfig {
 	interactionType: any;
 	max?: number;
 	time?: number;
-}
-
-// Event options
-
-export interface EventOptions {
-	name: string;
-	once: boolean;
-	type: string;
 }

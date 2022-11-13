@@ -22,7 +22,7 @@ export default class Handler {
 		this.components = new Map();
 	}
 
-	reset(): void {
+	reset() {
 		this.events.clear();
 		this.chatInputCommands.clear();
 		this.messageCommands.clear();
@@ -32,7 +32,7 @@ export default class Handler {
 		this.messageCommandList = [];
 	}
 
-	async handleEvents(): Promise<void> {
+	async handleEvents() {
 		const files = this.client.utils.loadFiles(`${__dirname}/../listeners`);
 		for await (const file of files) {
 			const event: Event = (await import(file)).default;
@@ -46,7 +46,7 @@ export default class Handler {
 		}
 	}
 
-	async handleChatInputCommands(): Promise<void> {
+	async handleChatInputCommands() {
 		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/chatInput`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
@@ -75,17 +75,17 @@ export default class Handler {
 						type: 1,
 					});
 				}
-			} catch (error: any) {
+			} catch (error) {
 				this.client.utils.logger({
 					title: 'ChatInputCommandsHandler',
-					content: `Cannot register commands due to: ${error.stack}`,
+					content: `Cannot register commands due to: ${error}`,
 					type: 2,
 				});
 			}
 		}
 	}
 
-	async handleMessageCommands(): Promise<void> {
+	async handleMessageCommands() {
 		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/message`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
@@ -114,17 +114,17 @@ export default class Handler {
 						type: 1,
 					});
 				}
-			} catch (error: any) {
+			} catch (error) {
 				this.client.utils.logger({
 					title: 'MessageCommandsHandler',
-					content: `Cannot register commands due to: ${error.stack}`,
+					content: `Cannot register commands due to: ${error}`,
 					type: 2,
 				});
 			}
 		}
 	}
 
-	async handleComponents(): Promise<void> {
+	async handleComponents() {
 		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/components`);
 		for await (const file of files) {
 			const Component = (await import(file)).default;
@@ -134,7 +134,7 @@ export default class Handler {
 		}
 	}
 
-	syncCommands(): void {
+	syncCommands() {
 		try {
 			if (this.client.config.devMode && this.client.config.guildID) {
 				this.client.application.bulkEditGuildCommands(this.client.config.guildID, this.chatInputCommandList);
@@ -151,10 +151,10 @@ export default class Handler {
 					type: 1,
 				});
 			}
-		} catch (error: any) {
+		} catch (error) {
 			this.client.utils.logger({
 				title: 'ChatInputCommandsHandler',
-				content: `Cannot sync application commands due to: ${error.stack}`,
+				content: `Cannot sync application commands due to: ${error}`,
 				type: 2,
 			});
 		}

@@ -22,10 +22,9 @@ export default class BotClient extends Client {
 
 	/**
 	 * Load handlers and connect the client.
-	 * @returns Promise<void>
 	 */
 
-	async run(): Promise<void> {
+	async run() {
 		this.once('ready', () => this.handler.handleChatInputCommands().then(() => this.handler.syncCommands()));
 		this.handler.handleEvents();
 
@@ -35,10 +34,9 @@ export default class BotClient extends Client {
 
 	/**
 	 * Disconnect and shutdown the client.
-	 * @returns void
 	 */
 
-	shutdown(): void {
+	shutdown() {
 		this.handler.reset();
 		this.removeAllListeners();
 		this.disconnect(false);

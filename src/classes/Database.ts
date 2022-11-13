@@ -25,7 +25,7 @@ export default class Database {
 	 * @returns Promise<void>
 	 */
 
-	async query(text: string, params: any, callback: (err: Error, result: QueryResult) => void): Promise<void> {
+	async query(text: string, params: any, callback: (err: Error, result: QueryResult) => void) {
 		return this.pool.query(text, params, (error, res) => {
 			callback(error, res);
 		});

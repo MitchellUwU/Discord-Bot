@@ -12,12 +12,12 @@ export type AnyGuildInteractionNonAutoComplete =
 
 export type AnyInteractionNonAutoComplete =
 	| Lib.CommandInteraction
-	| Lib.ComponentInteraction
+	| Lib.ComponentInteraction<Lib.ComponentTypes.BUTTON>
+	| Lib.ComponentInteraction<Lib.ComponentTypes.ROLE_SELECT>
+	| Lib.ComponentInteraction<Lib.ComponentTypes.USER_SELECT>
+	| Lib.ComponentInteraction<Lib.ComponentTypes.CHANNEL_SELECT>
+	| Lib.ComponentInteraction<Lib.ComponentTypes.MENTIONABLE_SELECT>
+	| Lib.ComponentInteraction<Lib.ComponentTypes.STRING_SELECT>
 	| Lib.ModalSubmitInteraction;
 
-export type EventListener = (
-	client: BotClient,
-	...args: Lib.ClientEvents[K]
-) => ExecuteReturnType;
-
-export type ExecuteReturnType = Promise<void | Lib.Message<Lib.AnyGuildTextChannel>>;
+export type EventListener = (client: BotClient, ...args: Lib.ClientEvents[K]) => void;

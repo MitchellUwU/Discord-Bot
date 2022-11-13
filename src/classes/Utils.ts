@@ -16,10 +16,9 @@ export default class Utils {
 	/**
 	 * Remove token from content.
 	 * @param content Any content.
-	 * @returns string
 	 */
 
-	cleanContent(content: any): string {
+	cleanContent(content: any) {
 		let cleaned: string;
 
 		cleaned = content?.replaceAll(this.client.config.clientOptions.auth, 'ClientToken');
@@ -31,7 +30,6 @@ export default class Utils {
 	/**
 	 * Recursive file loader.
 	 * @param dir Directory to load.
-	 * @returns AsyncGenerator<string, void, void>
 	 */
 
 	async *loadFiles(dir: string): AsyncGenerator<string, void, void> {
@@ -50,11 +48,14 @@ export default class Utils {
 	/**
 	 * Get all member roles.
 	 * @param user Guild member.
-	 * @returns any
 	 */
 
-	getRoles(user: Lib.Member): any {
-		return user.roles.map((roleID: string) => user.guild.roles.get(roleID));
+	getRoles(user: Lib.Member) {
+		return user.roles.map((roleID: string) => {
+			const role = user.guild.roles.get(roleID);
+			if (role === undefined) throw new Error(`${roleID} is not a valid role`);
+			return role;
+		});
 	}
 
 	/**
@@ -63,7 +64,7 @@ export default class Utils {
 	 * @returns Lib.Role
 	 */
 
-	getHighestRole(user: Lib.Member): Lib.Role {
+	getHighestRole(user: Lib.Member) {
 		return this.getRoles(user).reduce((prev: Lib.Role, role: Lib.Role) =>
 			!prev || role.position >= prev.position ? role : prev
 		);
@@ -72,41 +73,37 @@ export default class Utils {
 	/**
 	 * Get guild.
 	 * @param guildID ID of the guild.
-	 * @returns Promise<Lib.Guild>
 	 */
 
-	async getGuild(guildID: string): Promise<Lib.Guild> {
-		return this.client.guilds.get(guildID) || (await this.client.rest.guilds.get(guildID));
+	async getGuild(guildID: string) {
+		return this.client.guilds.get(guildID) || this.client.rest.guilds.get(guildID);
 	}
 
 	/**
 	 * Get member in a guild.
 	 * @param guildID ID of the guild.
 	 * @param userID User ID of the member.
-	 * @returns Promise<Lib.Member>
 	 */
 
-	async getMember(guildID: string, userID: string): Promise<Lib.Member> {
+	async getMember(guildID: string, userID: string) {
 		const guild = await this.getGuild(guildID);
-		return guild.members.get(userID) || (await this.client.rest.guilds.getMember(guildID, userID));
+		return guild.members.get(userID) || this.client.rest.guilds.getMember(guildID, userID);
 	}
 
 	/**
 	 * Get user.
 	 * @param id User ID of the user.
-	 * @returns Promise<Lib.User>
 	 */
 
-	async getUser(id: string): Promise<Lib.User> {
-		return this.client.users.get(id) || (await this.client.rest.users.get(id));
+	async getUser(id: string) {
+		return this.client.users.get(id) || this.client.rest.users.get(id);
 	}
 
 	/**
 	 * Get current date.
-	 * @returns string
 	 */
 
-	get getDate(): string {
+	get getDate() {
 		const currentTime = new Date();
 		const date = ('0' + currentTime.getDate()).slice(-2);
 		const month = ('0' + (currentTime.getMonth() + 1)).slice(-2);
@@ -118,12 +115,11 @@ export default class Utils {
 	}
 
 	/**
-	 * Get json connect.
+	 * Get json content.
 	 * @param body Anything.
-	 * @returns Promise<any>
 	 */
 
-	async getJSONContent(body: any): Promise<any> {
+	async getJSONContent(body: any) {
 		let parsedBody = '';
 
 		for await (const data of body) {
@@ -136,10 +132,9 @@ export default class Utils {
 	/**
 	 * The main logger.
 	 * @param options Logger Configuration.
-	 * @returns void
 	 */
 
-	logger(options: LoggerOptions): void {
+	logger(options: LoggerOptions) {
 		const title = options.title;
 		const content = options.content;
 
@@ -167,10 +162,9 @@ export default class Utils {
 	 * Trim amount of characters.
 	 * @param str Message that you want to trim.
 	 * @param max Amount of characters that you want to trim to.
-	 * @returns string
 	 */
 
-	trim(str: string, max: number): string {
+	trim(str: string, max: number) {
 		return str.length > max ? `${str.slice(0, max - 3)}...` : str;
 	}
 }

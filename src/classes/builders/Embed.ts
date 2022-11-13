@@ -1,3 +1,12 @@
+/**
+ * I had to copy the entire embed builder code from @oceanic.js/builders, since addFields method just doesn't work when i extend it.
+ *
+ * Credit is below:
+ *
+ * Copyright (c) 2022 Donovan Daniels
+ * View full license: https://github.com/OceanicJS/Builders/blob/master/LICENSE
+ */
+
 import type {
 	EmbedAuthorOptions,
 	EmbedField,
@@ -257,7 +266,7 @@ export default class EmbedBuilder {
 	}
 
 	/**
-	 * set the embed author
+	 * Set the embed author
 	 * @param name The name of the author.
 	 * @param iconURL An icon url for the author.
 	 * @param url A url for the author.
@@ -340,6 +349,7 @@ export default class EmbedBuilder {
 	/**
 	 * Set a random color.
 	 */
+
 	setRandomColor(): this {
 		const base = '0123456789ABCDEF';
 		let color = '0x';

@@ -1,7 +1,7 @@
 import Event from '../../classes/Event';
 
 export default new Event('debug', false, async (client, msg, id) => {
-	if (client.config.disableDebug === true) return;
+	if (client.config.devMode !== true) return;
 	if (msg.startsWith('{"op"')) return;
 
 	if (!id) {

@@ -18,25 +18,25 @@ client.run();
  * @event SIGTERM Handle SIGTERM signal.
  */
 
-process.on('exit', (code: Number): void => {
+process.on('exit', (code) => {
 	client.utils.logger({ title: 'Exit', content: `Exited with code ${code}`, type: 3 });
 });
 
-process.on('unhandledRejection', (reason: Error): void => {
-	client.utils.logger({ title: 'UnhandledRejection', content: reason.stack, type: 3 });
+process.on('unhandledRejection', (reason) => {
+	client.utils.logger({ title: 'UnhandledRejection', content: reason, type: 3 });
 });
 
-process.on('uncaughtException', (error: Error): void => {
-	client.utils.logger({ title: 'UncaughtException', content: error.stack, type: 3 });
+process.on('uncaughtException', (error) => {
+	client.utils.logger({ title: 'UncaughtException', content: error, type: 3 });
 	client.onMaintenance = true;
 });
 
-process.on('SIGINT', (): void => {
+process.on('SIGINT', () => {
 	client.utils.logger({ title: 'SIGINT', content: 'Received SIGINT, Shutting down', type: 3 });
 	client.shutdown();
 });
 
-process.on('SIGTERM', (): void => {
+process.on('SIGTERM', () => {
 	client.utils.logger({ title: 'SIGTERM', content: 'Received SIGTERM, Shutting down', type: 3 });
 	client.shutdown();
 });

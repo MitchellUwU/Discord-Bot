@@ -1,7 +1,7 @@
 import BotClient from './Client';
 import Builders from './Builders';
 import * as Lib from 'oceanic.js';
-import { AnyGuildInteractionNonAutoComplete, ExecuteReturnType } from '../types/additional';
+import { AnyGuildInteractionNonAutoComplete } from '../types/additional';
 
 // Wrapper for interaction (which is also a wrapper of raw interaction) to make things easier (i don't want to do monkey patch shit, it makes my life hell).
 
@@ -42,7 +42,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	async editOriginal(content: Lib.InteractionContent): ExecuteReturnType {
+	async editOriginal(content: Lib.InteractionContent) {
 		content.content = this.client.utils.cleanContent(content.content);
 		if (this.raw.acknowledged) {
 			return this.raw.editOriginal(content);
@@ -57,7 +57,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	async deferResponse(flag?: number): Promise<void> {
+	async deferResponse(flag?: number) {
 		return this.raw.defer(flag);
 	}
 
@@ -67,7 +67,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	async createMessage(content: Lib.InteractionContent): ExecuteReturnType {
+	async createMessage(content: Lib.InteractionContent) {
 		content.content = this.client.utils.cleanContent(content.content);
 		if (this.raw.acknowledged) {
 			return this.raw.createFollowup(content);
@@ -83,7 +83,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	async createError(content: Lib.InteractionContent, hidden?: boolean): ExecuteReturnType {
+	async createError(content: Lib.InteractionContent, hidden?: boolean) {
 		const embed = new Builders.Embed()
 			.setColor('red')
 			.setTitle('⛔ error!')
@@ -114,7 +114,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	async createSuccess(content: Lib.InteractionContent, hidden?: boolean): ExecuteReturnType {
+	async createSuccess(content: Lib.InteractionContent, hidden?: boolean) {
 		const embed = new Builders.Embed()
 			.setColor('green')
 			.setTitle('✅ success!')
@@ -147,7 +147,7 @@ export default class InteractionWrapper {
 	 * @returns Promise<void>
 	 */
 
-	async createWarn(content: Lib.InteractionContent, hidden?: boolean): ExecuteReturnType {
+	async createWarn(content: Lib.InteractionContent, hidden?: boolean) {
 		const embed = new Builders.Embed()
 			.setColor('yellow')
 			.setTitle('⚠️ warning!')

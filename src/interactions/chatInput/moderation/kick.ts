@@ -3,7 +3,6 @@ import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
 import * as Lib from 'oceanic.js';
-import { ExecuteReturnType } from '../../../types/additional';
 
 export default class KickCommand extends Command {
 	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'kick')
@@ -23,7 +22,7 @@ export default class KickCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper) {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('KICK_MEMBERS')) {
 				return interaction.createError({

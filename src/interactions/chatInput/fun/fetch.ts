@@ -4,7 +4,6 @@ import Command from '../../../classes/Command';
 import { Constants } from 'oceanic.js';
 import { request } from 'undici';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
-import { ExecuteReturnType } from '../../../types/additional';
 
 export default class FetchCommand extends Command {
 	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
@@ -29,7 +28,7 @@ export default class FetchCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
+	async execute(client: BotClient, interaction: InteractionWrapper) {
 		const command = interaction.options.getSubCommand(true);
 
 		switch (command.toString()) {

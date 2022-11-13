@@ -1,7 +1,6 @@
 import BotClient from './Client';
 import { CreateApplicationCommandOptions } from 'oceanic.js';
 import InteractionWrapper from './InteractionWrapper';
-import { ExecuteReturnType } from '../types/additional';
 
 export default class Command {
 	private client: BotClient;
@@ -11,7 +10,7 @@ export default class Command {
 		this.client = client;
 	}
 
-	async execute(client: BotClient, interaction: InteractionWrapper): ExecuteReturnType {
-		this.client.utils.logger({ title: this.data.name, content: 'this works!', type: 1 });
+	async execute(client: BotClient, interaction: InteractionWrapper): Promise<unknown> {
+		return this.client.utils.logger({ title: this.data.name, content: 'this works!', type: 1 });
 	}
 }

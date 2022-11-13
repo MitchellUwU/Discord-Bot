@@ -6,11 +6,12 @@ export default new Event('interactionCreate', false, async (client, rawInteracti
 	switch (rawInteraction.type) {
 		case InteractionTypes.APPLICATION_COMMAND: {
 			if (!(rawInteraction instanceof CommandInteraction)) return;
+			if (!rawInteraction.inCachedGuildChannel()) return;
 
 			const cmd = client.handler.chatInputCommands.get(rawInteraction.data.name);
 			if (!cmd) return;
 
-			const interaction: InteractionWrapper = new InteractionWrapper(client, rawInteraction);
+			const interaction = new InteractionWrapper(client, rawInteraction);
 
 			if (!client.config.devIDs.includes(interaction.user.id)) {
 				if (client.config.blockedUsers?.includes(interaction.user.id)) {
@@ -37,10 +38,10 @@ export default new Event('interactionCreate', false, async (client, rawInteracti
 
 			try {
 				await cmd.execute(client, interaction);
-			} catch (error: any) {
-				client.utils.logger({ title: 'InteractionCreate', content: error.stack, type: 2 });
+			} catch (error) {
+				client.utils.logger({ title: 'InteractionCreate', content: error, type: 2 });
 				interaction.createError({
-					content: `i found a error while i was trying to execute the command!\n\n**error type:** ${error.name}\n**error message:** ${error.message}\n**listener:** catch error listener at interactionCreate event`,
+					content: `something went wrong! the error is below:\n\n${error}`,
 				});
 			}
 		}

@@ -5,8 +5,6 @@ import { EventEmitter } from 'events';
 import { InteractionCollectorConfig } from '../types/options';
 import { AnyInteractionGateway, ComponentInteraction, ComponentTypes } from 'oceanic.js';
 
-// Collector manager.
-
 export class Collectors {
 	private activeListeners: Map<string, InteractionCollector> = new Map(); // [INTERNAL] Array of active listeners.
 
@@ -30,11 +28,6 @@ export class Collectors {
 		return collector;
 	}
 }
-
-/**
- * Interaction Collector.
- * @extends Lib.EventEmitter from node.js events.
- */
 
 export class InteractionCollector extends EventEmitter {
 	private client: BotClient;
@@ -74,7 +67,7 @@ export class InteractionCollector extends EventEmitter {
 	 * @returns boolean
 	 */
 
-	checkInteraction(interaction: AnyInteractionGateway): boolean {
+	checkInteraction(interaction: AnyInteractionGateway) {
 		if (!(interaction instanceof this.interactionType)) return false;
 		if (interaction.user.id !== this.authorID) return false;
 		if (interaction instanceof ComponentInteraction) {
@@ -101,7 +94,7 @@ export class InteractionCollector extends EventEmitter {
 	 * @returns void
 	 */
 
-	extendTimeout(time: number): void {
+	extendTimeout(time: number) {
 		if (!this.time) return;
 		clearTimeout(this.timer);
 		const extendedTime = time + this.time;
@@ -111,10 +104,9 @@ export class InteractionCollector extends EventEmitter {
 	/**
 	 * Change Timer.
 	 * @param time Amount of time to change to.
-	 * @returns void
 	 */
 
-	changeTimeout(time: number): void {
+	changeTimeout(time: number) {
 		this.time = time;
 		clearTimeout(this.timer);
 		this.timer = setTimeout(() => this.stop('time limit reached'), time);
@@ -122,10 +114,9 @@ export class InteractionCollector extends EventEmitter {
 
 	/**
 	 * Remove Timer.
-	 * @returns void
 	 */
 
-	removeTimeout(): void {
+	removeTimeout() {
 		if (!this.time) return;
 		clearTimeout(this.timer);
 	}
@@ -133,10 +124,9 @@ export class InteractionCollector extends EventEmitter {
 	/**
 	 * Stop the collector.
 	 * @param reason The reason to end the collector.
-	 * @returns void
 	 */
 
-	stop(reason: string): void {
+	stop(reason: string) {
 		if (this.ended) return;
 		this.ended = true;
 		this.client.removeListener('interactionCreate', this.listenerValue);
