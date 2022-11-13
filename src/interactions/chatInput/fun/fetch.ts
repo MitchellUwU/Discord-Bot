@@ -38,17 +38,18 @@ export default class FetchCommand extends Command {
 				const data = await request('https://meme-api.herokuapp.com/gimme/memes');
 				const file = await client.utils.getJSONContent(data.body);
 
-				interaction.editOriginal({
+				interaction.createMessage({
 					embeds: [
 						new Builders.Embed()
 							.setRandomColor()
 							.setTitle(file.title)
 							.setDescription(
-								`**- upvotes:** ${file.ups}\n**- post link:** [Link](${file.postLink})\n**- subreddit:** r/${
-									file.subreddit
-								}\n**- post author:** ${file.author}\n**- nsfw:** ${
-									file.nsfw ? 'yes' : 'no'
-								}\n**- spoiler:** ${file.spoiler ? 'yes' : 'no'}`
+								`**- upvotes:** ${file.ups}`,
+								`**- post link:** [Link](${file.postLink})`,
+								`**- subreddit:** r/${file.subreddit}`,
+								`**- post author:** ${file.author}`,
+								`**- nsfw:** ${file.nsfw ? 'yes' : 'no'}`,
+								`**- spoiler:** ${file.spoiler ? 'yes' : 'no'}`
 							)
 							.setImage(file.url)
 							.setTimestamp()
@@ -64,7 +65,7 @@ export default class FetchCommand extends Command {
 				const data = await request('https://aws.random.cat/meow');
 				const { file } = await client.utils.getJSONContent(data.body);
 
-				interaction.editOriginal({
+				interaction.createMessage({
 					embeds: [
 						new Builders.Embed()
 							.setRandomColor()
@@ -78,6 +79,8 @@ export default class FetchCommand extends Command {
 				break;
 			}
 			case 'urban': {
+				interaction.deferResponse();
+
 				const message = interaction.options.getString('word', true);
 				const query = new URLSearchParams(message);
 				const data = await request(`https://api.urbandictionary.com/v0/define?term=${query}`);

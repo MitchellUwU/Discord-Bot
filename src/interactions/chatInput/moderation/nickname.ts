@@ -8,6 +8,7 @@ export default class NicknameCommand extends Command {
 	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'nickname')
 		.setDescription('manage nickname')
 		.setDMPermission(false)
+		.setDefaultMemberPermissions('MANAGE_NICKNAMES')
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'change')
 				.setDescription('change someone nickname')
@@ -94,11 +95,11 @@ export default class NicknameCommand extends Command {
 				try {
 					user.edit({ nick: name });
 					interaction.createSuccess({ content: `successfully changed ${user.tag}'s nickname!` });
-				} catch (error: any) {
+				} catch (error) {
 					interaction.createError({
-						content: `i can't change ${user.tag}'s nickname sorry! :(\n\n${error.name}: ${error.message}`,
+						content: `i can't change ${user.tag}'s nickname sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					client.utils.logger({ title: 'Error', content: error, type: 2 });
 				}
 
 				break;
@@ -155,11 +156,11 @@ export default class NicknameCommand extends Command {
 				try {
 					user.edit({ nick: '' });
 					interaction.createSuccess({ content: `successfully changed ${user.tag}'s nickname!` });
-				} catch (error: any) {
+				} catch (error) {
 					interaction.createError({
-						content: `i can't change ${user.tag}'s nickname sorry! :(\n\n${error.name}: ${error.message}`,
+						content: `i can't change ${user.tag}'s nickname sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					client.utils.logger({ title: 'Error', content: error, type: 2 });
 				}
 
 				break;

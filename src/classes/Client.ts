@@ -6,6 +6,7 @@ import Handler from './Handler';
 
 export default class BotClient extends Client {
 	readonly config: BotConfig;
+	cooldowns: Map<string, number>
 	onMaintenance: boolean;
 	handler: Handler;
 	utils: Utils;
@@ -15,6 +16,7 @@ export default class BotClient extends Client {
 
 		this.onMaintenance = false;
 		this.config = options;
+		this.cooldowns = new Map();
 		this.handler = new Handler(this);
 		this.utils = new Utils(this);
 		this.db = new Database(this);
@@ -38,7 +40,6 @@ export default class BotClient extends Client {
 
 	shutdown() {
 		this.handler.reset();
-		this.removeAllListeners();
 		this.disconnect(false);
 
 		process.exit();

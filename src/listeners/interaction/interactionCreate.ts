@@ -11,7 +11,7 @@ export default new Event('interactionCreate', false, async (client, rawInteracti
 			const cmd = client.handler.chatInputCommands.get(rawInteraction.data.name);
 			if (!cmd) return;
 
-			const interaction = new InteractionWrapper(client, rawInteraction);
+			const interaction: InteractionWrapper = new InteractionWrapper(client, rawInteraction);
 
 			if (!client.config.devIDs.includes(interaction.user.id)) {
 				if (client.config.blockedUsers?.includes(interaction.user.id)) {
@@ -30,10 +30,56 @@ export default new Event('interactionCreate', false, async (client, rawInteracti
 			if (!interaction.guild.clientMember.permissions.has('ADMINISTRATOR')) {
 				if (!interaction.guild.clientMember.permissions.has(BigInt(client.config.requiredPermission))) {
 					return interaction.createError({
-						content:
-							"i don't have enough permissions! please give me following permission:\n\n**- view channels**\n**- manage channels**\n**- manage roles**\n**- manage server**\n**- create invite**\n**- change nickname**\n**- manage nicknames**\n**- kick members**\n**- ban members**\n**- moderate members**\n**- send messages**\n**- send messages in threads**\n**- create threads**\n**- create private threads**\n**- embed links**\n**- attach files**\n**- add reactions**\n**- use external emoji**\n**- use external stickers**\n**- manage messages**\n**- read message history**\n**- connect**\n**- speak**\n**- mute members**\n**- deafen members**\n**- move members**",
+						content: [
+							"i don't have enough permissions! please give me following permission:",
+							'',
+							'**- view channels**',
+							'**- manage channels**',
+							'**- manage roles**',
+							'**- manage server**',
+							'**- create invite**',
+							'**- change nickname**',
+							'**- manage nicknames**',
+							'**- kick members**',
+							'**- ban members**',
+							'**- moderate members**',
+							'**- send messages**',
+							'**- send messages in threads**',
+							'**- create threads**',
+							'**- create private threads**',
+							'**- embed links**',
+							'**- attach files**',
+							'**- add reactions**',
+							'**- use external emoji**',
+							'**- use external stickers**',
+							'**- manage messages**',
+							'**- read message history**',
+							'**- connect**',
+							'**- speak**',
+							'**- mute members**',
+							'**- deafen members**',
+							'**- move members**',
+						].join('\n'),
 					});
 				}
+			}
+
+			if (client.config.cooldownAmount) {
+				const cooldown = client.cooldowns.get(`${interaction.user.id}|${cmd.data.name}`);
+
+				if (cooldown) {
+					const expireTime = cooldown + client.config.cooldownAmount;
+					const remaining = (expireTime - Date.now()) / 1000;
+					return interaction.createError({
+						content: `too fast! wait ${remaining.toFixed(1)} more seconds`,
+					});
+				}
+
+				client.cooldowns.set(`${interaction.user.id}|${cmd.data.name}`, Date.now());
+				
+				setTimeout(() => {
+					client.cooldowns.delete(`${interaction.user.id}|${cmd.data.name}`);
+				}, client.config.cooldownAmount);
 			}
 
 			try {

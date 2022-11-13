@@ -8,6 +8,7 @@ export default class KickCommand extends Command {
 	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'kick')
 		.setDescription('kick someone')
 		.setDMPermission(false)
+		.setDefaultMemberPermissions('KICK_MEMBERS')
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 				.setDescription('user to kick')
@@ -97,15 +98,19 @@ export default class KickCommand extends Command {
 							.setRandomColor()
 							.setTitle(`you got kicked from ${interaction.guild.name} :(`)
 							.setDescription(
-								`you broke the rules, didn't you?\n\n**guild name:** ${interaction.guild.name}\n**responsible moderator:** ${interaction.user.tag}\n**reason:** ${reason}\n**time:** no time specified`
+								`you broke the rules, didn't you?`,
+								``,
+								`**guild name:** ${interaction.guild.name}`,
+								`**responsible moderator:** ${interaction.user.tag}`,
+								`**reason:** ${reason}`
 							)
 							.setTimestamp()
 							.toJSON(),
 					],
 				});
-			} catch (error: any) {
+			} catch (error) {
 				dmSuccess = false;
-				client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+				client.utils.logger({ title: 'KickCommand', content: error, type: 2 });
 			}
 		}
 
@@ -116,12 +121,12 @@ export default class KickCommand extends Command {
 					dmOption ? (dmSuccess ? " but i can't dm them" : '') : ''
 				}`,
 			});
-		} catch (error: any) {
+		} catch (error) {
 			message!.delete();
 			interaction.createError({
-				content: `i can't kick ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+				content: `i can't kick ${user.tag} sorry! :(\n\n${error}`,
 			});
-			client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+			client.utils.logger({ title: 'Error', content: error, type: 2 });
 		}
 	}
 }

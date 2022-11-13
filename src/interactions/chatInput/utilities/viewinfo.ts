@@ -230,12 +230,10 @@ export default class ViewInfoCommand extends Command {
 					.setRandomColor()
 					.setAuthor(`${channel.name} information`, interaction.guild.iconURL()!)
 					.setDescription(
-						[
-							`**- name:** ${channel.name}`,
-							`**- type:** ${type[channel.type]}`,
-							`**- creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
-							`**- id:** ${channel.id}`,
-						].join('\n')
+						`**- name:** ${channel.name}`,
+						`**- type:** ${type[channel.type]}`,
+						`**- creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
+						`**- id:** ${channel.id}`
 					)
 					.setTimestamp();
 
@@ -247,16 +245,14 @@ export default class ViewInfoCommand extends Command {
 					}
 
 					embed.setDescription(
-						[
-							`**- name:** ${channel.name}`,
-							`**- type:** ${type[channel.type]}`,
-							`**- nsfw:** ${channel.nsfw ? 'yes' : 'no'}`,
-							`**- channel position:** ${channel.position}`,
-							`**- creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
-							`**- slowmode time:** ${slowmode}`,
-							`**- topic:** ${channel.topic || 'no topic'}`,
-							`**- id:** ${channel.id}`,
-						].join('\n')
+						`**- name:** ${channel.name}`,
+						`**- type:** ${type[channel.type]}`,
+						`**- nsfw:** ${channel.nsfw ? 'yes' : 'no'}`,
+						`**- channel position:** ${channel.position}`,
+						`**- creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
+						`**- slowmode time:** ${slowmode}`,
+						`**- topic:** ${channel.topic || 'no topic'}`,
+						`**- id:** ${channel.id}`
 					);
 				}
 
@@ -281,13 +277,11 @@ export default class ViewInfoCommand extends Command {
 							.setRandomColor()
 							.setAuthor(`${role.name} information`, interaction.guild.iconURL()!)
 							.setDescription(
-								[
-									`**- name:** ${role.name}`,
-									`**- role position:** ${role.position}`,
-									`**- creation date:** <t:${Math.floor(role.createdAt.getTime() / 1000)}:f>`,
-									`**- managed by integration:** ${role.managed ? 'yes' : 'no'}`,
-									`**- id:** ${role.id}`,
-								].join('\n')
+								`**- name:** ${role.name}`,
+								`**- role position:** ${role.position}`,
+								`**- creation date:** <t:${Math.floor(role.createdAt.getTime() / 1000)}:f>`,
+								`**- managed by integration:** ${role.managed ? 'yes' : 'no'}`,
+								`**- id:** ${role.id}`
 							)
 							.setTimestamp()
 							.toJSON(),

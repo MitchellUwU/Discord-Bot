@@ -9,6 +9,7 @@ export default class TimeoutCommand extends Command {
 	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'timeout')
 		.setDescription('manage timeout')
 		.setDMPermission(false)
+		.setDefaultMemberPermissions('MODERATE_MEMBERS')
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
 				.setDescription('timeout someone')
@@ -145,19 +146,20 @@ export default class TimeoutCommand extends Command {
 									.setRandomColor()
 									.setTitle(`you got timeout from ${interaction.guild.name} :(`)
 									.setDescription(
-										`you broke the rules, didn't you?\n\n**guild name:** ${
-											interaction.guild.name
-										}\n**responsible moderator:** ${
-											interaction.user.tag
-										}\n**reason:** ${reason}\n**time:** ${ms(time, { long: true })}`
+										`you broke the rules, didn't you?`,
+										``,
+										`**guild name:** ${interaction.guild.name}`,
+										`**responsible moderator:** ${interaction.user.tag}`,
+										`**reason:** ${reason}`,
+										`**time:** ${ms(time, { long: true })}`
 									)
 									.setTimestamp()
 									.toJSON(),
 							],
 						});
-					} catch (error: any) {
+					} catch (error) {
 						dmSuccess = false;
-						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+						client.utils.logger({ title: 'Error', content: error, type: 2 });
 					}
 				}
 
@@ -172,12 +174,12 @@ export default class TimeoutCommand extends Command {
 							dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
 						}`,
 					});
-				} catch (error: any) {
+				} catch (error) {
 					message!.delete();
 					interaction.createError({
-						content: `i can't timeout that member sorry! :(\n\n${error.name}: ${error.message}`,
+						content: `i can't timeout that member sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					client.utils.logger({ title: 'Error', content: error, type: 2 });
 				}
 
 				break;
@@ -236,11 +238,11 @@ export default class TimeoutCommand extends Command {
 						reason: reason,
 					});
 					interaction.createSuccess({ content: `successfully untimeout ${user.tag}!` });
-				} catch (error: any) {
+				} catch (error) {
 					interaction.createError({
-						content: `i can't untimeout ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+						content: `i can't untimeout ${user.tag} sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					client.utils.logger({ title: 'Error', content: error, type: 2 });
 				}
 
 				break;
@@ -304,59 +306,56 @@ export default class TimeoutCommand extends Command {
 					max: 1,
 				});
 
-				collector.on(
-					'collect',
-					async (i: Lib.ComponentInteraction<Lib.ComponentTypes.BUTTON, Lib.AnyGuildTextChannel>) => {
-						if (i.data.customID === 'untimeout') {
-							const helper = new InteractionWrapper(client, i);
+				collector.on('collect', async (i) => {
+					if (i.data.customID === 'untimeout') {
+						const helper = new InteractionWrapper(client, i);
 
-							if (user.id === interaction.user.id) {
-								return helper.createError({ content: "you can't untimeout yourself" });
+						if (user.id === interaction.user.id) {
+							return helper.createError({ content: "you can't untimeout yourself" });
+						}
+
+						if (interaction.user.id !== interaction.guild.ownerID) {
+							if (user.id === interaction.guild.ownerID) {
+								return helper.createError({ content: "i can't untimeout the owner" });
 							}
 
-							if (interaction.user.id !== interaction.guild.ownerID) {
-								if (user.id === interaction.guild.ownerID) {
-									return helper.createError({ content: "i can't untimeout the owner" });
-								}
-
-								if (user.permissions.has('ADMINISTRATOR')) {
-									return helper.createError({
-										content: `${user.tag} have administrator permission, i can't untimeout them!`,
-									});
-								}
-
-								if (
-									client.utils.getHighestRole(user).position >=
-									client.utils.getHighestRole(interaction.member).position
-								) {
-									return helper.createError({ content: `${user.tag} have higher (or same) role than you` });
-								}
+							if (user.permissions.has('ADMINISTRATOR')) {
+								return helper.createError({
+									content: `${user.tag} have administrator permission, i can't untimeout them!`,
+								});
 							}
 
 							if (
 								client.utils.getHighestRole(user).position >=
-								client.utils.getHighestRole(interaction.guild.clientMember).position
+								client.utils.getHighestRole(interaction.member).position
 							) {
-								return helper.createError({
-									content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
-								});
-							}
-
-							try {
-								await user.edit({
-									communicationDisabledUntil: new Date(Date.now()).toISOString(),
-									reason: 'untimeout using button in view command',
-								});
-								helper.createSuccess({ content: `successfully untimeout ${user.tag}!` });
-							} catch (error: any) {
-								helper.createError({
-									content: `i can't untimeout ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
-								});
-								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+								return helper.createError({ content: `${user.tag} have higher (or same) role than you` });
 							}
 						}
+
+						if (
+							client.utils.getHighestRole(user).position >=
+							client.utils.getHighestRole(interaction.guild.clientMember).position
+						) {
+							return helper.createError({
+								content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+							});
+						}
+
+						try {
+							await user.edit({
+								communicationDisabledUntil: new Date(Date.now()).toISOString(),
+								reason: 'untimeout using button in view command',
+							});
+							helper.createSuccess({ content: `successfully untimeout ${user.tag}!` });
+						} catch (error) {
+							helper.createError({
+								content: `i can't untimeout ${user.tag} sorry! :(\n\n${error}`,
+							});
+							client.utils.logger({ title: 'Error', content: error, type: 2 });
+						}
 					}
-				);
+				});
 
 				collector.once('end', async () => {
 					interaction.editOriginal({

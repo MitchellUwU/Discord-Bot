@@ -8,6 +8,7 @@ export default class RoleCommand extends Command {
 	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'role')
 		.setDescription('manage role')
 		.setDMPermission(false)
+		.setDefaultMemberPermissions('MANAGE_ROLES')
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
 				.setDescription('add role to someone')
@@ -123,11 +124,11 @@ export default class RoleCommand extends Command {
 				try {
 					user.addRole(role.id, reason);
 					interaction.createSuccess({ content: `successfully added ${role.name} role to ${user.tag}!` });
-				} catch (error: any) {
+				} catch (error) {
 					interaction.createError({
-						content: `i can't add ${role.name} role to ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+						content: `i can't add ${role.name} role to ${user.tag} sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					client.utils.logger({ title: 'Error', content: error, type: 2 });
 				}
 
 				break;
@@ -190,11 +191,11 @@ export default class RoleCommand extends Command {
 				try {
 					user.removeRole(role.id, reason);
 					interaction.createSuccess({ content: `successfully removed ${role.name} role from ${user.tag}!` });
-				} catch (error: any) {
+				} catch (error) {
 					interaction.createError({
-						content: `i can't remove ${role.name} role from ${user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+						content: `i can't remove ${role.name} role from ${user.tag} sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					client.utils.logger({ title: 'Error', content: error, type: 2 });
 				}
 
 				break;
@@ -228,13 +229,11 @@ export default class RoleCommand extends Command {
 								.setRandomColor()
 								.setAuthor(`${role.name} information`, interaction.guild.iconURL()!)
 								.setDescription(
-									[
-										`**- name:** ${role.name}`,
-										`**- role position:** ${role.position}`,
-										`**- creation date:** <t:${Math.floor(role.createdAt.getTime() / 1000)}:f>`,
-										`**- managed by integration:** ${role.managed ? 'yes' : 'no'}`,
-										`**- id:** ${role.id}`,
-									].join('\n')
+									`**- name:** ${role.name}`,
+									`**- role position:** ${role.position}`,
+									`**- creation date:** <t:${Math.floor(role.createdAt.getTime() / 1000)}:f>`,
+									`**- managed by integration:** ${role.managed ? 'yes' : 'no'}`,
+									`**- id:** ${role.id}`
 								)
 								.setTimestamp()
 								.toJSON(),

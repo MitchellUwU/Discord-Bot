@@ -22,19 +22,15 @@ export default class EightBallCommand extends Command {
 		const botAnswer = config.repliesTemplate[Math.floor(Math.random() * config.repliesTemplate.length)]
 			.replace('{answer}', config.answers[Math.floor(Math.random() * config.answers.length)])
 			.replace('{pronouns}', config.pronouns[Math.floor(Math.random() * config.pronouns.length)])
-			.replace('{faces}', config.faces[Math.floor(Math.random() * config.faces.length)]);
+			.replace('{faces}', config.faces[Math.floor(Math.random() * config.faces.length)])
+			.replaceAll('{authorName}', interaction.user.username);
 
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()
 					.setRandomColor()
 					.setTitle('🎱 8ball')
-					.setDescription(
-						`**question:** ${message}\n**answer:** ${botAnswer.replaceAll(
-							'{authorName}',
-							interaction.user.username
-						)}`
-					)
+					.setDescription(`**question:** ${message}`, `**answer:** ${botAnswer}`)
 					.setTimestamp()
 					.toJSON(),
 			],

@@ -53,7 +53,9 @@ export default class EightBallCommand extends Command {
 							.setRandomColor()
 							.setTitle('🗻 rock 📃 paper ✂ scissors')
 							.setDescription(
-								`**your choice:** ${playerChoice}\n**bot choice:** ${botChoice}\n**result:** ${result}`
+								`**your choice:** ${playerChoice}`,
+								`**bot choice:** ${botChoice}`,
+								`**result:** ${result}`
 							)
 							.setTimestamp()
 							.toJSON(),

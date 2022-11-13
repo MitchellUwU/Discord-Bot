@@ -8,6 +8,7 @@ export default class PurgeCommand extends Command {
 	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'purge')
 		.setDescription('purge messages')
 		.setDMPermission(false)
+		.setDefaultMemberPermissions('MANAGE_MESSAGES')
 		.addOptions([
 			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.INTEGER, 'amount')
 				.setDescription('amount of messages')
@@ -52,10 +53,10 @@ export default class PurgeCommand extends Command {
 						interaction.createSuccess({ content: `successfully deleted ${deleted} messages!` });
 					});
 			}
-		} catch (error: any) {
-			client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+		} catch (error) {
+			client.utils.logger({ title: 'Error', content: error, type: 2 });
 			interaction.createError({
-				content: `i can't delete the messages sorry! :(\n\n${error.name}: ${error.message}`,
+				content: `i can't delete the messages sorry! :(\n\n${error}`,
 			});
 		}
 	}

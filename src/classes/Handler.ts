@@ -34,13 +34,17 @@ export default class Handler {
 	}
 
 	reset() {
+		this.client.removeAllListeners();
+
 		this.events.clear();
 		this.chatInputCommands.clear();
 		this.messageCommands.clear();
+		this.userCommands.clear();
 		this.components.clear();
 
 		this.chatInputCommandList = [];
 		this.messageCommandList = [];
+		this.userCommandList = [];
 	}
 
 	async handleEvents() {

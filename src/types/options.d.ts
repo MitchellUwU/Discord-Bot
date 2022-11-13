@@ -11,6 +11,7 @@ export interface BotConfig {
 		faces: string[];
 	};
 	ascii?: string[];
+	cooldownAmount?: number
 	clientOptions: Lib.ClientOptions;
 	blockedGuilds?: string[];
 	blockedUsers?: string[];

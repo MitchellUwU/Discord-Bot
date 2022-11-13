@@ -22,14 +22,12 @@ export default class PingCommand extends Command {
 					.setRandomColor()
 					.setTitle('🏓 pong!')
 					.setDescription(
-						[
-							`**bot latency:** ${(endTime - startTime).toFixed(0)}ms`,
-							`**rest latency:** ${client.rest.handler.latencyRef.latency}ms`,
-							`**gateway latency:** ${interaction.guild.shard.latency}ms`.replace(
-								'Infinityms',
-								'wait for a minute and it should show up'
-							),
-						].join('\n')
+						`**bot latency:** ${(endTime - startTime).toFixed(0)}ms`,
+						`**rest latency:** ${client.rest.handler.latencyRef.latency}ms`,
+						`**gateway latency:** ${interaction.guild.shard.latency}ms`.replace(
+							'Infinityms',
+							'wait for a minute and it should show up'
+						)
 					)
 					.setTimestamp()
 					.toJSON(),
