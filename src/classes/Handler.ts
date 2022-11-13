@@ -1,4 +1,8 @@
-import { CreateChatInputApplicationCommandOptions, CreateMessageApplicationCommandOptions } from 'oceanic.js';
+import {
+	CreateApplicationCommandOptions,
+	CreateChatInputApplicationCommandOptions,
+	CreateMessageApplicationCommandOptions,
+} from 'oceanic.js';
 import BotClient from './Client';
 import Command from './Command';
 import Event from './Event';
@@ -9,12 +13,14 @@ export default class Handler {
 	chatInputCommands: Map<string, Command>;
 	messageCommands: Map<string, Command>;
 	components: Map<string, any>;
+	commandList: CreateApplicationCommandOptions[];
 	chatInputCommandList: CreateChatInputApplicationCommandOptions[];
 	messageCommandList: CreateMessageApplicationCommandOptions[];
 	constructor(client: BotClient) {
 		this.client = client;
 
 		this.events = new Map();
+		this.commandList = [];
 		this.chatInputCommands = new Map();
 		this.chatInputCommandList = [];
 		this.messageCommands = new Map();
@@ -57,31 +63,8 @@ export default class Handler {
 				type: 1,
 			});
 			this.chatInputCommands.set(cmd.data.name, cmd);
-			try {
-				if (this.client.config.devMode && this.client.config.guildID) {
-					await this.client.application.createGuildCommand(this.client.config.guildID, cmd.data);
-					this.chatInputCommandList.push(cmd.data);
-					this.client.utils.logger({
-						title: 'ChatInputCommandsHandler',
-						content: `Registered ${cmd.data.name}! (Guild)`,
-						type: 1,
-					});
-				} else {
-					await this.client.application.createGlobalCommand(cmd.data);
-					this.chatInputCommandList.push(cmd.data);
-					this.client.utils.logger({
-						title: 'ChatInputCommandsHandler',
-						content: `Registered ${cmd.data.name}! (Global)`,
-						type: 1,
-					});
-				}
-			} catch (error) {
-				this.client.utils.logger({
-					title: 'ChatInputCommandsHandler',
-					content: `Cannot register commands due to: ${error}`,
-					type: 2,
-				});
-			}
+			this.chatInputCommandList.push(cmd.data);
+			this.commandList.push(cmd.data);
 		}
 	}
 
@@ -96,31 +79,8 @@ export default class Handler {
 				type: 1,
 			});
 			this.messageCommands.set(cmd.data.name, cmd);
-			try {
-				if (this.client.config.devMode && this.client.config.guildID) {
-					await this.client.application.createGuildCommand(this.client.config.guildID, cmd.data);
-					this.messageCommandList.push(cmd.data);
-					this.client.utils.logger({
-						title: 'MessageCommandsHandler',
-						content: `Registered ${cmd.data.name}! (Guild)`,
-						type: 1,
-					});
-				} else {
-					await this.client.application.createGlobalCommand(cmd.data);
-					this.messageCommandList.push(cmd.data);
-					this.client.utils.logger({
-						title: 'MessageCommandsHandler',
-						content: `Registered ${cmd.data.name}! (Global)`,
-						type: 1,
-					});
-				}
-			} catch (error) {
-				this.client.utils.logger({
-					title: 'MessageCommandsHandler',
-					content: `Cannot register commands due to: ${error}`,
-					type: 2,
-				});
-			}
+			this.messageCommandList.push(cmd.data);
+			this.commandList.push(cmd.data);
 		}
 	}
 
@@ -134,27 +94,27 @@ export default class Handler {
 		}
 	}
 
-	syncCommands() {
+	registerCommands() {
 		try {
 			if (this.client.config.devMode && this.client.config.guildID) {
-				this.client.application.bulkEditGuildCommands(this.client.config.guildID, this.chatInputCommandList);
+				this.client.application.bulkEditGuildCommands(this.client.config.guildID, this.commandList);
 				this.client.utils.logger({
-					title: 'ChatInputCommandsHandler',
-					content: 'Successfully synced all application commands! (Guild)',
+					title: 'ApplicationCommandsHandler',
+					content: 'Successfully registered all application commands! (Guild)',
 					type: 1,
 				});
 			} else {
-				this.client.application.bulkEditGlobalCommands(this.chatInputCommandList);
+				this.client.application.bulkEditGlobalCommands(this.commandList);
 				this.client.utils.logger({
-					title: 'ChatInputCommandsHandler',
-					content: 'Successfully synced all application commands! (Global)',
+					title: 'ApplicationCommandsHandler',
+					content: 'Successfully registered all application commands! (Global)',
 					type: 1,
 				});
 			}
 		} catch (error) {
 			this.client.utils.logger({
-				title: 'ChatInputCommandsHandler',
-				content: `Cannot sync application commands due to: ${error}`,
+				title: 'ApplicationCommandsHandler',
+				content: `Cannot register application commands due to: ${error}`,
 				type: 2,
 			});
 		}
