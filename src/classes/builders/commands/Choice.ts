@@ -1,10 +1,10 @@
-import { ApplicationCommandOptionsChoice } from 'oceanic.js';
+import { ApplicationCommandOptionsChoice, Locale } from 'oceanic.js';
 
 export default class ChoiceBuilder {
 	name: string;
-	nameLocalizations?: Record<string, string>;
+	nameLocalizations?: Record<Locale, string>;
 	value: string | number;
-	constructor(name: string, value: string | number, locale?: Record<string, string>) {
+	constructor(name: string, value: string | number, locale?: Record<Locale, string>) {
 		this.name = name;
 		this.nameLocalizations = locale;
 		this.value = value;

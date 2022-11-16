@@ -19,5 +19,3 @@ export type AnyInteractionNonAutoComplete =
 	| Lib.ComponentInteraction<Lib.ComponentTypes.MENTIONABLE_SELECT>
 	| Lib.ComponentInteraction<Lib.ComponentTypes.STRING_SELECT>
 	| Lib.ModalSubmitInteraction;
-
-export type EventListener = (client: BotClient, ...args: Lib.ClientEvents[K]) => void;

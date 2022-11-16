@@ -11,7 +11,7 @@ export default new Event('interactionCreate', false, async (client, rawInteracti
 			const cmd = client.handler.chatInputCommands.get(rawInteraction.data.name);
 			if (!cmd) return;
 
-			const interaction: InteractionWrapper = new InteractionWrapper(client, rawInteraction);
+			const interaction = new InteractionWrapper(client, rawInteraction);
 
 			if (!client.config.devIDs.includes(interaction.user.id)) {
 				if (client.config.blockedUsers?.includes(interaction.user.id)) {
