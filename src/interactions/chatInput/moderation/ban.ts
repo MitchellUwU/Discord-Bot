@@ -162,9 +162,9 @@ export default class BanCommand extends Command {
 									.toJSON(),
 							],
 						});
-					} catch (error) {
+					} catch (error: any) {
 						dmSuccess = false;
-						client.utils.logger({ title: 'BanCommand', content: error, type: 2 });
+						client.utils.logger({ title: 'BanCommand', content: error.stack, type: 2 });
 					}
 				}
 
@@ -181,12 +181,12 @@ export default class BanCommand extends Command {
 								dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
 							}`,
 						});
-					} catch (error) {
+					} catch (error: any) {
 						message!.delete();
 						interaction.createError({
 							content: `i can't softban ${user.tag} sorry! :(\n\n${error}`,
 						});
-						client.utils.logger({ title: 'Error', content: error, type: 2 });
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 					}
 				} else {
 					try {
@@ -200,12 +200,12 @@ export default class BanCommand extends Command {
 								dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
 							}`,
 						});
-					} catch (error) {
+					} catch (error: any) {
 						message!.delete();
 						interaction.createError({
 							content: `i can't ban ${user.tag} sorry! :(\n\n${error}`,
 						});
-						client.utils.logger({ title: 'Error', content: error, type: 2 });
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 					}
 				}
 
@@ -233,11 +233,11 @@ export default class BanCommand extends Command {
 				try {
 					await interaction.guild.removeBan(user, reason);
 					interaction.createSuccess({ content: `successfully unbanned ${banned.user.tag}!` });
-				} catch (error) {
+				} catch (error: any) {
 					interaction.createError({
 						content: `i can't unban ${banned.user.tag} sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error, type: 2 });
+					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;
@@ -269,7 +269,7 @@ export default class BanCommand extends Command {
 
 					try {
 						member = await interaction.guild.getBan(user);
-					} catch (error: any) {
+					} catch (error) {
 						try {
 							const name = await client.utils.getUser(user);
 							return interaction.createError({ content: `${name} is not banned!` });
@@ -286,6 +286,7 @@ export default class BanCommand extends Command {
 								customID: 'unban',
 								style: Lib.ButtonStyles.DANGER,
 							})
+							.addURLButton({ label: 'avatar url', url: member.user.avatarURL() })
 							.toJSON();
 					};
 
@@ -329,7 +330,7 @@ export default class BanCommand extends Command {
 								helper.createSuccess({ content: `successfully unbanned ${member.user.tag}!` });
 							} catch (error: any) {
 								helper.createError({
-									content: `i can't unban ${member.user.tag} sorry! :(\n\n${error.name}: ${error.message}`,
+									content: `i can't unban ${member.user.tag} sorry! :(\n\n${error}`,
 								});
 								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 							}

@@ -1,7 +1,7 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { Constants, Guild} from 'oceanic.js';
+import { Constants, Guild } from 'oceanic.js';
 import InteractionWrapper from '../../../classes/InteractionWrapper';
 
 export default class AvatarCommand extends Command {
@@ -49,6 +49,9 @@ export default class AvatarCommand extends Command {
 							.setTimestamp()
 							.toJSON(),
 					],
+					components: new Builders.ActionRow()
+						.addURLButton({ label: 'avatar url', url: user.avatarURL() })
+						.toJSON(),
 				});
 
 				break;
@@ -63,10 +66,16 @@ export default class AvatarCommand extends Command {
 					guild = interaction.guild;
 				}
 
+				if (!guild.bannerURL() && !guild.iconURL()) {
+					return interaction.createError({
+						content:
+							'this guild seem to have no banner or icon... ask the admins to add one! it would be very cool!',
+					});
+				}
+
 				const embed = new Builders.Embed()
 					.setRandomColor()
 					.setAuthor(`${guild.name}'s icon and banner`, guild.iconURL()!)
-					.setDescription('icon link (unavailable)\nbanner link (unavailable)')
 					.setImage(guild.bannerURL()!)
 					.setThumbnail(guild.iconURL()!)
 					.setTimestamp();
@@ -76,26 +85,21 @@ export default class AvatarCommand extends Command {
 					embed.setImage(guild.iconURL()!);
 				}
 
-				const jsonEmbed = embed.toJSON();
+				const actionRow = new Builders.ActionRow();
+				const bannerURL = guild.bannerURL();
+				const iconURL = guild.iconURL();
 
-				if (guild.bannerURL())
-					jsonEmbed.description = jsonEmbed.description?.replace(
-						'banner link (unavailable)',
-						`[banner link](${guild.bannerURL()})`
-					);
-				if (guild.iconURL())
-					jsonEmbed.description = jsonEmbed.description?.replace(
-						'icon link (unavailable)',
-						`[icon link](${guild.iconURL()})`
-					);
+				if (iconURL) {
+					actionRow.addURLButton({ label: 'icon url', url: iconURL });
+				}
 
-				jsonEmbed.description = jsonEmbed.description?.replace(
-					'{iconURL}\n{bannerURL}',
-					'this guild have nothing'
-				);
+				if (bannerURL) {
+					actionRow.addURLButton({ label: 'banner url', url: bannerURL });
+				}
 
 				interaction.createMessage({
-					embeds: [jsonEmbed],
+					embeds: [embed.toJSON()],
+					components: actionRow.toJSON(),
 				});
 
 				break;

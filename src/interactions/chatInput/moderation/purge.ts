@@ -53,8 +53,8 @@ export default class PurgeCommand extends Command {
 						interaction.createSuccess({ content: `successfully deleted ${deleted} messages!` });
 					});
 			}
-		} catch (error) {
-			client.utils.logger({ title: 'Error', content: error, type: 2 });
+		} catch (error: any) {
+			client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 			interaction.createError({
 				content: `i can't delete the messages sorry! :(\n\n${error}`,
 			});

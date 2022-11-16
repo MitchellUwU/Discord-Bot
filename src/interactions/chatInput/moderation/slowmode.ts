@@ -75,11 +75,11 @@ export default class SlowmodeCommand extends Command {
 					interaction.createSuccess({
 						content: `successfully changed ${channel.name} slowmode to ${ms(realtime, { long: true })}!`,
 					});
-				} catch (error) {
+				} catch (error: any) {
 					interaction.createError({
 						content: `i can't change ${channel.name} slowmode sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error, type: 2 });
+					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;
@@ -97,11 +97,11 @@ export default class SlowmodeCommand extends Command {
 				try {
 					channel.edit({ rateLimitPerUser: 0 });
 					interaction.createSuccess({ content: `successfully removed ${channel.name} slowmode!` });
-				} catch (error) {
+				} catch (error: any) {
 					interaction.createError({
 						content: `i can't remove ${channel.name} slowmode sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error, type: 2 });
+					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;

@@ -95,11 +95,11 @@ export default class NicknameCommand extends Command {
 				try {
 					user.edit({ nick: name });
 					interaction.createSuccess({ content: `successfully changed ${user.tag}'s nickname!` });
-				} catch (error) {
+				} catch (error: any) {
 					interaction.createError({
 						content: `i can't change ${user.tag}'s nickname sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error, type: 2 });
+					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;
@@ -156,11 +156,11 @@ export default class NicknameCommand extends Command {
 				try {
 					user.edit({ nick: '' });
 					interaction.createSuccess({ content: `successfully changed ${user.tag}'s nickname!` });
-				} catch (error) {
+				} catch (error: any) {
 					interaction.createError({
 						content: `i can't change ${user.tag}'s nickname sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error, type: 2 });
+					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;

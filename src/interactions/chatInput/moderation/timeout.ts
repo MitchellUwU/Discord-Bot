@@ -174,12 +174,12 @@ export default class TimeoutCommand extends Command {
 							dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
 						}`,
 					});
-				} catch (error) {
+				} catch (error: any) {
 					message!.delete();
 					interaction.createError({
 						content: `i can't timeout that member sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error, type: 2 });
+					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;
@@ -238,11 +238,11 @@ export default class TimeoutCommand extends Command {
 						reason: reason,
 					});
 					interaction.createSuccess({ content: `successfully untimeout ${user.tag}!` });
-				} catch (error) {
+				} catch (error: any) {
 					interaction.createError({
 						content: `i can't untimeout ${user.tag} sorry! :(\n\n${error}`,
 					});
-					client.utils.logger({ title: 'Error', content: error, type: 2 });
+					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
 
 				break;
@@ -348,11 +348,11 @@ export default class TimeoutCommand extends Command {
 								reason: 'untimeout using button in view command',
 							});
 							helper.createSuccess({ content: `successfully untimeout ${user.tag}!` });
-						} catch (error) {
+						} catch (error: any) {
 							helper.createError({
 								content: `i can't untimeout ${user.tag} sorry! :(\n\n${error}`,
 							});
-							client.utils.logger({ title: 'Error', content: error, type: 2 });
+							client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 						}
 					}
 				});

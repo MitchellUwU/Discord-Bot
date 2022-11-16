@@ -108,9 +108,9 @@ export default class KickCommand extends Command {
 							.toJSON(),
 					],
 				});
-			} catch (error) {
+			} catch (error: any) {
 				dmSuccess = false;
-				client.utils.logger({ title: 'KickCommand', content: error, type: 2 });
+				client.utils.logger({ title: 'KickCommand', content: error.stack, type: 2 });
 			}
 		}
 
@@ -121,12 +121,12 @@ export default class KickCommand extends Command {
 					dmOption ? (dmSuccess ? " but i can't dm them" : '') : ''
 				}`,
 			});
-		} catch (error) {
+		} catch (error: any) {
 			message!.delete();
 			interaction.createError({
 				content: `i can't kick ${user.tag} sorry! :(\n\n${error}`,
 			});
-			client.utils.logger({ title: 'Error', content: error, type: 2 });
+			client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 		}
 	}
 }

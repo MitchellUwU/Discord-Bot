@@ -84,8 +84,8 @@ export default new Event('interactionCreate', false, async (client, rawInteracti
 
 			try {
 				await cmd.execute(client, interaction);
-			} catch (error) {
-				client.utils.logger({ title: 'InteractionCreate', content: error, type: 2 });
+			} catch (error: any) {
+				client.utils.logger({ title: 'InteractionCreate', content: error.stack, type: 2 });
 				interaction.createError({
 					content: `something went wrong! the error is below:\n\n${error}`,
 				});

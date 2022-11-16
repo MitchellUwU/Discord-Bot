@@ -76,8 +76,11 @@ export default class ViewInfoCommand extends Command {
 								.setTimestamp()
 								.toJSON(),
 						],
+						components: new Builders.ActionRow()
+							.addURLButton({ label: 'avatar url', url: user.avatarURL() })
+							.toJSON(),
 					});
-				} catch (error: any) {
+				} catch (error) {
 					const user = await client.utils.getUser(id);
 
 					interaction.createMessage({
@@ -98,6 +101,9 @@ export default class ViewInfoCommand extends Command {
 								.setTimestamp()
 								.toJSON(),
 						],
+						components: new Builders.ActionRow()
+							.addURLButton({ label: 'avatar url', url: user.avatarURL() })
+							.toJSON(),
 					});
 				}
 
@@ -112,6 +118,18 @@ export default class ViewInfoCommand extends Command {
 				const members = guild.members;
 				const stickers = guild.stickers;
 				const emojis = guild.emojis;
+
+				const actionRow = new Builders.ActionRow();
+				const bannerURL = guild.bannerURL();
+				const iconURL = guild.iconURL();
+
+				if (iconURL) {
+					actionRow.addURLButton({ label: 'icon url', url: iconURL });
+				}
+
+				if (bannerURL) {
+					actionRow.addURLButton({ label: 'banner url', url: bannerURL });
+				}
 
 				if (
 					members.filter((member) => !member.bot).length === 1 &&
@@ -191,6 +209,7 @@ export default class ViewInfoCommand extends Command {
 							.setTimestamp()
 							.toJSON(),
 					],
+					components: actionRow.toJSON(),
 				});
 
 				break;
@@ -281,6 +300,7 @@ export default class ViewInfoCommand extends Command {
 								`**- role position:** ${role.position}`,
 								`**- creation date:** <t:${Math.floor(role.createdAt.getTime() / 1000)}:f>`,
 								`**- managed by integration:** ${role.managed ? 'yes' : 'no'}`,
+								`**- color:** ${role.color}`,
 								`**- id:** ${role.id}`
 							)
 							.setTimestamp()

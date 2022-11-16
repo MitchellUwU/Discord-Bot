@@ -22,12 +22,12 @@ process.on('exit', (code) => {
 	client.utils.logger({ title: 'Exit', content: `Exited with code ${code}`, type: 3 });
 });
 
-process.on('unhandledRejection', (reason) => {
-	client.utils.logger({ title: 'UnhandledRejection', content: reason, type: 3 });
+process.on('unhandledRejection', (reason: Error) => {
+	client.utils.logger({ title: 'UnhandledRejection', content: reason.stack, type: 3 });
 });
 
 process.on('uncaughtException', (error) => {
-	client.utils.logger({ title: 'UncaughtException', content: error, type: 3 });
+	client.utils.logger({ title: 'UncaughtException', content: error.stack, type: 3 });
 	client.onMaintenance = true;
 });
 
