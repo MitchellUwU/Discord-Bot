@@ -64,24 +64,6 @@ export default new Event('interactionCreate', false, async (client, rawInteracti
 				}
 			}
 
-			if (client.config.cooldownAmount) {
-				const cooldown = client.cooldowns.get(`${interaction.user.id}|${cmd.data.name}`);
-
-				if (cooldown) {
-					const expireTime = cooldown + client.config.cooldownAmount;
-					const remaining = (expireTime - Date.now()) / 1000;
-					return interaction.createError({
-						content: `too fast! wait ${remaining.toFixed(1)} more seconds`,
-					});
-				}
-
-				client.cooldowns.set(`${interaction.user.id}|${cmd.data.name}`, Date.now());
-				
-				setTimeout(() => {
-					client.cooldowns.delete(`${interaction.user.id}|${cmd.data.name}`);
-				}, client.config.cooldownAmount);
-			}
-
 			try {
 				await cmd.execute(client, interaction);
 			} catch (error: any) {
