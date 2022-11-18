@@ -119,18 +119,6 @@ export default class ViewInfoCommand extends Command {
 				const stickers = guild.stickers;
 				const emojis = guild.emojis;
 
-				const actionRow = new Builders.ActionRow();
-				const bannerURL = guild.bannerURL();
-				const iconURL = guild.iconURL();
-
-				if (iconURL) {
-					actionRow.addURLButton({ label: 'icon url', url: iconURL });
-				}
-
-				if (bannerURL) {
-					actionRow.addURLButton({ label: 'banner url', url: bannerURL });
-				}
-
 				if (
 					members.filter((member) => !member.bot).length === 1 &&
 					members.filter((member) => member.bot).length === 1
