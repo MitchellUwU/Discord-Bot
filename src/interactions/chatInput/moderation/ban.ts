@@ -401,7 +401,7 @@ export default class BanCommand extends Command {
 						if (i.data.customID === 'unban') {
 							try {
 								await interaction.guild.removeBan(user, 'unban using button in view command');
-								interaction.createMessage({
+								i.createMessage({
 									embeds: [
 										Builders.SuccessEmbed()
 											.setDescription(`successfully unbanned ${member.user.tag}!`)
@@ -409,7 +409,7 @@ export default class BanCommand extends Command {
 									],
 								});
 							} catch (error: any) {
-								interaction.createMessage({
+								i.createMessage({
 									embeds: [
 										Builders.ErrorEmbed()
 											.setDescription(`i can't unban ${member.user.tag} sorry! :(\n\n${error}`)

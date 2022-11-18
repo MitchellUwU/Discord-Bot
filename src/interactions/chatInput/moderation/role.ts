@@ -93,12 +93,20 @@ export default class RoleCommand extends Command {
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createError({ content: `i can't give ${role.name} role to the owner` });
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed().setDescription(`i can't give ${role.name} role to the owner`).toJSON(),
+							],
+						});
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
-						return interaction.createError({
-							content: `${user.tag} have administrator permission, i can't give them roles!`,
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`${user.tag} have administrator permission, i can't give them roles!`)
+									.toJSON(),
+							],
 						});
 					}
 
@@ -155,10 +163,20 @@ export default class RoleCommand extends Command {
 
 				try {
 					user.addRole(role.id, reason);
-					interaction.createSuccess({ content: `successfully added ${role.name} role to ${user.tag}!` });
+					interaction.createMessage({
+						embeds: [
+							Builders.SuccessEmbed()
+								.setDescription(`successfully added ${role.name} role to ${user.tag}!`)
+								.toJSON(),
+						],
+					});
 				} catch (error: any) {
-					interaction.createError({
-						content: `i can't add ${role.name} role to ${user.tag} sorry! :(\n\n${error}`,
+					interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(`i can't add ${role.name} role to ${user.tag} sorry! :(\n\n${error}`)
+								.toJSON(),
+						],
 					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
@@ -188,12 +206,22 @@ export default class RoleCommand extends Command {
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createError({ content: `i can't remove ${role.name} role from the owner` });
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`i can't remove ${role.name} role from the owner`)
+									.toJSON(),
+							],
+						});
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
-						return interaction.createError({
-							content: `${user.tag} have administrator permission, i can't remove their roles!`,
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`${user.tag} have administrator permission, i can't remove their roles!`)
+									.toJSON(),
+							],
 						});
 					}
 
@@ -250,10 +278,20 @@ export default class RoleCommand extends Command {
 
 				try {
 					user.removeRole(role.id, reason);
-					interaction.createSuccess({ content: `successfully removed ${role.name} role from ${user.tag}!` });
+					interaction.createMessage({
+						embeds: [
+							Builders.SuccessEmbed()
+								.setDescription(`successfully removed ${role.name} role from ${user.tag}!`)
+								.toJSON(),
+						],
+					});
 				} catch (error: any) {
-					interaction.createError({
-						content: `i can't remove ${role.name} role from ${user.tag} sorry! :(\n\n${error}`,
+					interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(`i can't remove ${role.name} role from ${user.tag} sorry! :(\n\n${error}`)
+								.toJSON(),
+						],
 					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}

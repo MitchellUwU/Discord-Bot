@@ -74,12 +74,18 @@ export default class NicknameCommand extends Command {
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createError({ content: `i can't change/remove the owner nickname` });
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription("i can't change the owner nickname").toJSON()],
+						});
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
-						return interaction.createError({
-							content: `${user.tag} have administrator permission, i can't change/remove their nickname!`,
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`${user.tag} have administrator permission, i can't change their nickname!`)
+									.toJSON(),
+							],
 						});
 					}
 
@@ -114,10 +120,18 @@ export default class NicknameCommand extends Command {
 
 				try {
 					user.edit({ nick: name });
-					interaction.createSuccess({ content: `successfully changed ${user.tag}'s nickname!` });
+					interaction.createMessage({
+						embeds: [
+							Builders.SuccessEmbed().setDescription(`successfully changed ${user.tag}'s nickname!`).toJSON(),
+						],
+					});
 				} catch (error: any) {
-					interaction.createError({
-						content: `i can't change ${user.tag}'s nickname sorry! :(\n\n${error}`,
+					interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(`i can't change ${user.tag}'s nickname sorry! :(\n\n${error}`)
+								.toJSON(),
+						],
 					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
@@ -143,20 +157,19 @@ export default class NicknameCommand extends Command {
 				}
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
-						return interaction.createError({
-							content:
-								"you need manage nicknames permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+					if (user.id === interaction.guild.ownerID) {
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription("i can't remove the owner nickname").toJSON()],
 						});
 					}
 
-					if (user.id === interaction.guild.ownerID) {
-						return interaction.createError({ content: `i can't change/remove the owner nickname` });
-					}
-
 					if (user.permissions.has('ADMINISTRATOR')) {
-						return interaction.createError({
-							content: `${user.tag} have administrator permission, i can't change/remove their nickname!`,
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`${user.tag} have administrator permission, i can't remove their nickname!`)
+									.toJSON(),
+							],
 						});
 					}
 
@@ -191,10 +204,18 @@ export default class NicknameCommand extends Command {
 
 				try {
 					user.edit({ nick: '' });
-					interaction.createSuccess({ content: `successfully changed ${user.tag}'s nickname!` });
+					interaction.createMessage({
+						embeds: [
+							Builders.SuccessEmbed().setDescription(`successfully removed ${user.tag}'s nickname!`).toJSON(),
+						],
+					});
 				} catch (error: any) {
-					interaction.createError({
-						content: `i can't change ${user.tag}'s nickname sorry! :(\n\n${error}`,
+					interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(`i can't remove ${user.tag}'s nickname sorry! :(\n\n${error}`)
+								.toJSON(),
+						],
 					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}

@@ -156,13 +156,21 @@ export default class TimeoutCommand extends Command {
 				}
 
 				if (isNaN(time)) {
-					return interaction.createError({
-						content: 'invalid time! please specify them correctly (example: 5h, 10 minutes etc.)',
+					return interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription('invalid time! please specify them correctly (example: 5h, 10 minutes etc.)')
+								.toJSON(),
+						],
 					});
 				}
 
 				if (time > 604800000 || time < 1000) {
-					return interaction.createError({ content: 'time must be between 1 second and 1 week' });
+					return interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed().setDescription('time must be between 1 second and 1 week').toJSON(),
+						],
+					});
 				}
 
 				let message: Lib.Message;
@@ -200,15 +208,25 @@ export default class TimeoutCommand extends Command {
 						reason: reason,
 					});
 
-					interaction.createSuccess({
-						content: `successfully timeout ${user.tag}!${
-							dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
-						}`,
+					interaction.createMessage({
+						embeds: [
+							Builders.SuccessEmbed()
+								.setDescription(
+									`successfully timeout ${user.tag}!${
+										dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
+									}`
+								)
+								.toJSON(),
+						],
 					});
 				} catch (error: any) {
 					message!.delete();
-					interaction.createError({
-						content: `i can't timeout that member sorry! :(\n\n${error}`,
+					interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(`i can't timeout that member sorry! :(\n\n${error}`)
+								.toJSON(),
+						],
 					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
@@ -236,17 +254,25 @@ export default class TimeoutCommand extends Command {
 				const reason = interaction.data.options.getString('reason', false) || 'no reason?';
 
 				if (user.id === interaction.user.id) {
-					return interaction.createError({ content: "you can't untimeout yourself" });
+					return interaction.createMessage({
+						embeds: [Builders.ErrorEmbed().setDescription("you can't untimeout yourself").toJSON()],
+					});
 				}
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createError({ content: "i can't untimeout the owner" });
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription("i can't untimeout the owner").toJSON()],
+						});
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
-						return interaction.createError({
-							content: `${user.tag} have administrator permission, i can't untimeout them!`,
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`${user.tag} have administrator permission, i can't untimeout them!`)
+									.toJSON(),
+							],
 						});
 					}
 
@@ -284,10 +310,16 @@ export default class TimeoutCommand extends Command {
 						communicationDisabledUntil: new Date(Date.now()).toISOString(),
 						reason: reason,
 					});
-					interaction.createSuccess({ content: `successfully untimeout ${user.tag}!` });
+					interaction.createMessage({
+						embeds: [Builders.SuccessEmbed().setDescription(`successfully untimeout ${user.tag}!`).toJSON()],
+					});
 				} catch (error: any) {
-					interaction.createError({
-						content: `i can't untimeout ${user.tag} sorry! :(\n\n${error}`,
+					interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(`i can't untimeout ${user.tag} sorry! :(\n\n${error}`)
+								.toJSON(),
+						],
 					});
 					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				}
@@ -313,8 +345,8 @@ export default class TimeoutCommand extends Command {
 				}
 
 				if (!user.communicationDisabledUntil) {
-					return interaction.createError({
-						content: `${user.tag} is not in timeout!`,
+					return interaction.createMessage({
+						embeds: [Builders.ErrorEmbed().setDescription(`${user.tag} is not in timeout!`).toJSON()],
 					});
 				}
 
@@ -361,17 +393,25 @@ export default class TimeoutCommand extends Command {
 					if (!i.inCachedGuildChannel()) return collector.stop();
 					if (i.data.customID === 'untimeout') {
 						if (user.id === interaction.user.id) {
-							return i.createError({ content: "you can't untimeout yourself" });
+							return i.createMessage({
+								embeds: [Builders.ErrorEmbed().setDescription("you can't untimeout yourself").toJSON()],
+							});
 						}
 
 						if (interaction.user.id !== interaction.guild.ownerID) {
 							if (user.id === interaction.guild.ownerID) {
-								return i.createError({ content: "i can't untimeout the owner" });
+								return i.createMessage({
+									embeds: [Builders.ErrorEmbed().setDescription("i can't untimeout the owner").toJSON()],
+								});
 							}
 
 							if (user.permissions.has('ADMINISTRATOR')) {
-								return i.createError({
-									content: `${user.tag} have administrator permission, i can't untimeout them!`,
+								return i.createMessage({
+									embeds: [
+										Builders.ErrorEmbed()
+											.setDescription(`${user.tag} have administrator permission, i can't untimeout them!`)
+											.toJSON(),
+									],
 								});
 							}
 
@@ -379,7 +419,7 @@ export default class TimeoutCommand extends Command {
 								client.utils.getHighestRole(user).position >=
 								client.utils.getHighestRole(interaction.member).position
 							) {
-								return interaction.createMessage({
+								return i.createMessage({
 									embeds: [
 										Builders.ErrorEmbed()
 											.setDescription(`${user.tag} have higher (or same) role than you`)
@@ -393,7 +433,7 @@ export default class TimeoutCommand extends Command {
 							client.utils.getHighestRole(user).position >=
 							client.utils.getHighestRole(interaction.guild.clientMember).position
 						) {
-							return interaction.createMessage({
+							return i.createMessage({
 								embeds: [
 									Builders.ErrorEmbed()
 										.setDescription(
@@ -409,10 +449,18 @@ export default class TimeoutCommand extends Command {
 								communicationDisabledUntil: new Date(Date.now()).toISOString(),
 								reason: 'untimeout using button in view command',
 							});
-							i.createSuccess({ content: `successfully untimeout ${user.tag}!` });
+							i.createMessage({
+								embeds: [
+									Builders.SuccessEmbed().setDescription(`successfully untimeout ${user.tag}!`).toJSON(),
+								],
+							});
 						} catch (error: any) {
-							i.createError({
-								content: `i can't untimeout ${user.tag} sorry! :(\n\n${error}`,
+							i.createMessage({
+								embeds: [
+									Builders.ErrorEmbed()
+										.setDescription(`i can't untimeout ${user.tag} sorry! :(\n\n${error}`)
+										.toJSON(),
+								],
 							});
 							client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 						}
