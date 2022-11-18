@@ -1,6 +1,5 @@
 import BotClient from './Client';
-import { CreateApplicationCommandOptions } from 'oceanic.js';
-import InteractionWrapper from './InteractionWrapper';
+import { AnyGuildTextChannel, CommandInteraction, CreateApplicationCommandOptions } from 'oceanic.js';
 
 export default class Command {
 	private client: BotClient;
@@ -10,7 +9,7 @@ export default class Command {
 		this.client = client;
 	}
 
-	async execute(client: BotClient, interaction: InteractionWrapper): Promise<unknown> {
+	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>): Promise<unknown> {
 		return this.client.utils.logger({ title: this.data.name, content: 'this works!', type: 1 });
 	}
 }

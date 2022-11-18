@@ -3,14 +3,11 @@ import * as Lib from 'oceanic.js';
 import { LoggerOptions } from '../types/options';
 import * as fs from 'fs/promises';
 import path from 'path';
-import { Collectors } from './Collectors';
 
 export default class Utils {
 	private client: BotClient;
-	collectors: Collectors;
 	constructor(client: BotClient) {
 		this.client = client;
-		this.collectors = new Collectors();
 	}
 
 	/**

@@ -85,10 +85,11 @@ export default class FetchCommand extends Command {
 				const data = await request(`https://api.urbandictionary.com/v0/define?term=${query}`);
 				const { list } = await client.utils.getJSONContent(data.body);
 
-				if (!list.length)
+				if (!list.length) {
 					return interaction.createMessage({
 						embeds: [Builders.ErrorEmbed().setDescription('no result found :(').toJSON()],
 					});
+				}
 
 				interaction.createMessage({
 					embeds: [
