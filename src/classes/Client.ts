@@ -25,7 +25,13 @@ export default class BotClient extends Client {
 	 */
 
 	async run() {
-		this.once('ready', () => this.handler.handleChatInputCommands().then(() => this.handler.registerCommands()));
+		this.once('ready', async () => {
+			await this.handler.handleChatInputCommands();
+			await this.handler.handleMessageCommands();
+			await this.handler.handleUserCommands();
+			this.handler.registerCommands();
+		});
+
 		this.handler.handleEvents();
 
 		await this.connect();
