@@ -3,6 +3,7 @@ import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
+import Paginator from '../../../classes/Paginator';
 
 export default class ViewInfoCommand extends Command {
 	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
@@ -136,80 +137,128 @@ export default class ViewInfoCommand extends Command {
 				)
 					await guild.fetchMembers();
 
-				interaction.createMessage({
-					embeds: [
-						new Builders.Embed()
-							.setRandomColor()
-							.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
-							.addFields([
-								{
-									name: '📃 | general',
-									value: [
-										`**- name:** ${guild.name}`,
-										`**- created:** <t:${Math.floor(guild.createdAt.getTime() / 1000)}:f>`,
-										`**- owner:** <@${guild.ownerID}>`,
-										`**- roles:** ${guild.roles.size - 1}`,
-										`**- large guild:** ${guild.large ? 'yes' : 'no'}`,
-										`**- nsfw level:** ${guild.nsfwLevel}`,
-										`**- preferred locale:** ${guild.preferredLocale}`,
-										`**- 2fa for moderation:** ${mfaLevels[guild.mfaLevel]}`,
-										`**- verification level:** ${verificationLevels[guild.verificationLevel]}`,
-										`**- id:** ${guild.id}`,
-										``,
-										`**- description:** ${guild.description || 'no description...'}`,
-									].join('\n'),
-								},
-								{
-									name: '👥 | users',
-									value: [
-										`**- members:** ${members.filter((member) => !member.bot).length} (may be inaccurate.)`,
-										`**- bots:** ${members.filter((member) => member.bot).length} (may be inaccurate.)`,
-										``,
-										`**- total:** ${guild.memberCount}`,
-									].join('\n'),
-								},
-								{
-									name: '📕 | channels',
-									value: [
-										`**- text:** ${channels.filter((channel) => channel.type == 0).length}`,
-										`**- voice:** ${channels.filter((channel) => channel.type == 2).length}`,
-										`**- threads:** ${threads.filter((channel) => channel.type == 10 && 12 && 11).length}`,
-										`**- categories:** ${channels.filter((channel) => channel.type == 4).length}`,
-										`**- stage voices:** ${channels.filter((channel) => channel.type == 13).length}`,
-										`**- announcements:** ${channels.filter((channel) => channel.type == 5).length}`,
-										`**- forum:** ${channels.filter((channel) => channel.type == 15).length}`,
-										``,
-										`**- total:** ${channels.size}`,
-									].join('\n'),
-								},
-								{
-									name: '😂 | emojis & stickers',
-									value: [
-										`**- animated:** ${emojis.filter((emoji) => emoji.animated).length}`,
-										`**- static:** ${emojis.filter((emoji) => !emoji.animated).length}`,
-										`**- stickers:** ${stickers ? stickers.length : 0}`,
-										``,
-										`**- total:** ${stickers ? stickers.length : 0 + emojis.length}`,
-									].join('\n'),
-								},
-								{
-									name: '🚀 | nitro statisitcs',
-									value: [
-										`**- tier:** ${guild.premiumTier}`,
-										`**- boosts:** ${guild.premiumSubscriptionCount}`,
-										`**- boosters:** ${
-											members.filter((member) => (member.premiumSince ? true : false)).length
-										}`,
-									].join('\n'),
-								},
-							])
-							.setThumbnail(guild.iconURL()!)
-							.setImage(guild.bannerURL()!)
-							.setTimestamp()
-							.toJSON(),
-					],
-					components: actionRow.toJSON(),
-				});
+				const pages = [
+					{
+						embeds: [
+							new Builders.Embed()
+								.setRandomColor()
+								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
+								.addFields([
+									{
+										name: '📃 | general',
+										value: [
+											`**- name:** ${guild.name}`,
+											`**- created:** <t:${Math.floor(guild.createdAt.getTime() / 1000)}:f>`,
+											`**- owner:** <@${guild.ownerID}>`,
+											`**- roles:** ${guild.roles.size - 1}`,
+											`**- large guild:** ${guild.large ? 'yes' : 'no'}`,
+											`**- nsfw level:** ${guild.nsfwLevel}`,
+											`**- preferred locale:** ${guild.preferredLocale}`,
+											`**- 2fa for moderation:** ${mfaLevels[guild.mfaLevel]}`,
+											`**- verification level:** ${verificationLevels[guild.verificationLevel]}`,
+											`**- id:** ${guild.id}`,
+											``,
+											`**- description:** ${guild.description || 'no description...'}`,
+										].join('\n'),
+									},
+								])
+								.setThumbnail(guild.iconURL()!)
+								.setImage(guild.bannerURL()!)
+								.setTimestamp()
+								.toJSON(),
+						],
+					},
+					{
+						embeds: [
+							new Builders.Embed()
+								.setRandomColor()
+								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
+								.addFields([
+									{
+										name: '👥 | users',
+										value: [
+											`**- members:** ${members.filter((member) => !member.bot).length} (may be inaccurate.)`,
+											`**- bots:** ${members.filter((member) => member.bot).length} (may be inaccurate.)`,
+											``,
+											`**- total:** ${guild.memberCount}`,
+										].join('\n'),
+									},
+								])
+								.setTimestamp()
+								.toJSON(),
+						],
+					},
+					{
+						embeds: [
+							new Builders.Embed()
+								.setRandomColor()
+								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
+								.addFields([
+									{
+										name: '📕 | channels',
+										value: [
+											`**- text:** ${channels.filter((channel) => channel.type == 0).length}`,
+											`**- voice:** ${channels.filter((channel) => channel.type == 2).length}`,
+											`**- threads:** ${threads.filter((channel) => channel.type == 10 && 12 && 11).length}`,
+											`**- categories:** ${channels.filter((channel) => channel.type == 4).length}`,
+											`**- stage voices:** ${channels.filter((channel) => channel.type == 13).length}`,
+											`**- announcements:** ${channels.filter((channel) => channel.type == 5).length}`,
+											`**- forum:** ${channels.filter((channel) => channel.type == 15).length}`,
+											``,
+											`**- total:** ${channels.size}`,
+										].join('\n'),
+									},
+								])
+								.setTimestamp()
+								.toJSON(),
+						],
+					},
+					{
+						embeds: [
+							new Builders.Embed()
+								.setRandomColor()
+								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
+								.addFields([
+									{
+										name: '😂 | emojis & stickers',
+										value: [
+											`**- animated:** ${emojis.filter((emoji) => emoji.animated).length}`,
+											`**- static:** ${emojis.filter((emoji) => !emoji.animated).length}`,
+											`**- stickers:** ${stickers ? stickers.length : 0}`,
+											``,
+											`**- total:** ${stickers ? stickers.length : 0 + emojis.length}`,
+										].join('\n'),
+									},
+								])
+								.setTimestamp()
+								.toJSON(),
+						],
+					},
+					{
+						embeds: [
+							new Builders.Embed()
+								.setRandomColor()
+								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
+								.addFields([
+									{
+										name: '🚀 | nitro statisitcs',
+										value: [
+											`**- tier:** ${guild.premiumTier}`,
+											`**- boosts:** ${guild.premiumSubscriptionCount}`,
+											`**- boosters:** ${
+												members.filter((member) => (member.premiumSince ? true : false)).length
+											}`,
+										].join('\n'),
+									},
+								])
+								.setTimestamp()
+								.toJSON(),
+						],
+					},
+				];
+
+				const paginator = new Paginator(client, pages);
+				await paginator.start(interaction, 20000);
 
 				break;
 			}
