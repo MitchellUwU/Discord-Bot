@@ -2,7 +2,6 @@ import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
 
 export default class PurgeCommand extends Command {
 	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'purge')
@@ -21,12 +20,17 @@ export default class PurgeCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
+	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('MANAGE_MESSAGES')) {
-				return interaction.createError({
-					content:
-						"you need manage messages permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+				return interaction.createMessage({
+					embeds: [
+						Builders.ErrorEmbed()
+							.setDescription(
+								"you need manage messages permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission"
+							)
+							.toJSON(),
+					],
 				});
 			}
 		}
@@ -34,29 +38,43 @@ export default class PurgeCommand extends Command {
 		let user: Lib.User;
 
 		try {
-			user = interaction.options.getUser('user', true);
+			user = interaction.data.options.getUser('user', true);
 		} catch (error) {
-			return interaction.createError({ content: "that user doesn't exist?" });
+			return interaction.createMessage({
+				embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
+			});
 		}
 
-		const amount = interaction.options.getInteger('amount', true);
+		const amount = interaction.data.options.getInteger('amount', true);
 
 		try {
 			if (!user) {
 				interaction.channel.purge({ limit: amount }).then((deleted: number) => {
-					interaction.createSuccess({ content: `successfully deleted ${deleted} messages!` });
+					return interaction.createMessage({
+						embeds: [
+							Builders.SuccessEmbed().setDescription(`successfully deleted ${deleted} messages!`).toJSON(),
+						],
+					});
 				});
 			} else {
 				interaction.channel
 					.purge({ limit: amount, filter: (m) => m.author.id === user.id })
 					.then((deleted: number) => {
-						interaction.createSuccess({ content: `successfully deleted ${deleted} messages!` });
+						return interaction.createMessage({
+							embeds: [
+								Builders.SuccessEmbed().setDescription(`successfully deleted ${deleted} messages!`).toJSON(),
+							],
+						});
 					});
 			}
 		} catch (error: any) {
 			client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
-			interaction.createError({
-				content: `i can't delete the messages sorry! :(\n\n${error}`,
+			interaction.createMessage({
+				embeds: [
+					Builders.ErrorEmbed()
+						.setDescription('wait for a bit or until the bot restart and try again')
+						.toJSON(),
+				],
 			});
 		}
 	}

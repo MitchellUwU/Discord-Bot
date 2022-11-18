@@ -1,8 +1,7 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { Constants } from 'oceanic.js';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
+import { CommandInteraction, Constants, AnyGuildTextChannel } from 'oceanic.js';
 
 export default class EightBallCommand extends Command {
 	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, '8ball')
@@ -16,8 +15,8 @@ export default class EightBallCommand extends Command {
 		)
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
-		const message = interaction.options.getString('message', true);
+	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
+		const message = interaction.data.options.getString('message', true);
 		const config = client.config.answers;
 		const botAnswer = config.repliesTemplate[Math.floor(Math.random() * config.repliesTemplate.length)]
 			.replace('{answer}', config.answers[Math.floor(Math.random() * config.answers.length)])

@@ -1,8 +1,7 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { Constants } from 'oceanic.js';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
+import { AnyGuildTextChannel, CommandInteraction, Constants } from 'oceanic.js';
 import { performance } from 'perf_hooks';
 
 export default class PingCommand extends Command {
@@ -11,9 +10,9 @@ export default class PingCommand extends Command {
 		.setDMPermission(false)
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
+	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
 		const startTime = performance.now();
-		await interaction.deferResponse();
+		await interaction.defer();
 		const endTime = performance.now();
 
 		interaction.editOriginal({

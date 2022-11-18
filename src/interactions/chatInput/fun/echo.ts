@@ -1,8 +1,7 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { Constants } from 'oceanic.js';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
+import { AnyGuildTextChannel, CommandInteraction, Constants } from 'oceanic.js';
 
 export default class EchoCommand extends Command {
 	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'echo')
@@ -16,13 +15,13 @@ export default class EchoCommand extends Command {
 		)
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
+	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()
 					.setRandomColor()
 					.setAuthor(`${interaction.user.tag} said:`, interaction.user.avatarURL())
-					.setDescription(`${interaction.options.getString('message', true)}`)
+					.setDescription(`${interaction.data.options.getString('message', true)}`)
 					.setTimestamp()
 					.toJSON(),
 			],

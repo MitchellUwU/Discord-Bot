@@ -1,9 +1,8 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { Constants, VERSION } from 'oceanic.js';
+import { AnyGuildTextChannel, CommandInteraction, Constants, VERSION } from 'oceanic.js';
 import packageJSON from '../../../../package.json';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
 import ms from 'ms';
 
 export default class InfoCommand extends Command {
@@ -12,7 +11,7 @@ export default class InfoCommand extends Command {
 		.setDMPermission(false)
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
+	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()

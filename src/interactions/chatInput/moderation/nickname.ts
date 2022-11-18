@@ -2,7 +2,6 @@ import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
 
 export default class NicknameCommand extends Command {
 	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'nickname')
@@ -35,34 +34,43 @@ export default class NicknameCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
+	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
-				return interaction.createError({
-					content:
-						"you need manage nicknames permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+				return interaction.createMessage({
+					embeds: [
+						Builders.ErrorEmbed()
+							.setDescription(
+								"you need manage nicknames permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission"
+							)
+							.toJSON(),
+					],
 				});
 			}
 		}
 
-		const command = interaction.options.getSubCommand(true);
+		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'change': {
 				let user: Lib.Member;
 
 				try {
-					user = interaction.options.getMember('user', true);
+					user = interaction.data.options.getMember('user', true);
 				} catch (error) {
 					try {
-						const name = interaction.options.getUser('user', true).tag;
-						return interaction.createError({ content: `${name} is not in this server!` });
+						const name = interaction.data.options.getUser('user', true).tag;
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription(`${name} is not in this server!`).toJSON()],
+						});
 					} catch (error) {
-						return interaction.createError({ content: "that user doesn't exist?" });
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
+						});
 					}
 				}
 
-				const name = interaction.options.getString('name', true);
+				const name = interaction.data.options.getString('name', true);
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
@@ -79,7 +87,13 @@ export default class NicknameCommand extends Command {
 						client.utils.getHighestRole(user).position >=
 						client.utils.getHighestRole(interaction.member).position
 					) {
-						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`${user.tag} have higher (or same) role than you`)
+									.toJSON(),
+							],
+						});
 					}
 				}
 
@@ -87,8 +101,14 @@ export default class NicknameCommand extends Command {
 					client.utils.getHighestRole(user).position >=
 					client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createError({
-						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+					return interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(
+									`${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`
+								)
+								.toJSON(),
+						],
 					});
 				}
 
@@ -108,13 +128,17 @@ export default class NicknameCommand extends Command {
 				let user: Lib.Member;
 
 				try {
-					user = interaction.options.getMember('user', true);
+					user = interaction.data.options.getMember('user', true);
 				} catch (error) {
 					try {
-						const name = interaction.options.getUser('user', true).tag;
-						return interaction.createError({ content: `${name} is not in this server!` });
+						const name = interaction.data.options.getUser('user', true).tag;
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription(`${name} is not in this server!`).toJSON()],
+						});
 					} catch (error) {
-						return interaction.createError({ content: "that user doesn't exist?" });
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
+						});
 					}
 				}
 
@@ -140,7 +164,13 @@ export default class NicknameCommand extends Command {
 						client.utils.getHighestRole(user).position >=
 						client.utils.getHighestRole(interaction.member).position
 					) {
-						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`${user.tag} have higher (or same) role than you`)
+									.toJSON(),
+							],
+						});
 					}
 				}
 
@@ -148,8 +178,14 @@ export default class NicknameCommand extends Command {
 					client.utils.getHighestRole(user).position >=
 					client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createError({
-						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+					return interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(
+									`${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`
+								)
+								.toJSON(),
+						],
 					});
 				}
 
@@ -166,8 +202,12 @@ export default class NicknameCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createError({
-					content: 'wait for a bit or until the bot restart and try again',
+				interaction.createMessage({
+					embeds: [
+						Builders.ErrorEmbed()
+							.setDescription('wait for a bit or until the bot restart and try again')
+							.toJSON(),
+					],
 				});
 			}
 		}

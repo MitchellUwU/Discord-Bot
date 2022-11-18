@@ -1,8 +1,7 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { Constants, Guild } from 'oceanic.js';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
+import { AnyGuildTextChannel, CommandInteraction, Constants, Guild } from 'oceanic.js';
 
 export default class AvatarCommand extends Command {
 	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'avatar')
@@ -30,14 +29,14 @@ export default class AvatarCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
-		const command = interaction.options.getSubCommand(true);
+	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
+		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'user': {
 				const user =
-					interaction.options.getMember('user', false) ||
-					interaction.options.getUser('user', false) ||
+					interaction.data.options.getMember('user', false) ||
+					interaction.data.options.getUser('user', false) ||
 					interaction.member;
 
 				interaction.createMessage({
@@ -57,7 +56,7 @@ export default class AvatarCommand extends Command {
 				break;
 			}
 			case 'guild': {
-				const id = interaction.options.getString('guild', false) || interaction.guildID;
+				const id = interaction.data.options.getString('guild', false) || interaction.guildID;
 				let guild: Guild;
 
 				try {
@@ -67,9 +66,14 @@ export default class AvatarCommand extends Command {
 				}
 
 				if (!guild.bannerURL() && !guild.iconURL()) {
-					return interaction.createError({
-						content:
-							'this guild seem to have no banner or icon... ask the admins to add one! it would be very cool!',
+					return interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(
+									'this guild seem to have no banner or icon... ask the admins to add one! it would be very cool!'
+								)
+								.toJSON(),
+						],
 					});
 				}
 
@@ -105,8 +109,12 @@ export default class AvatarCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createError({
-					content: 'wait for a bit or until the bot restart and try again',
+				interaction.createMessage({
+					embeds: [
+						Builders.ErrorEmbed()
+							.setDescription('wait for a bit or until the bot restart and try again')
+							.toJSON(),
+					],
 				});
 			}
 		}

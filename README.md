@@ -5,7 +5,7 @@ This repository contains:
 - A really horrible code
 - Horrible typings
 - Stolen code
-- No documentation (except for stuff in src/utils, client.ts and index.ts)
+- No documentation (except for some stuff in src/classes and index.ts)
 - Unreadable code
 - and more
 

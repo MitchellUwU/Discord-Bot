@@ -1,9 +1,8 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { Constants } from 'oceanic.js';
+import { AnyGuildTextChannel, CommandInteraction, Constants } from 'oceanic.js';
 import { request } from 'undici';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
 
 export default class FetchCommand extends Command {
 	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
@@ -28,12 +27,12 @@ export default class FetchCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
-		const command = interaction.options.getSubCommand(true);
+	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
+		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'meme': {
-				interaction.deferResponse();
+				interaction.defer();
 
 				const data = await request('https://meme-api.herokuapp.com/gimme/memes');
 				const file = await client.utils.getJSONContent(data.body);
@@ -60,7 +59,7 @@ export default class FetchCommand extends Command {
 				break;
 			}
 			case 'cat': {
-				interaction.deferResponse();
+				interaction.defer();
 
 				const data = await request('https://aws.random.cat/meow');
 				const { file } = await client.utils.getJSONContent(data.body);
@@ -79,14 +78,17 @@ export default class FetchCommand extends Command {
 				break;
 			}
 			case 'urban': {
-				interaction.deferResponse();
+				interaction.defer();
 
-				const message = interaction.options.getString('word', true);
+				const message = interaction.data.options.getString('word', true);
 				const query = new URLSearchParams(message);
 				const data = await request(`https://api.urbandictionary.com/v0/define?term=${query}`);
 				const { list } = await client.utils.getJSONContent(data.body);
 
-				if (!list.length) return interaction.createError({ content: 'no result found :(' });
+				if (!list.length)
+					return interaction.createMessage({
+						embeds: [Builders.ErrorEmbed().setDescription('no result found :(').toJSON()],
+					});
 
 				interaction.createMessage({
 					embeds: [
@@ -113,8 +115,12 @@ export default class FetchCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createError({
-					content: 'wait for a bit or until the bot restart and try again',
+				interaction.createMessage({
+					embeds: [
+						Builders.ErrorEmbed()
+							.setDescription('wait for a bit or until the bot restart and try again')
+							.toJSON(),
+					],
 				});
 			}
 		}

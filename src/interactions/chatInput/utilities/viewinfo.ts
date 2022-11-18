@@ -1,39 +1,38 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { PrivateChannel, Constants, TextableChannel } from 'oceanic.js';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
+import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
 export default class ViewInfoCommand extends Command {
-	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
+	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
 		.setDescription('view user info or guild info')
 		.setDMPermission(false)
 		.addOptions([
-			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
 				.setDescription('view user info')
 				.addOption(
-					new Builders.Option(Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('a user')
 						.setRequired(false)
 						.toJSON()
 				)
 				.toJSON(),
-			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
 				.setDescription('view guild info')
 				.toJSON(),
-			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'channel')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'channel')
 				.setDescription('view channel info')
 				.addOption(
-					new Builders.Option(Constants.ApplicationCommandOptionTypes.CHANNEL, 'channel')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.CHANNEL, 'channel')
 						.setDescription('a channel')
 						.toJSON()
 				)
 				.toJSON(),
-			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'role')
+			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'role')
 				.setDescription('view role info')
 				.addOption(
-					new Builders.Option(Constants.ApplicationCommandOptionTypes.ROLE, 'role')
+					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.ROLE, 'role')
 						.setDescription('a role')
 						.setRequired(true)
 						.toJSON()
@@ -42,12 +41,12 @@ export default class ViewInfoCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
-		const command = interaction.options.getSubCommand(true);
+	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'user': {
-				const id = interaction.options.getUser('user', false)?.id || interaction.user.id;
+				const id = interaction.data.options.getUser('user', false)?.id || interaction.user.id;
 				try {
 					const user = await client.utils.getMember(interaction.guildID, id);
 					const roles = interaction.guild.roles
@@ -235,11 +234,11 @@ export default class ViewInfoCommand extends Command {
 				];
 
 				const channel =
-					interaction.options.getChannel('channel', false)?.completeChannel || interaction.channel;
+					interaction.data.options.getChannel('channel', false)?.completeChannel || interaction.channel;
 
-				if (channel instanceof PrivateChannel) {
-					return interaction.createError({
-						content: 'the channel must be a guild channel',
+				if (channel instanceof Lib.PrivateChannel) {
+					return interaction.createMessage({
+						embeds: [Builders.ErrorEmbed().setDescription('the channel must be a guild channel').toJSON()],
 					});
 				}
 
@@ -256,7 +255,7 @@ export default class ViewInfoCommand extends Command {
 					)
 					.setTimestamp();
 
-				if (channel instanceof TextableChannel) {
+				if (channel instanceof Lib.TextableChannel) {
 					if (channel.rateLimitPerUser === 0) {
 						slowmode = 'none';
 					} else {
@@ -282,11 +281,15 @@ export default class ViewInfoCommand extends Command {
 				break;
 			}
 			case 'role': {
-				const role = interaction.options.getRole('role', true);
+				const role = interaction.data.options.getRole('role', true);
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (role.position > client.utils.getHighestRole(interaction.member).position) {
-						return interaction.createError({ content: 'that role is higher/same role than you' });
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed().setDescription('that role is higher/same role than you').toJSON(),
+							],
+						});
 					}
 				}
 
@@ -311,8 +314,12 @@ export default class ViewInfoCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createError({
-					content: 'wait for a bit or until the bot restart and try again',
+				interaction.createMessage({
+					embeds: [
+						Builders.ErrorEmbed()
+							.setDescription('wait for a bit or until the bot restart and try again')
+							.toJSON(),
+					],
 				});
 			}
 		}

@@ -1,8 +1,7 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { Constants, SubCommandArray } from 'oceanic.js';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
+import { AnyGuildTextChannel, CommandInteraction, Constants, SubCommandArray } from 'oceanic.js';
 
 export default class EightBallCommand extends Command {
 	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'games')
@@ -26,19 +25,21 @@ export default class EightBallCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
-		let command = interaction.options.getSubCommand<SubCommandArray>(false);
+	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
+		let command = interaction.data.options.getSubCommand<SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {
 			case 'rps': {
 				const choices = ['rock', 'paper', 'scissors'];
-				const playerChoice = interaction.options.getString('choice', true);
+				const playerChoice = interaction.data.options.getString('choice', true);
 				const botChoice = choices[Math.floor(Math.random() * choices.length)];
 				let result: string;
 
 				if (!choices.includes(playerChoice)) {
-					return interaction.createError({ content: 'can you do it properly? please?' });
+					return interaction.createMessage({
+						embeds: [Builders.ErrorEmbed().setDescription('can you do it properly? please?').toJSON()],
+					});
 				}
 
 				if (playerChoice === botChoice) result = 'you tied!';
@@ -64,8 +65,12 @@ export default class EightBallCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createError({
-					content: 'wait for a bit or until the bot restart and try again',
+				interaction.createMessage({
+					embeds: [
+						Builders.ErrorEmbed()
+							.setDescription('wait for a bit or until the bot restart and try again')
+							.toJSON(),
+					],
 				});
 			}
 		}

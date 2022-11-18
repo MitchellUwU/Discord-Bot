@@ -1,7 +1,7 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import InteractionWrapper from '../../../classes/InteractionWrapper';
+import { InteractionCollector } from 'oceanic-collectors';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
@@ -54,56 +54,75 @@ export default class TimeoutCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: InteractionWrapper) {
+	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
-				return interaction.createError({
-					content:
-						"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission",
+				return interaction.createMessage({
+					embeds: [
+						Builders.ErrorEmbed()
+							.setDescription(
+								"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission"
+							)
+							.toJSON(),
+					],
 				});
 			}
 		}
 
-		const command = interaction.options.getSubCommand(true);
+		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'add': {
 				let user: Lib.Member;
 
 				try {
-					user = interaction.options.getMember('user', true);
+					user = interaction.data.options.getMember('user', true);
 				} catch (error) {
 					try {
-						const name = interaction.options.getUser('user', true).tag;
-						return interaction.createError({ content: `${name} is not in this server!` });
+						const name = interaction.data.options.getUser('user', true).tag;
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription(`${name} is not in this server!`).toJSON()],
+						});
 					} catch (error) {
-						return interaction.createError({ content: "that user doesn't exist?" });
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
+						});
 					}
 				}
 
-				const reason = interaction.options.getString('reason', false) || 'no reason?';
-				const time = ms(`${interaction.options.getString('time', true)}`);
-				let dmOption = interaction.options.getBoolean('dm', false);
+				const reason = interaction.data.options.getString('reason', false) || 'no reason?';
+				const time = ms(`${interaction.data.options.getString('time', true)}`);
+				let dmOption = interaction.data.options.getBoolean('dm', false);
 				const date = new Date(Date.now() + time).toISOString();
 
 				if (dmOption === undefined) dmOption = true;
 
 				if (user.id === interaction.user.id) {
-					return interaction.createError({ content: "you can't timeout yourself" });
+					return interaction.createMessage({
+						embeds: [Builders.ErrorEmbed().setDescription("you can't timeout yourself").toJSON()],
+					});
 				}
 
 				if (user.id === interaction.guild.clientMember.id) {
-					return interaction.createError({ content: 'T_T' });
+					return interaction.createMessage({
+						embeds: [Builders.ErrorEmbed().setDescription('T_T').toJSON()],
+					});
 				}
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createError({ content: "i can't timeout the owner" });
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription("i can't timeout the owner").toJSON()],
+						});
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
-						return interaction.createError({
-							content: `${user.tag} have administrator permission, i can't timeout them!`,
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`${user.tag} have administrator permission, i can't timeout them!`)
+									.toJSON(),
+							],
 						});
 					}
 
@@ -111,7 +130,13 @@ export default class TimeoutCommand extends Command {
 						client.utils.getHighestRole(user).position >=
 						client.utils.getHighestRole(interaction.member).position
 					) {
-						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`${user.tag} have higher (or same) role than you`)
+									.toJSON(),
+							],
+						});
 					}
 				}
 
@@ -119,8 +144,14 @@ export default class TimeoutCommand extends Command {
 					client.utils.getHighestRole(user).position >=
 					client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createError({
-						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+					return interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(
+									`${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`
+								)
+								.toJSON(),
+						],
 					});
 				}
 
@@ -188,17 +219,21 @@ export default class TimeoutCommand extends Command {
 				let user: Lib.Member;
 
 				try {
-					user = interaction.options.getMember('user', true);
+					user = interaction.data.options.getMember('user', true);
 				} catch (error) {
 					try {
-						const name = interaction.options.getUser('user', true).tag;
-						return interaction.createError({ content: `${name} is not in this server!` });
+						const name = interaction.data.options.getUser('user', true).tag;
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription(`${name} is not in this server!`).toJSON()],
+						});
 					} catch (error) {
-						return interaction.createError({ content: "that user doesn't exist?" });
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
+						});
 					}
 				}
 
-				const reason = interaction.options.getString('reason', false) || 'no reason?';
+				const reason = interaction.data.options.getString('reason', false) || 'no reason?';
 
 				if (user.id === interaction.user.id) {
 					return interaction.createError({ content: "you can't untimeout yourself" });
@@ -219,7 +254,13 @@ export default class TimeoutCommand extends Command {
 						client.utils.getHighestRole(user).position >=
 						client.utils.getHighestRole(interaction.member).position
 					) {
-						return interaction.createError({ content: `${user.tag} have higher (or same) role than you` });
+						return interaction.createMessage({
+							embeds: [
+								Builders.ErrorEmbed()
+									.setDescription(`${user.tag} have higher (or same) role than you`)
+									.toJSON(),
+							],
+						});
 					}
 				}
 
@@ -227,8 +268,14 @@ export default class TimeoutCommand extends Command {
 					client.utils.getHighestRole(user).position >=
 					client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createError({
-						content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+					return interaction.createMessage({
+						embeds: [
+							Builders.ErrorEmbed()
+								.setDescription(
+									`${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`
+								)
+								.toJSON(),
+						],
 					});
 				}
 
@@ -251,13 +298,17 @@ export default class TimeoutCommand extends Command {
 				let user: Lib.Member;
 
 				try {
-					user = interaction.options.getMember('user', true);
+					user = interaction.data.options.getMember('user', true);
 				} catch (error) {
 					try {
-						const name = interaction.options.getUser('user', true).tag;
-						return interaction.createError({ content: `${name} is not in this server!` });
+						const name = interaction.data.options.getUser('user', true).tag;
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription(`${name} is not in this server!`).toJSON()],
+						});
 					} catch (error) {
-						return interaction.createError({ content: "that user doesn't exist?" });
+						return interaction.createMessage({
+							embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
+						});
 					}
 				}
 
@@ -296,31 +347,30 @@ export default class TimeoutCommand extends Command {
 					components: component(false),
 				});
 
-				const collector = client.utils.collectors.create({
-					client: client,
-					authorID: interaction.user.id,
+				const collector = new InteractionCollector<
+					Lib.InteractionTypes.MESSAGE_COMPONENT,
+					Lib.ComponentTypes.BUTTON
+				>(client, {
 					interaction: interaction,
-					interactionType: Lib.ComponentInteraction,
-					componentType: Lib.Constants.ComponentTypes.BUTTON,
+					filter: (i) => i.user.id === interaction.user.id,
 					time: 20000,
 					max: 1,
 				});
 
 				collector.on('collect', async (i) => {
+					if (!i.inCachedGuildChannel()) return collector.stop();
 					if (i.data.customID === 'untimeout') {
-						const helper = new InteractionWrapper(client, i);
-
 						if (user.id === interaction.user.id) {
-							return helper.createError({ content: "you can't untimeout yourself" });
+							return i.createError({ content: "you can't untimeout yourself" });
 						}
 
 						if (interaction.user.id !== interaction.guild.ownerID) {
 							if (user.id === interaction.guild.ownerID) {
-								return helper.createError({ content: "i can't untimeout the owner" });
+								return i.createError({ content: "i can't untimeout the owner" });
 							}
 
 							if (user.permissions.has('ADMINISTRATOR')) {
-								return helper.createError({
+								return i.createError({
 									content: `${user.tag} have administrator permission, i can't untimeout them!`,
 								});
 							}
@@ -329,7 +379,13 @@ export default class TimeoutCommand extends Command {
 								client.utils.getHighestRole(user).position >=
 								client.utils.getHighestRole(interaction.member).position
 							) {
-								return helper.createError({ content: `${user.tag} have higher (or same) role than you` });
+								return interaction.createMessage({
+									embeds: [
+										Builders.ErrorEmbed()
+											.setDescription(`${user.tag} have higher (or same) role than you`)
+											.toJSON(),
+									],
+								});
 							}
 						}
 
@@ -337,8 +393,14 @@ export default class TimeoutCommand extends Command {
 							client.utils.getHighestRole(user).position >=
 							client.utils.getHighestRole(interaction.guild.clientMember).position
 						) {
-							return helper.createError({
-								content: `${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`,
+							return interaction.createMessage({
+								embeds: [
+									Builders.ErrorEmbed()
+										.setDescription(
+											`${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`
+										)
+										.toJSON(),
+								],
 							});
 						}
 
@@ -347,9 +409,9 @@ export default class TimeoutCommand extends Command {
 								communicationDisabledUntil: new Date(Date.now()).toISOString(),
 								reason: 'untimeout using button in view command',
 							});
-							helper.createSuccess({ content: `successfully untimeout ${user.tag}!` });
+							i.createSuccess({ content: `successfully untimeout ${user.tag}!` });
 						} catch (error: any) {
-							helper.createError({
+							i.createError({
 								content: `i can't untimeout ${user.tag} sorry! :(\n\n${error}`,
 							});
 							client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
@@ -366,8 +428,12 @@ export default class TimeoutCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createError({
-					content: 'wait for a bit or until the bot restart and try again',
+				interaction.createMessage({
+					embeds: [
+						Builders.ErrorEmbed()
+							.setDescription('wait for a bit or until the bot restart and try again')
+							.toJSON(),
+					],
 				});
 			}
 		}

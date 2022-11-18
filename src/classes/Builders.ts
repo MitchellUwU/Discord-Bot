@@ -21,6 +21,9 @@ const ActionRow = ComponentBuilder<MessageActionRow>;
 const Button = ButtonBuilder;
 const SelectMenu = SelectMenuBuilder;
 const TextInput = TextInputBuilder;
+const ErrorEmbed = () => {return new Embed().setColor('red').setTitle('⛔ error!').setTimestamp()}
+const SuccessEmbed = () => {return new Embed().setColor('green').setTitle('✅ success!').setTimestamp()}
+const WarnEmbed = () => {return new Embed().setColor('yellow').setTitle('⚠️ warning!').setTimestamp()}
 
 const Builders = {
 	Choice,
@@ -32,6 +35,9 @@ const Builders = {
 	Button,
 	SelectMenu,
 	TextInput,
+	ErrorEmbed,
+	SuccessEmbed,
+	WarnEmbed
 };
 
 // Export all builders.
