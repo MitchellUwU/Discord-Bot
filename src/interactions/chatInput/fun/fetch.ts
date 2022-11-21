@@ -1,7 +1,7 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { AnnouncementThreadChannel, AnyGuildTextChannel, CommandInteraction, Constants } from 'oceanic.js';
+import { AnyGuildTextChannel, CommandInteraction, Constants } from 'oceanic.js';
 import { request } from 'undici';
 
 export default class FetchCommand extends Command {
