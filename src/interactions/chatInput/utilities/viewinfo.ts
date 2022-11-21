@@ -113,11 +113,8 @@ export default class ViewInfoCommand extends Command {
 				const verificationLevels = ['none', 'low', 'medium', 'high', 'very high'];
 				const mfaLevels = ['disabled', 'enabled'];
 				const guild = interaction.guild;
-				const channels = guild.channels;
-				const threads = guild.threads;
-				const members = guild.members;
-				const stickers = guild.stickers;
-				const emojis = guild.emojis;
+
+				const { channels, threads, members, stickers, emojis } = interaction.guild;
 
 				if (
 					members.filter((member) => !member.bot).length === 1 &&
