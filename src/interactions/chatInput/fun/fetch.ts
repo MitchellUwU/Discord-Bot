@@ -1,7 +1,7 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { AnyGuildTextChannel, CommandInteraction, Constants } from 'oceanic.js';
+import { AnnouncementThreadChannel, AnyGuildTextChannel, CommandInteraction, Constants } from 'oceanic.js';
 import { request } from 'undici';
 
 export default class FetchCommand extends Command {
@@ -10,10 +10,10 @@ export default class FetchCommand extends Command {
 		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'meme')
-				.setDescription('memes')
+				.setDescription('get memes')
 				.toJSON(),
 			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'cat')
-				.setDescription('a cat picture')
+				.setDescription('get a cat picture')
 				.toJSON(),
 			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'urban')
 				.setDescription('search urban dictionary')

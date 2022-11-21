@@ -26,7 +26,7 @@ export default class TimeoutCommand extends Command {
 						.setDescription('why did you timeout the user?')
 						.toJSON(),
 					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
-						.setDescription('dm the user (default to true)')
+						.setDescription('whether to dm the user or not (default to true)')
 						.toJSON(),
 				])
 				.toJSON(),

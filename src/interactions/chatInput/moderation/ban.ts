@@ -27,10 +27,10 @@ export default class BanCommand extends Command {
 						)
 						.toJSON(),
 					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'soft')
-						.setDescription('softban the user')
+						.setDescription('whether to softban the user or not')
 						.toJSON(),
 					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
-						.setDescription('dm the user (default to true)')
+						.setDescription('whether to dm the user or not (default to true)')
 						.toJSON(),
 				])
 				.toJSON(),

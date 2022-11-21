@@ -5,11 +5,11 @@ import { AnyGuildTextChannel, CommandInteraction, Constants } from 'oceanic.js';
 
 export default class EchoCommand extends Command {
 	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'echo')
-		.setDescription('echo your message')
+		.setDescription('echo your message (will also display your name)')
 		.setDMPermission(false)
 		.addOption(
 			new Builders.Option(Constants.ApplicationCommandOptionTypes.STRING, 'message')
-				.setDescription('a message')
+				.setDescription('message to echo')
 				.setRequired(true)
 				.toJSON()
 		)

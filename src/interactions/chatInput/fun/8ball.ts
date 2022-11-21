@@ -5,7 +5,7 @@ import { CommandInteraction, Constants, AnyGuildTextChannel } from 'oceanic.js';
 
 export default class EightBallCommand extends Command {
 	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, '8ball')
-		.setDescription('an 8ball, what do you expect?')
+		.setDescription('ask the 8ball (kinda) a question')
 		.setDMPermission(false)
 		.addOption(
 			new Builders.Option(Constants.ApplicationCommandOptionTypes.STRING, 'message')

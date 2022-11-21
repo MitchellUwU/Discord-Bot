@@ -5,10 +5,10 @@ import BotClient from './Client';
 
 export default class Paginator {
 	client: BotClient;
-	pages: Array<Lib.InteractionContent>;
+	pages: Lib.InteractionContent[];
 	currentPage: number;
 	actionRow: (state: boolean) => Lib.MessageActionRow[];
-	constructor(client: BotClient, pages: Array<Lib.InteractionContent>) {
+	constructor(client: BotClient, pages: Lib.InteractionContent[]) {
 		this.client = client;
 		this.pages = pages;
 		this.currentPage = 0;
