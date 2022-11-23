@@ -4,28 +4,28 @@ import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
 
 export default class NicknameCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'nickname')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'nickname')
 		.setDescription('manage nickname')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('MANAGE_NICKNAMES')
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'change')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'change')
 				.setDescription('change someone nickname')
 				.addOptions([
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'name')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'name')
 						.setDescription('name')
 						.setRequired(true)
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
 				.setDescription('remove someone nickname')
 				.addOptions([
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user')
 						.setRequired(true)
 						.toJSON(),

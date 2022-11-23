@@ -6,34 +6,34 @@ import ms from 'ms';
 import Paginator from '../../../classes/Paginator';
 
 export default class ViewInfoCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
 		.setDescription('view user info or guild info')
 		.setDMPermission(false)
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
 				.setDescription('view user info')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('a user')
 						.setRequired(false)
 						.toJSON()
 				)
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
 				.setDescription('view guild info')
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'channel')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'channel')
 				.setDescription('view channel info')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.CHANNEL, 'channel')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.CHANNEL, 'channel')
 						.setDescription('a channel')
 						.toJSON()
 				)
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'role')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'role')
 				.setDescription('view role info')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.ROLE, 'role')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.ROLE, 'role')
 						.setDescription('a role')
 						.setRequired(true)
 						.toJSON()

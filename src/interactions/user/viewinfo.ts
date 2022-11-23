@@ -4,7 +4,7 @@ import Command from '../../classes/Command';
 import * as Lib from 'oceanic.js';
 
 export default class ViewInfoCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.USER, 'View Info')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.USER, 'View Info')
 		.setDMPermission(false)
 		.toJSON();
 

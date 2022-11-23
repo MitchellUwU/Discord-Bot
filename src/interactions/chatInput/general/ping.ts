@@ -1,16 +1,16 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { AnyGuildTextChannel, CommandInteraction, Constants } from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 import { performance } from 'perf_hooks';
 
 export default class PingCommand extends Command {
-	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'ping')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'ping')
 		.setDescription('show latency statistic thing')
 		.setDMPermission(false)
 		.toJSON();
 
-	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
+	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const startTime = performance.now();
 		await interaction.defer();
 		const endTime = performance.now();

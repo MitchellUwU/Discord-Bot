@@ -4,7 +4,7 @@ import Command from '../../classes/Command';
 import * as Lib from 'oceanic.js';
 
 export default class ViewRawCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.MESSAGE, 'View Raw')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.MESSAGE, 'View Raw')
 		.setDMPermission(false)
 		.toJSON();
 

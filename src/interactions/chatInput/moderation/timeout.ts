@@ -6,46 +6,46 @@ import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
 export default class TimeoutCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'timeout')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'timeout')
 		.setDescription('manage timeout')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('MODERATE_MEMBERS')
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
 				.setDescription('timeout someone')
 				.addOptions([
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user to timeout')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'time')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'time')
 						.setDescription('duration of time (must be between 1 second and 1 week)')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('why did you timeout the user?')
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
 						.setDescription('whether to dm the user or not (default to true)')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
 				.setDescription('untimeout someone')
 				.addOptions([
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user to untimeout')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('why did you untimeout the user?')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
 				.setDescription('view someone timeout')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user to view timeout')
 						.setRequired(true)
 						.toJSON()

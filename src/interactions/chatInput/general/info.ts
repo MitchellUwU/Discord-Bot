@@ -1,17 +1,17 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { AnyGuildTextChannel, CommandInteraction, Constants, VERSION } from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 import packageJSON from '../../../../package.json';
 import ms from 'ms';
 
 export default class InfoCommand extends Command {
-	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'info')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'info')
 		.setDescription('show a super duper cool information')
 		.setDMPermission(false)
 		.toJSON();
 
-	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
+	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()
@@ -34,9 +34,9 @@ export default class InfoCommand extends Command {
 						{
 							name: '💻 more info for nerds',
 							value: [
-								`**gateway version:** v${Constants.GATEWAY_VERSION}`,
-								`**rest version:** v${Constants.REST_VERSION}`,
-								`**library used:** oceanic v${VERSION}`,
+								`**gateway version:** v${Lib.Constants.GATEWAY_VERSION}`,
+								`**rest version:** v${Lib.Constants.REST_VERSION}`,
+								`**library used:** oceanic v${Lib.VERSION}`,
 								`**written in:** typescript version ${packageJSON.devDependencies.typescript}`,
 								`**node.js version:** ${process.version}`,
 							].join('\n'),

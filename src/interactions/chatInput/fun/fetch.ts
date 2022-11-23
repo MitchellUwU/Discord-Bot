@@ -1,24 +1,24 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { AnyGuildTextChannel, CommandInteraction, Constants } from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 import { request } from 'undici';
 
 export default class FetchCommand extends Command {
-	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
 		.setDescription('fetch some random stuff from the internet')
 		.setDMPermission(false)
 		.addOptions([
-			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'meme')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'meme')
 				.setDescription('get memes')
 				.toJSON(),
-			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'cat')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'cat')
 				.setDescription('get a cat picture')
 				.toJSON(),
-			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'urban')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'urban')
 				.setDescription('search urban dictionary')
 				.addOption(
-					new Builders.Option(Constants.ApplicationCommandOptionTypes.STRING, 'word')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'word')
 						.setDescription('a word or sentence or whatever')
 						.setRequired(true)
 						.toJSON()
@@ -27,7 +27,7 @@ export default class FetchCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
+	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {

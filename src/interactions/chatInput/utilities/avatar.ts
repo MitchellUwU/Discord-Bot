@@ -1,26 +1,26 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { AnyGuildTextChannel, CommandInteraction, Constants, Guild } from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 
 export default class AvatarCommand extends Command {
-	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'avatar')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'avatar')
 		.setDescription('show avatar')
 		.setDMPermission(false)
 		.addOptions([
-			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
 				.setDescription('show user avatar')
 				.addOption(
-					new Builders.Option(Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('a user')
 						.setRequired(false)
 						.toJSON()
 				)
 				.toJSON(),
-			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
 				.setDescription('show guild icon (and also banner)')
 				.addOption(
-					new Builders.Option(Constants.ApplicationCommandOptionTypes.STRING, 'id')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'id')
 						.setDescription('guild id')
 						.setRequired(false)
 						.toJSON()
@@ -29,7 +29,7 @@ export default class AvatarCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
+	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {
@@ -57,7 +57,7 @@ export default class AvatarCommand extends Command {
 			}
 			case 'guild': {
 				const id = interaction.data.options.getString('guild', false) || interaction.guildID;
-				let guild: Guild;
+				let guild: Lib.Guild;
 
 				try {
 					guild = await client.utils.getGuild(id);

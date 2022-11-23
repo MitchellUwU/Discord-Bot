@@ -6,50 +6,50 @@ import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
 export default class BanCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'ban')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'ban')
 		.setDescription('manage ban')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('BAN_MEMBERS')
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
 				.setDescription('timeout someone')
 				.addOptions([
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
 						.setDescription('user to ban')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('why did you ban the user?')
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'time')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'time')
 						.setDescription(
 							'delete messages in specified duration of time (must be between 1 second and 1 week)'
 						)
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'soft')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.BOOLEAN, 'soft')
 						.setDescription('whether to softban the user or not')
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
 						.setDescription('whether to dm the user or not (default to true)')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
 				.setDescription('unban someone')
 				.addOptions([
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'id')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'id')
 						.setDescription('user id to unban')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
 						.setDescription('why did you unban the user?')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
 				.setDescription('view banned members')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'id')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'id')
 						.setDescription('id of banned member (leave empty if you want to view all banned members)')
 						.toJSON()
 				)

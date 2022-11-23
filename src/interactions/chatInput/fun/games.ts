@@ -1,17 +1,17 @@
 import BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { AnyGuildTextChannel, CommandInteraction, Constants, SubCommandArray } from 'oceanic.js';
+import * as Lib from 'oceanic.js';
 
 export default class EightBallCommand extends Command {
-	override data = new Builders.Command(Constants.ApplicationCommandTypes.CHAT_INPUT, 'games')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'games')
 		.setDescription('games')
 		.setDMPermission(false)
 		.addOptions([
-			new Builders.Option(Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'rps')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'rps')
 				.setDescription('rock paper scissors')
 				.addOption(
-					new Builders.Option(Constants.ApplicationCommandOptionTypes.STRING, 'choice')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'choice')
 						.setDescription('choose one')
 						.addChoices([
 							new Builders.Choice('rock', 'rock').toJSON(),
@@ -25,8 +25,8 @@ export default class EightBallCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: CommandInteraction<AnyGuildTextChannel>) {
-		let command = interaction.data.options.getSubCommand<SubCommandArray>(false);
+	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+		let command = interaction.data.options.getSubCommand<Lib.SubCommandArray>(false);
 		if (!command) command = ['unknown'];
 
 		switch (command.toString()) {

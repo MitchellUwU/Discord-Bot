@@ -4,17 +4,17 @@ import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
 
 export default class PurgeCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'purge')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'purge')
 		.setDescription('purge messages from the channel or from the user')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('MANAGE_MESSAGES')
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.INTEGER, 'amount')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.INTEGER, 'amount')
 				.setDescription('amount of messages to delete')
 				.setMinMax(1, 100)
 				.setRequired(true)
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
 				.setDescription('which user to delete messages from')
 				.toJSON(),
 		])

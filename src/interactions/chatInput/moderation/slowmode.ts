@@ -5,27 +5,27 @@ import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
 export default class SlowmodeCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'slowmode')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'slowmode')
 		.setDescription('manage slowmode')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('MANAGE_CHANNELS')
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'change')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'change')
 				.setDescription('change channel slowmode')
 				.addOptions([
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'time')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'time')
 						.setDescription('slowmode time (must be between 1 second and 6 hours)')
 						.setRequired(true)
 						.toJSON(),
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.CHANNEL, 'channel')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.CHANNEL, 'channel')
 						.setDescription('channel to change slowmode')
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
 				.setDescription('remove channel slowmode')
 				.addOption(
-					new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.CHANNEL, 'channel')
+					new Builders.Option(Lib.ApplicationCommandOptionTypes.CHANNEL, 'channel')
 						.setDescription('channel to remove slowmode')
 						.toJSON()
 				)

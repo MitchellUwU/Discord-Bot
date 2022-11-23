@@ -4,19 +4,19 @@ import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
 
 export default class KickCommand extends Command {
-	override data = new Builders.Command(Lib.Constants.ApplicationCommandTypes.CHAT_INPUT, 'kick')
+	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'kick')
 		.setDescription('kick someone')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('KICK_MEMBERS')
 		.addOptions([
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.USER, 'user')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
 				.setDescription('user to kick')
 				.setRequired(true)
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.STRING, 'reason')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
 				.setDescription('why did you kick the user?')
 				.toJSON(),
-			new Builders.Option(Lib.Constants.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
+			new Builders.Option(Lib.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
 				.setDescription('whether to dm the user or not (default to true)')
 				.toJSON(),
 		])
