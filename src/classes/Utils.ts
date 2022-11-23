@@ -11,20 +11,6 @@ export default class Utils {
 	}
 
 	/**
-	 * Remove token from content.
-	 * @param content Any content.
-	 */
-
-	cleanContent(content: any) {
-		let cleaned: string;
-
-		cleaned = content?.replaceAll(this.client.config.clientOptions.auth, 'ClientToken');
-		cleaned = content?.replaceAll(this.client.config.db.password, 'DatabaseToken');
-
-		return cleaned;
-	}
-
-	/**
 	 * Recursive file loader.
 	 * @param dir Directory to load.
 	 */
@@ -128,6 +114,11 @@ export default class Utils {
 
 	/**
 	 * The main logger.
+	 * 
+	 * 1 = Info.
+	 * 2 = Error.
+	 * 3 = Warn.
+	 * 4 = Debug.
 	 * @param options Logger Configuration.
 	 */
 

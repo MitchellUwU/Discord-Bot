@@ -11,7 +11,6 @@ export interface BotConfig {
 		faces: string[];
 	};
 	ascii?: string[];
-	cooldownAmount?: number
 	clientOptions: Lib.ClientOptions;
 	blockedGuilds?: string[];
 	blockedUsers?: string[];
@@ -31,7 +30,7 @@ export interface BotConfig {
 export interface LoggerOptions {
 	title: string;
 	content: unknown;
-	type: number;
+	type: 1 | 2 | 3 | 4;
 }
 
 // Collector configuration interface.
