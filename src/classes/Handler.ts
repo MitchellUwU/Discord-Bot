@@ -1,12 +1,12 @@
-import {
+import type {
 	CreateApplicationCommandOptions,
 	CreateChatInputApplicationCommandOptions,
 	CreateMessageApplicationCommandOptions,
 	CreateUserApplicationCommandOptions,
 } from 'oceanic.js';
-import BotClient from './Client';
-import Command from './Command';
-import Event from './Event';
+import type BotClient from './Client';
+import type Command from './Command';
+import type Event from './Event';
 
 export default class Handler {
 	private client: BotClient;

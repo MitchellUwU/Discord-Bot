@@ -4,7 +4,7 @@ import {
 	SelectMenu as SelectMenuBuilder,
 	TextInput as TextInputBuilder,
 } from '@oceanicjs/builders';
-import { MessageActionRow, ModalActionRow } from 'oceanic.js';
+import type { MessageActionRow, ModalActionRow } from 'oceanic.js';
 import ChoiceBuilder from './builders/commands/Choice';
 import CommandBuilder from './builders/commands/Command';
 import OptionBuilder from './builders/commands/Option';
@@ -21,9 +21,18 @@ const ActionRow = ComponentBuilder<MessageActionRow>;
 const Button = ButtonBuilder;
 const SelectMenu = SelectMenuBuilder;
 const TextInput = TextInputBuilder;
-const ErrorEmbed = () => {return new Embed().setColor('red').setTitle('⛔ error!').setTimestamp()}
-const SuccessEmbed = () => {return new Embed().setColor('green').setTitle('✅ success!').setTimestamp()}
-const WarnEmbed = () => {return new Embed().setColor('yellow').setTitle('⚠️ warning!').setTimestamp()}
+
+function ErrorEmbed() {
+	return new Embed().setColor('red').setTitle('⛔ error!').setTimestamp();
+}
+
+function SuccessEmbed() {
+	return new Embed().setColor('green').setTitle('✅ success!').setTimestamp();
+}
+
+function WarnEmbed() {
+	return new Embed().setColor('yellow').setTitle('⚠️ warning!').setTimestamp();
+}
 
 const Builders = {
 	Choice,
@@ -37,7 +46,7 @@ const Builders = {
 	TextInput,
 	ErrorEmbed,
 	SuccessEmbed,
-	WarnEmbed
+	WarnEmbed,
 };
 
 // Export all builders.

@@ -1,4 +1,4 @@
-import BotClient from '../../../classes/Client';
+import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -29,7 +29,7 @@ export default class AvatarCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {

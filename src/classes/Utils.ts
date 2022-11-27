@@ -1,6 +1,6 @@
-import BotClient from './Client';
-import * as Lib from 'oceanic.js';
-import { LoggerOptions } from '../types/options';
+import type BotClient from './Client';
+import type * as Lib from 'oceanic.js';
+import type { LoggerOptions } from '../types/options';
 import * as fs from 'fs/promises';
 import path from 'path';
 

@@ -1,5 +1,5 @@
-import { ClientEvents } from 'oceanic.js';
-import BotClient from './Client';
+import type { ClientEvents } from 'oceanic.js';
+import type BotClient from './Client';
 
 export default class Event<T extends keyof ClientEvents = keyof ClientEvents> {
 	name: T;

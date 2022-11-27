@@ -1,7 +1,7 @@
 import { InteractionCollector } from 'oceanic-collectors';
 import * as Lib from 'oceanic.js';
 import Builders from './Builders';
-import BotClient from './Client';
+import type BotClient from './Client';
 
 export default class Paginator {
 	client: BotClient;

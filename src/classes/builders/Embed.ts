@@ -7,12 +7,14 @@
  * View full license: https://github.com/OceanicJS/Builders/blob/master/LICENSE
  */
 
-import type {
+import {
 	EmbedAuthorOptions,
 	EmbedField,
 	EmbedFooterOptions,
 	EmbedImageOptions,
 	EmbedOptions,
+	RawEmbedOptions,
+	Util,
 } from 'oceanic.js';
 
 export default class EmbedBuilder {
@@ -32,7 +34,7 @@ export default class EmbedBuilder {
 	static loadFromJSON(
 		json: EmbedOptions | Array<EmbedOptions>,
 		forceSingular?: boolean
-	): EmbedBuilder | Array<EmbedBuilder> {
+	): EmbedBuilder | Array<EmbedBuilder> | undefined {
 		if (Array.isArray(json)) {
 			const val = json.map((v) => EmbedBuilder.loadFromJSON(v));
 			return forceSingular ? val[0] : val;
@@ -428,5 +430,16 @@ export default class EmbedBuilder {
 	toJSON(array?: false): EmbedOptions;
 	toJSON(array = false): [EmbedOptions] | EmbedOptions {
 		return array ? [this.json] : this.json;
+	}
+
+	/**
+	 * Convert this embed to a raw json object.
+	 * @param array If the returned value should be contained in an array.
+	 */
+	toJSONRaw(array: true): [RawEmbedOptions];
+	toJSONRaw(array?: false): RawEmbedOptions;
+	toJSONRaw(array = false): [RawEmbedOptions | undefined] | RawEmbedOptions | undefined {
+		const [embed] = Util.prototype.embedsToRaw([this.json]);
+		return array ? [embed] : embed;
 	}
 }

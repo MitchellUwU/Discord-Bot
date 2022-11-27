@@ -1,4 +1,4 @@
-import BotClient from '../../../classes/Client';
+import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import { InteractionCollector } from 'oceanic-collectors';
@@ -62,7 +62,7 @@ export default class BanCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('BAN_MEMBERS')) {
 				return interaction.createMessage({

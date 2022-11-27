@@ -1,4 +1,4 @@
-import { BotConfig } from '../types/options';
+import type { BotConfig } from '../types/options';
 import Utils from './Utils';
 import Database from './Database';
 import { Client, SendStatuses } from 'oceanic.js';

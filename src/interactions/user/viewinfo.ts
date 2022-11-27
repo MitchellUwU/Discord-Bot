@@ -1,4 +1,4 @@
-import BotClient from '../../classes/Client';
+import type BotClient from '../../classes/Client';
 import Builders from '../../classes/Builders';
 import Command from '../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -8,7 +8,7 @@ export default class ViewInfoCommand extends Command {
 		.setDMPermission(false)
 		.toJSON();
 
-	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		if (!interaction.data.target) return;
 		const user = await client.utils.getMember(interaction.guildID, interaction.data.target.id);
 		const roles = interaction.guild.roles
@@ -40,7 +40,7 @@ export default class ViewInfoCommand extends Command {
 			components: new Builders.ActionRow()
 				.addURLButton({ label: 'avatar url', url: user.avatarURL() })
 				.toJSON(),
-      flags: 64,
+			flags: 64,
 		});
 	}
 }

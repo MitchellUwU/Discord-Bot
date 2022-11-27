@@ -1,5 +1,5 @@
 import config from '../../config.json';
-import BotClient from './Client';
+import type BotClient from './Client';
 import { Pool, QueryResult } from 'pg';
 
 // Database manager.

@@ -1,4 +1,4 @@
-import BotClient from '../../../classes/Client';
+import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -22,7 +22,7 @@ export default class KickCommand extends Command {
 		])
 		.toJSON();
 
-	async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (!interaction.member.permissions.has('KICK_MEMBERS')) {
 				return interaction.createMessage({
