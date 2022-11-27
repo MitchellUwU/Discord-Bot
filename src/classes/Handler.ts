@@ -65,7 +65,7 @@ export default class Handler {
 		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/chatInput`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
-			const cmd = new Command(this);
+			const cmd = new Command();
 			this.client.utils.logger({
 				title: 'ChatInputCommandsHandler',
 				content: `Loaded ${cmd.data.name}!`,
@@ -81,7 +81,7 @@ export default class Handler {
 		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/message`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
-			const cmd = new Command(this);
+			const cmd = new Command();
 			this.client.utils.logger({
 				title: 'MessageCommandsHandler',
 				content: `Loaded ${cmd.data.name}!`,
@@ -97,7 +97,7 @@ export default class Handler {
 		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/user`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
-			const cmd = new Command(this);
+			const cmd = new Command();
 			this.client.utils.logger({
 				title: 'UserCommandsHandler',
 				content: `Loaded ${cmd.data.name}!`,

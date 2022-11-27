@@ -26,8 +26,7 @@ export default class EightBallCommand extends Command {
 		.toJSON();
 
 	override async execute(_client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
-		let command = interaction.data.options.getSubCommand<Lib.SubCommandArray>(false);
-		if (!command) command = ['unknown'];
+		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'rps': {
