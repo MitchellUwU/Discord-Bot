@@ -34,21 +34,9 @@ export default class NicknameCommand extends Command {
 		])
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
-		if (interaction.user.id !== interaction.guild.ownerID) {
-			if (!interaction.member.permissions.has('MANAGE_NICKNAMES')) {
-				return interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription(
-								"you need manage nicknames permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission"
-							)
-							.toJSON(),
-					],
-				});
-			}
-		}
+	override userPermission = 'MANAGE_NICKNAMES' as Lib.PermissionName;
 
+	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true).toString();
 
 		switch (command) {

@@ -20,21 +20,9 @@ export default class PurgeCommand extends Command {
 		])
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
-		if (interaction.user.id !== interaction.guild.ownerID) {
-			if (!interaction.member.permissions.has('MANAGE_MESSAGES')) {
-				return interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription(
-								"you need manage messages permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission"
-							)
-							.toJSON(),
-					],
-				});
-			}
-		}
+		override userPermission = 'MANAGE_MESSAGES' as Lib.PermissionName;
 
+	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		let user: Lib.User;
 
 		try {

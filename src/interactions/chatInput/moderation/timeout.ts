@@ -54,21 +54,9 @@ export default class TimeoutCommand extends Command {
 		])
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
-		if (interaction.user.id !== interaction.guild.ownerID) {
-			if (!interaction.member.permissions.has('MODERATE_MEMBERS')) {
-				return interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription(
-								"you need moderate members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission"
-							)
-							.toJSON(),
-					],
-				});
-			}
-		}
+	override userPermission = 'MODERATE_MEMBERS' as Lib.PermissionName;
 
+	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true).toString();
 
 		switch (command) {
@@ -472,7 +460,7 @@ export default class TimeoutCommand extends Command {
 										.toJSON(),
 								],
 							});
-							
+
 							if (error instanceof Error) {
 								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 							} else {

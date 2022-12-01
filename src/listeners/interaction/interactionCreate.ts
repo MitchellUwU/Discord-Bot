@@ -98,6 +98,18 @@ export default new Event('interactionCreate', false, async (client, interaction)
 				}
 			}
 
+			if (cmd.userPermission && !interaction.member.permissions.has(cmd.userPermission)) {
+				return interaction.createMessage({
+					embeds: [
+						Builders.ErrorEmbed()
+							.setDescription(
+								`you need ${cmd.userPermission} permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission`
+							)
+							.toJSON(),
+					],
+				});
+			}
+
 			await cmd.execute(client, interaction);
 		}
 	}

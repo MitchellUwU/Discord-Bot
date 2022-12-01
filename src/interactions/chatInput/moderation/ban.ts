@@ -57,21 +57,9 @@ export default class BanCommand extends Command {
 		])
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
-		if (interaction.user.id !== interaction.guild.ownerID) {
-			if (!interaction.member.permissions.has('BAN_MEMBERS')) {
-				return interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription(
-								"you need ban members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission"
-							)
-							.toJSON(),
-					],
-				});
-			}
-		}
+	override userPermission = 'BAN_MEMBERS' as Lib.PermissionName;
 
+	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true).toString();
 
 		switch (command) {

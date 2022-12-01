@@ -22,21 +22,9 @@ export default class KickCommand extends Command {
 		])
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
-		if (interaction.user.id !== interaction.guild.ownerID) {
-			if (!interaction.member.permissions.has('KICK_MEMBERS')) {
-				return interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription(
-								"you need kick members permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission"
-							)
-							.toJSON(),
-					],
-				});
-			}
-		}
+	override userPermission = 'KICK_MEMBERS' as Lib.PermissionName;
 
+	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		let user: Lib.Member;
 
 		try {

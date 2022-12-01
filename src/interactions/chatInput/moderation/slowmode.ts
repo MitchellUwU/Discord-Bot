@@ -33,21 +33,9 @@ export default class SlowmodeCommand extends Command {
 		])
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
-		if (interaction.user.id !== interaction.guild.ownerID) {
-			if (!interaction.member.permissions.has('MANAGE_CHANNELS')) {
-				return interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription(
-								"you need manage channels permission to do that! if you're a moderator, please ask an admin or the owner to give you the permission"
-							)
-							.toJSON(),
-					],
-				});
-			}
-		}
+	override userPermission = 'MANAGE_CHANNELS' as Lib.PermissionName;
 
+	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true).toString();
 
 		switch (command) {
@@ -150,7 +138,7 @@ export default class SlowmodeCommand extends Command {
 								.toJSON(),
 						],
 					});
-					
+
 					if (error instanceof Error) {
 						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 					} else {
