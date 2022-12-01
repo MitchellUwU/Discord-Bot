@@ -22,8 +22,8 @@ client.once('ready', () => {
 				process.exit();
 			}, 30000);
 		}
-	} catch (error: any) {
-		console.log(`can't delete commands! error: ${error.stack}`);
+	} catch (error) {
+		console.log("can't delete commands! error:", error);
 	}
 });
 

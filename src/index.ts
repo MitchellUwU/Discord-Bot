@@ -23,11 +23,11 @@ process.on('exit', (code) => {
 });
 
 process.on('unhandledRejection', (reason: Error) => {
-	client.utils.logger({ title: 'UnhandledRejection', content: reason.stack, type: 3 });
+	client.utils.logger({ title: 'UnhandledRejection', content: reason.stack, type: 2 });
 });
 
 process.on('uncaughtException', (error) => {
-	client.utils.logger({ title: 'UncaughtException', content: error.stack, type: 3 });
+	client.utils.logger({ title: 'UncaughtException', content: error.stack, type: 2 });
 	client.onMaintenance = true;
 });
 
