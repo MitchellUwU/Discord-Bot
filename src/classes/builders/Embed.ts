@@ -291,7 +291,7 @@ export default class EmbedBuilder {
 
 	setColor(color: number | string): this {
 		if (typeof color === 'string') {
-			const colorList: any = {
+			const colorList = {
 				red: 0xff0000,
 				orange: 0xffa500,
 				yellow: 0xffff00,
@@ -303,7 +303,7 @@ export default class EmbedBuilder {
 				purple: 0x800080,
 				black: 0x000000,
 				white: 0xffffff,
-			};
+			} as Record<string, number>;
 
 			this.json.color = Number(colorList[color.toLowerCase()] || 0x000000);
 		} else {

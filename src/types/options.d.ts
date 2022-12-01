@@ -1,5 +1,4 @@
 import { ComponentTypes } from 'oceanic.js';
-import { PoolConfig } from 'pg';
 
 // Client configuration interface.
 
@@ -14,7 +13,6 @@ export interface BotConfig {
 	clientOptions: Lib.ClientOptions;
 	blockedGuilds?: string[];
 	blockedUsers?: string[];
-	db: PoolConfig;
 	devMode: boolean;
 	devIDs: string[];
 	guildID?: string;

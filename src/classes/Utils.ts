@@ -99,10 +99,10 @@ export default class Utils {
 
 	/**
 	 * Get json content.
-	 * @param body Anything.
+	 * @param body JSON. (don't ask why the type below is string, typescript accept it for some reason)
 	 */
 
-	async getJSONContent(body: any) {
+	async getJSONContent(body: string) {
 		let parsedBody = '';
 
 		for await (const data of body) {
