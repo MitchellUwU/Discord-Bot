@@ -49,9 +49,9 @@ export default class NicknameCommand extends Command {
 			}
 		}
 
-		const command = interaction.data.options.getSubCommand(true);
+		const command = interaction.data.options.getSubCommand(true).toString();
 
-		switch (command.toString()) {
+		switch (command) {
 			case 'change': {
 				let user: Lib.Member;
 

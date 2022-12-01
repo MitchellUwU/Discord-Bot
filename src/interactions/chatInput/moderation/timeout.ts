@@ -69,9 +69,9 @@ export default class TimeoutCommand extends Command {
 			}
 		}
 
-		const command = interaction.data.options.getSubCommand(true);
+		const command = interaction.data.options.getSubCommand(true).toString();
 
-		switch (command.toString()) {
+		switch (command) {
 			case 'add': {
 				let user: Lib.Member;
 

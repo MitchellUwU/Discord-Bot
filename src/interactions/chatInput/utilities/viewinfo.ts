@@ -43,9 +43,9 @@ export default class ViewInfoCommand extends Command {
 		.toJSON();
 
 	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
-		const command = interaction.data.options.getSubCommand(true);
+		const command = interaction.data.options.getSubCommand(true).toString();
 
-		switch (command.toString()) {
+		switch (command) {
 			case 'user': {
 				const id = interaction.data.options.getUser('user', false)?.id || interaction.user.id;
 				try {
