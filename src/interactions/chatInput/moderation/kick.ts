@@ -136,9 +136,13 @@ export default class KickCommand extends Command {
 							.toJSON(),
 					],
 				});
-			} catch (error: any) {
+			} catch (error) {
 				dmSuccess = false;
-				client.utils.logger({ title: 'KickCommand', content: error.stack, type: 2 });
+				if (error instanceof Error) {
+					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+				} else {
+					client.utils.logger({ title: 'Error', content: error, type: 2 });
+				}
 			}
 		}
 
@@ -153,14 +157,19 @@ export default class KickCommand extends Command {
 						.toJSON(),
 				],
 			});
-		} catch (error: any) {
+		} catch (error) {
 			message!.delete();
 			interaction.createMessage({
 				embeds: [
 					Builders.ErrorEmbed().setDescription(`i can't kick ${user.tag} sorry! :(\n\n${error}`).toJSON(),
 				],
 			});
-			client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+
+			if (error instanceof Error) {
+				client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+			} else {
+				client.utils.logger({ title: 'Error', content: error, type: 2 });
+			}
 		}
 	}
 }

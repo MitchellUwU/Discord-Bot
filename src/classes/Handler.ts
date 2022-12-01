@@ -15,7 +15,7 @@ export default class Handler {
 	chatInputCommands: Map<string, Command>;
 	messageCommands: Map<string, Command>;
 	userCommands: Map<string, Command>;
-	components: Map<string, any>;
+	components: Map<string, unknown>;
 	commandList: CreateApplicationCommandOptions[];
 	chatInputCommandList: CreateChatInputApplicationCommandOptions[];
 	messageCommandList: CreateMessageApplicationCommandOptions[];

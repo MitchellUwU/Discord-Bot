@@ -170,7 +170,7 @@ export default class RoleCommand extends Command {
 								.toJSON(),
 						],
 					});
-				} catch (error: any) {
+				} catch (error) {
 					interaction.createMessage({
 						embeds: [
 							Builders.ErrorEmbed()
@@ -178,7 +178,12 @@ export default class RoleCommand extends Command {
 								.toJSON(),
 						],
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+
+					if (error instanceof Error) {
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					} else {
+						client.utils.logger({ title: 'Error', content: error, type: 2 });
+					}
 				}
 
 				break;
@@ -285,7 +290,7 @@ export default class RoleCommand extends Command {
 								.toJSON(),
 						],
 					});
-				} catch (error: any) {
+				} catch (error) {
 					interaction.createMessage({
 						embeds: [
 							Builders.ErrorEmbed()
@@ -293,7 +298,12 @@ export default class RoleCommand extends Command {
 								.toJSON(),
 						],
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+
+					if (error instanceof Error) {
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					} else {
+						client.utils.logger({ title: 'Error', content: error, type: 2 });
+					}
 				}
 
 				break;

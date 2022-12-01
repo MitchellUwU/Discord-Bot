@@ -30,15 +30,3 @@ export interface LoggerOptions {
 	content: unknown;
 	type: 1 | 2 | 3 | 4;
 }
-
-// Collector configuration interface.
-
-export interface InteractionCollectorConfig {
-	authorID: string;
-	client: BotClient;
-	componentType: any;
-	interaction: any;
-	interactionType: any;
-	max?: number;
-	time?: number;
-}

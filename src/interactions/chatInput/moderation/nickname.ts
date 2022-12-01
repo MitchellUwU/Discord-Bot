@@ -125,7 +125,7 @@ export default class NicknameCommand extends Command {
 							Builders.SuccessEmbed().setDescription(`successfully changed ${user.tag}'s nickname!`).toJSON(),
 						],
 					});
-				} catch (error: any) {
+				} catch (error) {
 					interaction.createMessage({
 						embeds: [
 							Builders.ErrorEmbed()
@@ -133,7 +133,12 @@ export default class NicknameCommand extends Command {
 								.toJSON(),
 						],
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+
+					if (error instanceof Error) {
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					} else {
+						client.utils.logger({ title: 'Error', content: error, type: 2 });
+					}
 				}
 
 				break;
@@ -209,7 +214,7 @@ export default class NicknameCommand extends Command {
 							Builders.SuccessEmbed().setDescription(`successfully removed ${user.tag}'s nickname!`).toJSON(),
 						],
 					});
-				} catch (error: any) {
+				} catch (error) {
 					interaction.createMessage({
 						embeds: [
 							Builders.ErrorEmbed()
@@ -217,7 +222,12 @@ export default class NicknameCommand extends Command {
 								.toJSON(),
 						],
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+
+					if (error instanceof Error) {
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					} else {
+						client.utils.logger({ title: 'Error', content: error, type: 2 });
+					}
 				}
 
 				break;

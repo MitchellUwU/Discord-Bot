@@ -67,8 +67,7 @@ export default class PurgeCommand extends Command {
 						});
 					});
 			}
-		} catch (error: any) {
-			client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+		} catch (error) {
 			interaction.createMessage({
 				embeds: [
 					Builders.ErrorEmbed()
@@ -76,6 +75,12 @@ export default class PurgeCommand extends Command {
 						.toJSON(),
 				],
 			});
+
+			if (error instanceof Error) {
+				client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+			} else {
+				client.utils.logger({ title: 'Error', content: error, type: 2 });
+			}
 		}
 	}
 }

@@ -136,7 +136,7 @@ export default class BanCommand extends Command {
 						interaction.createMessage({
 							embeds: [Builders.SuccessEmbed().setDescription(`successfully banned ${user.tag}!`).toJSON()],
 						});
-					} catch (error: any) {
+					} catch (error) {
 						interaction.createMessage({
 							embeds: [
 								Builders.ErrorEmbed()
@@ -144,7 +144,12 @@ export default class BanCommand extends Command {
 									.toJSON(),
 							],
 						});
-						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+
+						if (error instanceof Error) {
+							client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+						} else {
+							client.utils.logger({ title: 'Error', content: error, type: 2 });
+						}
 					}
 				} else {
 					let user: Lib.Member;
@@ -274,9 +279,13 @@ export default class BanCommand extends Command {
 										.toJSON(),
 								],
 							});
-						} catch (error: any) {
+						} catch (error) {
 							dmSuccess = false;
-							client.utils.logger({ title: 'BanCommand', content: error.stack, type: 2 });
+							if (error instanceof Error) {
+								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+							} else {
+								client.utils.logger({ title: 'Error', content: error, type: 2 });
+							}
 						}
 					}
 
@@ -299,7 +308,7 @@ export default class BanCommand extends Command {
 										.toJSON(),
 								],
 							});
-						} catch (error: any) {
+						} catch (error) {
 							message!.delete();
 							interaction.createMessage({
 								embeds: [
@@ -308,7 +317,12 @@ export default class BanCommand extends Command {
 										.toJSON(),
 								],
 							});
-							client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+
+							if (error instanceof Error) {
+								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+							} else {
+								client.utils.logger({ title: 'Error', content: error, type: 2 });
+							}
 						}
 					} else {
 						try {
@@ -328,7 +342,7 @@ export default class BanCommand extends Command {
 										.toJSON(),
 								],
 							});
-						} catch (error: any) {
+						} catch (error) {
 							message!.delete();
 							interaction.createMessage({
 								embeds: [
@@ -337,7 +351,12 @@ export default class BanCommand extends Command {
 										.toJSON(),
 								],
 							});
-							client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+
+							if (error instanceof Error) {
+								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+							} else {
+								client.utils.logger({ title: 'Error', content: error, type: 2 });
+							}
 						}
 					}
 				}
@@ -374,7 +393,7 @@ export default class BanCommand extends Command {
 							Builders.SuccessEmbed().setDescription(`successfully unbanned ${banned.user.tag}!`).toJSON(),
 						],
 					});
-				} catch (error: any) {
+				} catch (error) {
 					interaction.createMessage({
 						embeds: [
 							Builders.ErrorEmbed()
@@ -382,7 +401,12 @@ export default class BanCommand extends Command {
 								.toJSON(),
 						],
 					});
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+
+					if (error instanceof Error) {
+						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					} else {
+						client.utils.logger({ title: 'Error', content: error, type: 2 });
+					}
 				}
 
 				break;
@@ -482,7 +506,7 @@ export default class BanCommand extends Command {
 											.toJSON(),
 									],
 								});
-							} catch (error: any) {
+							} catch (error) {
 								i.createMessage({
 									embeds: [
 										Builders.ErrorEmbed()
@@ -490,7 +514,12 @@ export default class BanCommand extends Command {
 											.toJSON(),
 									],
 								});
-								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+
+								if (error instanceof Error) {
+									client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+								} else {
+									client.utils.logger({ title: 'Error', content: error, type: 2 });
+								}
 							}
 						}
 					});
