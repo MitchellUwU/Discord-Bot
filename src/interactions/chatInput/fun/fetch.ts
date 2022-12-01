@@ -27,15 +27,14 @@ export default class FetchCommand extends Command {
 		])
 		.toJSON();
 
-		override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+		override async execute(_client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {
 			case 'meme': {
-				interaction.defer();
-
+				// api is dead, but i'm still gonna keep the command
 				const data = await request('https://meme-api.herokuapp.com/gimme/memes');
-				const file = await client.utils.getJSONContent(data.body);
+				const file = await data.body.json();
 
 				interaction.createMessage({
 					embeds: [
@@ -59,10 +58,8 @@ export default class FetchCommand extends Command {
 				break;
 			}
 			case 'cat': {
-				interaction.defer();
-
 				const data = await request('https://aws.random.cat/meow');
-				const { file } = await client.utils.getJSONContent(data.body);
+				const { file } = await data.body.json()
 
 				interaction.createMessage({
 					embeds: [
@@ -78,12 +75,10 @@ export default class FetchCommand extends Command {
 				break;
 			}
 			case 'urban': {
-				interaction.defer();
-
 				const message = interaction.data.options.getString('word', true);
 				const query = new URLSearchParams(message);
 				const data = await request(`https://api.urbandictionary.com/v0/define?term=${query}`);
-				const { list } = await client.utils.getJSONContent(data.body);
+				const { list } = await data.body.json()
 
 				if (!list.length) {
 					return interaction.createMessage({

@@ -98,21 +98,6 @@ export default class Utils {
 	}
 
 	/**
-	 * Get json content.
-	 * @param body JSON. (don't ask why the type below is string, typescript accept it for some reason)
-	 */
-
-	async getJSONContent(body: string) {
-		let parsedBody = '';
-
-		for await (const data of body) {
-			parsedBody += data.toString();
-		}
-
-		return JSON.parse(parsedBody);
-	}
-
-	/**
 	 * The main logger.
 	 * 
 	 * 1 = Info.
