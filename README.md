@@ -21,7 +21,7 @@ It just a regular discord bot, nothing special.
 **Answer:** Free code storage and I don't have to worry about data loss.
 
 **Question:** Rewrite this shit.
-**Answer:** No.
+**Answer:** Maybe.
 
 **Question:** When will this go out of beta?
 **Answer:** It's simple, it will not.
