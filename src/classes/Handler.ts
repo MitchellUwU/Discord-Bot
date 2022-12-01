@@ -1,4 +1,5 @@
-import type {
+import {
+	ApplicationCommandTypes,
 	CreateApplicationCommandOptions,
 	CreateChatInputApplicationCommandOptions,
 	CreateMessageApplicationCommandOptions,
@@ -45,6 +46,13 @@ export default class Handler {
 		this.chatInputCommandList = [];
 		this.messageCommandList = [];
 		this.userCommandList = [];
+	}
+
+	getCommand(name: string, type: ApplicationCommandTypes) {
+		if (type === ApplicationCommandTypes.CHAT_INPUT) return this.chatInputCommands.get(name);
+		else if (type === ApplicationCommandTypes.MESSAGE) return this.messageCommands.get(name);
+		else if (type === ApplicationCommandTypes.USER) return this.userCommands.get(name);
+		else return this.chatInputCommands.get(name);
 	}
 
 	async handleEvents() {
