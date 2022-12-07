@@ -1,7 +1,6 @@
 import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { InteractionCollector } from 'oceanic-collectors';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
@@ -41,15 +40,6 @@ export default class TimeoutCommand extends Command {
 						.setDescription('why did you untimeout the user?')
 						.toJSON(),
 				])
-				.toJSON(),
-			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
-				.setDescription('view someone timeout')
-				.addOption(
-					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
-						.setDescription('user to view timeout')
-						.setRequired(true)
-						.toJSON()
-				)
 				.toJSON(),
 		])
 		.toJSON();
@@ -321,160 +311,6 @@ export default class TimeoutCommand extends Command {
 						client.utils.logger({ title: 'Error', content: error, type: 2 });
 					}
 				}
-
-				break;
-			}
-			case 'view': {
-				let user: Lib.Member;
-
-				try {
-					user = interaction.data.options.getMember('user', true);
-				} catch (error) {
-					try {
-						const name = interaction.data.options.getUser('user', true).tag;
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription(`${name} is not in this server!`).toJSON()],
-						});
-					} catch (error) {
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
-						});
-					}
-				}
-
-				if (!user.communicationDisabledUntil) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription(`${user.tag} is not in timeout!`).toJSON()],
-					});
-				}
-
-				const component = (state: boolean) => {
-					return new Builders.ActionRow()
-						.addInteractionButton({
-							label: 'untimeout user',
-							disabled: state,
-							customID: 'untimeout',
-							style: Lib.ButtonStyles.DANGER,
-						})
-						.toJSON();
-				};
-
-				interaction.createMessage({
-					embeds: [
-						new Builders.Embed()
-							.setRandomColor()
-							.setAuthor(`${user.tag}'s timeout`, user.avatarURL())
-							.setDescription(
-								`${user.tag} is timeout until <t:${Math.floor(
-									user.communicationDisabledUntil.getTime() / 1000
-								)}:f> (in ${ms(user.communicationDisabledUntil.getTime() - Date.now(), {
-									long: true,
-								})})`
-							)
-							.setTimestamp()
-							.toJSON(),
-					],
-					components: component(false),
-				});
-
-				const collector = new InteractionCollector<
-					Lib.InteractionTypes.MESSAGE_COMPONENT,
-					Lib.ComponentTypes.BUTTON
-				>(client, {
-					interaction: interaction,
-					filter: (i) => i.user.id === interaction.user.id,
-					time: 20000,
-					max: 1,
-				});
-
-				collector.on('collect', async (i) => {
-					if (!i.inCachedGuildChannel()) return collector.stop();
-					if (i.data.customID === 'untimeout') {
-						if (user.id === interaction.user.id) {
-							return i.createMessage({
-								embeds: [Builders.ErrorEmbed().setDescription("you can't untimeout yourself").toJSON()],
-							});
-						}
-
-						if (interaction.user.id !== interaction.guild.ownerID) {
-							if (user.id === interaction.guild.ownerID) {
-								return i.createMessage({
-									embeds: [Builders.ErrorEmbed().setDescription("i can't untimeout the owner").toJSON()],
-								});
-							}
-
-							if (user.permissions.has('ADMINISTRATOR')) {
-								return i.createMessage({
-									embeds: [
-										Builders.ErrorEmbed()
-											.setDescription(`${user.tag} have administrator permission, i can't untimeout them!`)
-											.toJSON(),
-									],
-								});
-							}
-
-							if (
-								client.utils.getHighestRole(user).position >=
-								client.utils.getHighestRole(interaction.member).position
-							) {
-								return i.createMessage({
-									embeds: [
-										Builders.ErrorEmbed()
-											.setDescription(`${user.tag} have higher (or same) role than you`)
-											.toJSON(),
-									],
-								});
-							}
-						}
-
-						if (
-							client.utils.getHighestRole(user).position >=
-							client.utils.getHighestRole(interaction.guild.clientMember).position
-						) {
-							return i.createMessage({
-								embeds: [
-									Builders.ErrorEmbed()
-										.setDescription(
-											`${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`
-										)
-										.toJSON(),
-								],
-							});
-						}
-
-						try {
-							await user.edit({
-								communicationDisabledUntil: new Date(Date.now()).toISOString(),
-								reason: 'untimeout using button in view command',
-							});
-							i.createMessage({
-								embeds: [
-									Builders.SuccessEmbed().setDescription(`successfully untimeout ${user.tag}!`).toJSON(),
-								],
-							});
-						} catch (error) {
-							i.createMessage({
-								embeds: [
-									Builders.ErrorEmbed()
-										.setDescription(`i can't untimeout ${user.tag} sorry! :(\n\n${error}`)
-										.toJSON(),
-								],
-							});
-
-							if (error instanceof Error) {
-								client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
-							} else {
-								client.utils.logger({ title: 'Error', content: error, type: 2 });
-							}
-						}
-					}
-				});
-
-				collector.once('end', async () => {
-					interaction.editOriginal({
-						components: component(true),
-					});
-				});
 
 				break;
 			}

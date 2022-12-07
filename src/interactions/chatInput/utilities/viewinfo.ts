@@ -35,7 +35,7 @@ export default class ViewInfoCommand extends Command {
 				.addOption(
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.ROLE, 'role')
 						.setDescription('a role')
-						.setRequired(true)
+						.setRequired(false)
 						.toJSON()
 				)
 				.toJSON(),
@@ -70,6 +70,11 @@ export default class ViewInfoCommand extends Command {
 										`**- is system:** ${user.user.system ? 'yes' : 'no'}`,
 										`**- id:** ${user.id}`,
 										`**- roles (${user.roles.length}):** ${roles.map((role) => role.mention).join(' ')}`,
+										`**- timeout until** ${user.communicationDisabledUntil ? `<t:${Math.floor(
+											user.communicationDisabledUntil.getTime() / 1000
+										)}:f> (in ${ms(user.communicationDisabledUntil.getTime() - Date.now(), {
+											long: true,
+										})})` : "this user isn't in timeout"}`,
 									].join('\n')
 								)
 								.setThumbnail(user.avatarURL())
@@ -315,35 +320,56 @@ export default class ViewInfoCommand extends Command {
 				break;
 			}
 			case 'role': {
-				const role = interaction.data.options.getRole('role', true);
+				const role = interaction.data.options.getRole('role', false);
 
-				if (interaction.user.id !== interaction.guild.ownerID) {
-					if (role.position > client.utils.getHighestRole(interaction.member).position) {
-						return interaction.createMessage({
-							embeds: [
-								Builders.ErrorEmbed().setDescription('that role is higher/same role than you').toJSON(),
-							],
-						});
+				if (!role) {
+					const roles = interaction.guild.roles.toArray().sort((prev, next) => next.position - prev.position);
+
+					interaction.createMessage({
+						embeds: [
+							new Builders.Embed()
+								.setRandomColor()
+								.setTitle('list of roles')
+								.setDescription(
+									roles
+										.filter((role) => role.name !== '@everyone')
+										.map((role) => role.mention)
+										.join('\n') || 'no role?'
+								)
+								.setTimestamp()
+								.toJSON(),
+						],
+						flags: 64,
+					});
+				} else {
+					if (interaction.user.id !== interaction.guild.ownerID) {
+						if (role.position >= client.utils.getHighestRole(interaction.member).position) {
+							return interaction.createMessage({
+								embeds: [
+									Builders.ErrorEmbed().setDescription('that role is higher (or same) role than you').toJSON(),
+								],
+							});
+						}
 					}
-				}
 
-				interaction.createMessage({
-					embeds: [
-						new Builders.Embed()
-							.setRandomColor()
-							.setAuthor(`${role.name} information`, interaction.guild.iconURL()!)
-							.setDescription(
-								`**- name:** ${role.name}`,
-								`**- role position:** ${role.position}`,
-								`**- creation date:** <t:${Math.floor(role.createdAt.getTime() / 1000)}:f>`,
-								`**- managed by integration:** ${role.managed ? 'yes' : 'no'}`,
-								`**- color:** ${role.color}`,
-								`**- id:** ${role.id}`
-							)
-							.setTimestamp()
-							.toJSON(),
-					],
-				});
+					interaction.createMessage({
+						embeds: [
+							new Builders.Embed()
+								.setRandomColor()
+								.setAuthor(`${role.name} information`, interaction.guild.iconURL()!)
+								.setDescription(
+									`**- name:** ${role.name}`,
+									`**- role position:** ${role.position}`,
+									`**- creation date:** <t:${Math.floor(role.createdAt.getTime() / 1000)}:f>`,
+									`**- managed by integration:** ${role.managed ? 'yes' : 'no'}`,
+									`**- color:** ${role.color}`,
+									`**- id:** ${role.id}`
+								)
+								.setTimestamp()
+								.toJSON(),
+						],
+					});
+				}
 
 				break;
 			}

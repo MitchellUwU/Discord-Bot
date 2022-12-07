@@ -41,14 +41,6 @@ export default class RoleCommand extends Command {
 						.toJSON(),
 				])
 				.toJSON(),
-			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
-				.setDescription('view all roles')
-				.addOption(
-					new Builders.Option(Lib.ApplicationCommandOptionTypes.ROLE, 'role')
-						.setDescription('role to view')
-						.toJSON()
-				)
-				.toJSON(),
 		])
 		.toJSON();
 
@@ -292,51 +284,6 @@ export default class RoleCommand extends Command {
 					} else {
 						client.utils.logger({ title: 'Error', content: error, type: 2 });
 					}
-				}
-
-				break;
-			}
-			case 'view': {
-				const role = interaction.data.options.getRole('role', false);
-
-				if (!role) {
-					const roles = interaction.guild.roles.toArray().sort((prev, next) => next.position - prev.position);
-
-					interaction.createMessage({
-						embeds: [
-							new Builders.Embed()
-								.setRandomColor()
-								.setTitle('list of roles')
-								.setDescription(
-									roles
-										.filter((role) => role.name !== '@everyone')
-										.map((role) => role.mention)
-										.join('\n') || 'no role?'
-								)
-								.setTimestamp()
-								.toJSON(),
-						],
-						flags: 64,
-					});
-				} else {
-					interaction.createMessage({
-						embeds: [
-							new Builders.Embed()
-								.setRandomColor()
-								.setAuthor(`${role.name} information`, interaction.guild.iconURL()!)
-								.setDescription(
-									`**- name:** ${role.name}`,
-									`**- role position:** ${role.position}`,
-									`**- creation date:** <t:${Math.floor(role.createdAt.getTime() / 1000)}:f>`,
-									`**- managed by integration:** ${role.managed ? 'yes' : 'no'}`,
-									`**- color:** ${role.color}`,
-									`**- id:** ${role.id}`
-								)
-								.setTimestamp()
-								.toJSON(),
-						],
-						flags: 64,
-					});
 				}
 
 				break;

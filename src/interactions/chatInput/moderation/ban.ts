@@ -1,7 +1,6 @@
 import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
-import { InteractionCollector } from 'oceanic-collectors';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 
@@ -48,11 +47,6 @@ export default class BanCommand extends Command {
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
 				.setDescription('view banned members')
-				.addOption(
-					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'id')
-						.setDescription('id of banned member (leave empty if you want to view all banned members)')
-						.toJSON()
-				)
 				.toJSON(),
 		])
 		.toJSON();
@@ -319,124 +313,24 @@ export default class BanCommand extends Command {
 				break;
 			}
 			case 'view': {
-				const user = interaction.data.options.getString('id', false);
+				const fetchedMembers = await interaction.guild.getBans();
+				const bannedMembers = fetchedMembers
+					.map((member: Lib.Ban) => {
+						return `**${member.user.tag} (${member.user.id}) is banned for:** ${member.reason}`;
+					})
+					.join('\n');
 
-				if (!user) {
-					const fetchedMembers = await interaction.guild.getBans();
-					const bannedMembers = fetchedMembers
-						.map((member: Lib.Ban) => {
-							return `**${member.user.tag} (${member.user.id}) is banned for:** ${member.reason}`;
-						})
-						.join('\n');
-
-					interaction.createMessage({
-						embeds: [
-							new Builders.Embed()
-								.setRandomColor()
-								.setTitle('list of banned members')
-								.setDescription(bannedMembers || 'no one has been banned yet...')
-								.setTimestamp()
-								.toJSON(),
-						],
-						flags: 64,
-					});
-				} else {
-					let member: Lib.Ban;
-
-					try {
-						member = await interaction.guild.getBan(user);
-					} catch (error) {
-						try {
-							const name = await client.utils.getUser(user);
-							return interaction.createMessage({
-								embeds: [Builders.ErrorEmbed().setDescription(`${name} is not banned!`).toJSON()],
-							});
-						} catch (error) {
-							return interaction.createMessage({
-								embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
-							});
-						}
-					}
-
-					const component = (state: boolean) => {
-						return new Builders.ActionRow()
-							.addInteractionButton({
-								label: 'unban user',
-								disabled: state,
-								customID: 'unban',
-								style: Lib.ButtonStyles.DANGER,
-							})
-							.addURLButton({ label: 'avatar url', url: member.user.avatarURL() })
-							.toJSON();
-					};
-
-					interaction.createMessage({
-						embeds: [
-							new Builders.Embed()
-								.setRandomColor()
-								.setAuthor(`${member.user.tag} information`, member.user.avatarURL())
-								.setDescription(
-									`**- name:** ${member.user.tag}`,
-									`**- creation date:** <t:${Math.floor(member.user.createdAt.getTime() / 1000)}:f>`,
-									`**- is bot:** ${member.user.bot ? 'yes' : 'no'}`,
-									`**- is system:** ${member.user.system ? 'yes' : 'no'}`,
-									`**- reason for ban:** ${member.reason}`,
-									`**- id:** ${member.user.id}`
-								)
-								.setThumbnail(member.user.avatarURL())
-								.setTimestamp()
-								.toJSON(),
-						],
-						components: component(false),
-						flags: 64,
-					});
-
-					const collector = new InteractionCollector<
-						Lib.InteractionTypes.MESSAGE_COMPONENT,
-						Lib.ComponentTypes.BUTTON
-					>(client, {
-						interaction: interaction,
-						filter: (i) => i.user.id === interaction.user.id,
-						time: 20000,
-						max: 1,
-					});
-
-					collector.on('collect', async (i) => {
-						if (!i.inCachedGuildChannel()) return collector.stop();
-						if (i.data.customID === 'unban') {
-							try {
-								await interaction.guild.removeBan(user, 'unban using button in view command');
-								i.createMessage({
-									embeds: [
-										Builders.SuccessEmbed()
-											.setDescription(`successfully unbanned ${member.user.tag}!`)
-											.toJSON(),
-									],
-								});
-							} catch (error) {
-								i.createMessage({
-									embeds: [
-										Builders.ErrorEmbed()
-											.setDescription(`i can't unban ${member.user.tag} sorry! :(\n\n${error}`)
-											.toJSON(),
-									],
-								});
-
-								if (error instanceof Error) {
-									client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
-								} else {
-									client.utils.logger({ title: 'Error', content: error, type: 2 });
-								}
-							}
-						}
-					});
-
-					collector.once('end', async () => {
-						interaction.editOriginal({
-							components: component(true),
-						});
-					});
-				}
+				interaction.createMessage({
+					embeds: [
+						new Builders.Embed()
+							.setRandomColor()
+							.setTitle('list of banned members')
+							.setDescription(bannedMembers || 'no one has been banned yet...')
+							.setTimestamp()
+							.toJSON(),
+					],
+					flags: 64,
+				});
 
 				break;
 			}
