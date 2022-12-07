@@ -19,12 +19,12 @@
 		"@oceanicjs/builders": "^1.1.7",
 		"ms": "^2.1.3",
 		"oceanic-collectors": "^1.0.7",
-		"oceanic.js": "^1.3.2-dev.0b2a96f",
+		"oceanic.js": "^1.3.3-dev.a8b8962",
 		"undici": "^5.13.0"
 	},
 	"devDependencies": {
 		"@types/ms": "^0.7.31",
-		"@types/node": "^18.11.10",
+		"@types/node": "^18.11.11",
 		"tslib": "^2.4.1",
 		"typescript": "^4.9.3"
 	}
