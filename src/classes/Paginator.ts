@@ -1,4 +1,3 @@
-import { InteractionCollector } from 'oceanic-collectors';
 import * as Lib from 'oceanic.js';
 import Builders from './Builders';
 import type BotClient from './Client';
@@ -48,20 +47,24 @@ export default class Paginator {
 			...this.getPage(0),
 		});
 
-		const collector = new InteractionCollector<
-			Lib.InteractionTypes.MESSAGE_COMPONENT,
-			Lib.ComponentTypes.BUTTON
-		>(this.client, {
-			interaction: interaction,
-			filter: (i) => i.user.id === interaction.user.id,
-			time: time,
-		});
-
-		collector.on('collect', (i) => this.onClicked(i));
-		collector.on('end', () => this.onEnd(interaction));
+		this.client.on('interactionCreate', (i) => this.onClicked(i, interaction));
+		setTimeout(() => {
+			this.client.removeListener('interactionCreate', (i) => this.onClicked(i, interaction));
+			this.onEnd(interaction);
+		}, time);
 	}
 
-	async onClicked(interaction: Lib.ComponentInteraction<Lib.ComponentTypes.BUTTON>) {
+	async onClicked(
+		interaction: Lib.AnyInteractionGateway,
+		i: Lib.CommandInteraction<Lib.AnyGuildTextChannel>
+	) {
+		if (interaction.type !== Lib.InteractionTypes.MESSAGE_COMPONENT) return;
+		if (interaction.data.componentType !== Lib.ComponentTypes.BUTTON) return;
+		if (interaction.message.interaction?.id !== i.id) return;
+		if (interaction.channelID !== i.channelID) return;
+		if (interaction.guildID !== i.guildID) return;
+		if (interaction.user.id !== i.user.id) return;
+
 		if (interaction.data.customID === 'gotofirst') {
 			if (this.currentPage === 0) {
 				return interaction.acknowledged
