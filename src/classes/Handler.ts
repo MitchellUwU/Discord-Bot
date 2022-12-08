@@ -1,5 +1,7 @@
 import {
+	AnyGuildTextChannel,
 	ApplicationCommandTypes,
+	CommandInteraction,
 	CreateApplicationCommandOptions,
 	CreateChatInputApplicationCommandOptions,
 	CreateMessageApplicationCommandOptions,
@@ -7,6 +9,7 @@ import {
 } from 'oceanic.js';
 import type BotClient from './Client';
 import type Command from './Command';
+import type Component from './Component';
 import type Event from './Event';
 
 export default class Handler {
@@ -15,7 +18,8 @@ export default class Handler {
 	chatInputCommands: Map<string, Command>;
 	messageCommands: Map<string, Command>;
 	userCommands: Map<string, Command>;
-	components: Map<string, unknown>;
+	activeComponents: Record<string, CommandInteraction<AnyGuildTextChannel>>;
+	components: Map<string, Component>;
 	commandList: CreateApplicationCommandOptions[];
 	chatInputCommandList: CreateChatInputApplicationCommandOptions[];
 	messageCommandList: CreateMessageApplicationCommandOptions[];
@@ -31,6 +35,7 @@ export default class Handler {
 		this.messageCommandList = [];
 		this.userCommands = new Map();
 		this.userCommandList = [];
+		this.activeComponents = {};
 		this.components = new Map();
 	}
 
@@ -122,8 +127,8 @@ export default class Handler {
 		for await (const file of files) {
 			const Component = (await import(file)).default;
 			const cmpt = new Component(this);
-			this.client.utils.logger({ title: 'ComponentsHandler', content: `Loaded ${cmpt.data.name}!`, type: 1 });
-			this.components.set(cmpt.data.name, cmpt);
+			this.client.utils.logger({ title: 'ComponentsHandler', content: `Loaded ${cmpt.id}!`, type: 1 });
+			this.components.set(cmpt.id, cmpt);
 		}
 	}
 

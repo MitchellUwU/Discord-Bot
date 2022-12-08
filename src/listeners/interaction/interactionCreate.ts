@@ -1,4 +1,9 @@
-import { InteractionTypes, CommandInteraction, ApplicationCommandTypes } from 'oceanic.js';
+import {
+	InteractionTypes,
+	CommandInteraction,
+	ApplicationCommandTypes,
+	ComponentInteraction,
+} from 'oceanic.js';
 import Builders from '../../classes/Builders';
 import type Command from '../../classes/Command';
 import Event from '../../classes/Event';
@@ -111,6 +116,28 @@ export default new Event('interactionCreate', false, async (client, interaction)
 			}
 
 			await cmd.execute(client, interaction);
+
+			break;
+		}
+		case InteractionTypes.MESSAGE_COMPONENT: {
+			if (!(interaction instanceof ComponentInteraction)) return;
+			if (!interaction.inCachedGuildChannel()) return;
+
+			const component = client.handler.components.get(interaction.data.customID);
+			const parentData = client.handler.activeComponents[interaction.user.id];
+
+			if (!component || !parentData) return;
+
+			if (interaction.type !== InteractionTypes.MESSAGE_COMPONENT) return;
+			if (interaction.message.interaction?.id !== parentData.id) return;
+			if (interaction.channelID !== parentData.channelID) return;
+			if (interaction.guildID !== parentData.guildID) return;
+			if (interaction.user.id !== parentData.user.id) return;
+
+			await component.execute(client, interaction, parentData);
+			delete client.handler.activeComponents[interaction.user.id];
+
+			break;
 		}
 	}
 });

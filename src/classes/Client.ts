@@ -26,6 +26,7 @@ export default class BotClient extends Client {
 			await this.handler.handleChatInputCommands();
 			await this.handler.handleMessageCommands();
 			await this.handler.handleUserCommands();
+			await this.handler.handleComponents();
 			this.handler.registerCommands();
 		});
 
