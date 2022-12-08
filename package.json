@@ -7,7 +7,7 @@
 		"startnobuild": "node --experimental-specifier-resolution=node dist/src/index.js",
 		"start": "tsc && node --experimental-specifier-resolution=node dist/src/index.js",
 		"test": "tsc -w && node --experimental-specifier-resolution=node dist/src/index.js",
-		"update": "npm i @oceanicjs/builders@latest ms@latest oceanic.js@dev undici@latest @types/ms@latest @types/node@latest tslib@latest typescript@latest",
+		"update": "npm i @oceanicjs/builders@latest ms@latest oceanic-collectors@latest oceanic.js@dev undici@latest @types/ms@latest @types/node@latest tslib@latest typescript@latest",
 		"build": "tsc"
 	},
 	"author": "Mitchell",
@@ -18,6 +18,7 @@
 	"dependencies": {
 		"@oceanicjs/builders": "^1.1.7",
 		"ms": "^2.1.3",
+		"oceanic-collectors": "^1.0.7",
 		"oceanic.js": "^1.3.3-dev.a8b8962",
 		"undici": "^5.13.0"
 	},
