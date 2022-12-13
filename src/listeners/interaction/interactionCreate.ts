@@ -7,6 +7,7 @@ import {
 import Builders from '../../classes/Builders';
 import type Command from '../../classes/Command';
 import Event from '../../classes/Event';
+import type { ArrayParentData, ParentData } from '../../types/options';
 
 export default new Event('interactionCreate', false, async (client, interaction) => {
 	switch (interaction.type) {
@@ -30,7 +31,11 @@ export default new Event('interactionCreate', false, async (client, interaction)
 				}
 			}
 
-			if (!cmd) return;
+			if (!cmd) {
+				return interaction.createMessage({
+					embeds: [Builders.ErrorEmbed().setDescription("that command doesn't exist?").toJSON()],
+				});
+			}
 
 			if (!client.config.devIDs.includes(interaction.user.id)) {
 				if (client.config.blockedUsers?.includes(interaction.user.id)) {
@@ -123,19 +128,25 @@ export default new Event('interactionCreate', false, async (client, interaction)
 			if (!(interaction instanceof ComponentInteraction)) return;
 			if (!interaction.inCachedGuildChannel()) return;
 
-			const component = client.handler.components.get(interaction.data.customID);
-			const parentData = client.handler.activeComponents[interaction.user.id];
+			const arrayData = interaction.data.customID.split('|') as ArrayParentData;
+
+			const parentData: ParentData = {
+				userID: arrayData[0],
+				interactionID: arrayData[1],
+				componentID: arrayData[2],
+			};
+
+			console.log(arrayData, parentData);
+
+			const component = client.handler.components.get(parentData.componentID);
 
 			if (!component || !parentData) return;
 
 			if (interaction.type !== InteractionTypes.MESSAGE_COMPONENT) return;
-			if (interaction.message.interaction?.id !== parentData.id) return;
-			if (interaction.channelID !== parentData.channelID) return;
-			if (interaction.guildID !== parentData.guildID) return;
-			if (interaction.user.id !== parentData.user.id) return;
+			if (interaction.message.interaction?.id !== parentData.interactionID) return;
+			if (interaction.user.id !== parentData.userID) return;
 
 			await component.execute(client, interaction, parentData);
-			delete client.handler.activeComponents[interaction.user.id];
 
 			break;
 		}

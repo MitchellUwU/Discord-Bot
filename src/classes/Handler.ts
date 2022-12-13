@@ -1,7 +1,5 @@
 import {
-	AnyGuildTextChannel,
 	ApplicationCommandTypes,
-	CommandInteraction,
 	CreateApplicationCommandOptions,
 	CreateChatInputApplicationCommandOptions,
 	CreateMessageApplicationCommandOptions,
@@ -18,7 +16,6 @@ export default class Handler {
 	chatInputCommands: Map<string, Command>;
 	messageCommands: Map<string, Command>;
 	userCommands: Map<string, Command>;
-	activeComponents: Record<string, CommandInteraction<AnyGuildTextChannel>>;
 	components: Map<string, Component>;
 	commandList: CreateApplicationCommandOptions[];
 	chatInputCommandList: CreateChatInputApplicationCommandOptions[];
@@ -35,7 +32,6 @@ export default class Handler {
 		this.messageCommandList = [];
 		this.userCommands = new Map();
 		this.userCommandList = [];
-		this.activeComponents = {};
 		this.components = new Map();
 	}
 

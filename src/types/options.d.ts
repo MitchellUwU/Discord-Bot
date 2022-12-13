@@ -30,3 +30,15 @@ export interface LoggerOptions {
 	content: unknown;
 	type: 1 | 2 | 3 | 4;
 }
+
+export interface ParentData {
+	userID: string;
+	interactionID: string;
+	componentID: string;
+}
+
+export type ArrayParentData = [
+	userID: string,
+	interactionID: string,
+	componentID: string,
+]
