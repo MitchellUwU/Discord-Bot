@@ -1,11 +1,9 @@
 import {
 	InteractionTypes,
 	CommandInteraction,
-	ApplicationCommandTypes,
 	ComponentInteraction,
 } from 'oceanic.js';
 import Builders from '../../classes/Builders';
-import type Command from '../../classes/Command';
 import Event from '../../classes/Event';
 import type { ArrayParentData, ParentData } from '../../types/options';
 
@@ -14,22 +12,8 @@ export default new Event('interactionCreate', false, async (client, interaction)
 		case InteractionTypes.APPLICATION_COMMAND: {
 			if (!(interaction instanceof CommandInteraction)) return;
 			if (!interaction.inCachedGuildChannel()) return;
-			let cmd: Command | undefined;
 
-			switch (interaction.data.type) {
-				case ApplicationCommandTypes.CHAT_INPUT: {
-					cmd = client.handler.getCommand(interaction.data.name, ApplicationCommandTypes.CHAT_INPUT);
-					break;
-				}
-				case ApplicationCommandTypes.MESSAGE: {
-					cmd = client.handler.getCommand(interaction.data.name, ApplicationCommandTypes.MESSAGE);
-					break;
-				}
-				case ApplicationCommandTypes.USER: {
-					cmd = client.handler.getCommand(interaction.data.name, ApplicationCommandTypes.USER);
-					break;
-				}
-			}
+			const cmd = client.handler.getCommand(interaction.data.name, interaction.data.type);
 
 			if (!cmd) {
 				return interaction.createMessage({
@@ -55,14 +39,6 @@ export default new Event('interactionCreate', false, async (client, interaction)
 						],
 					});
 				}
-
-				if (client.onMaintenance) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed().setDescription('the bot is on maintenance, try again later!').toJSON(),
-						],
-					});
-				}
 			}
 
 			if (!interaction.guild.clientMember.permissions.has('ADMINISTRATOR')) {
@@ -70,38 +46,36 @@ export default new Event('interactionCreate', false, async (client, interaction)
 					return interaction.createMessage({
 						embeds: [
 							Builders.ErrorEmbed()
-								.setDescription(
-									[
-										"i don't have enough permissions! please give me following permission:",
-										'',
-										'**- view channels**',
-										'**- manage channels**',
-										'**- manage roles**',
-										'**- manage server**',
-										'**- create invite**',
-										'**- change nickname**',
-										'**- manage nicknames**',
-										'**- kick members**',
-										'**- ban members**',
-										'**- moderate members**',
-										'**- send messages**',
-										'**- send messages in threads**',
-										'**- create threads**',
-										'**- create private threads**',
-										'**- embed links**',
-										'**- attach files**',
-										'**- add reactions**',
-										'**- use external emoji**',
-										'**- use external stickers**',
-										'**- manage messages**',
-										'**- read message history**',
-										'**- connect**',
-										'**- speak**',
-										'**- mute members**',
-										'**- deafen members**',
-										'**- move members**',
-									].join('\n')
-								)
+								.setDescription([
+									"i don't have enough permissions! please give me following permission:",
+									'',
+									'**- view channels**',
+									'**- manage channels**',
+									'**- manage roles**',
+									'**- manage server**',
+									'**- create invite**',
+									'**- change nickname**',
+									'**- manage nicknames**',
+									'**- kick members**',
+									'**- ban members**',
+									'**- moderate members**',
+									'**- send messages**',
+									'**- send messages in threads**',
+									'**- create threads**',
+									'**- create private threads**',
+									'**- embed links**',
+									'**- attach files**',
+									'**- add reactions**',
+									'**- use external emoji**',
+									'**- use external stickers**',
+									'**- manage messages**',
+									'**- read message history**',
+									'**- connect**',
+									'**- speak**',
+									'**- mute members**',
+									'**- deafen members**',
+									'**- move members**',
+								])
 								.toJSON(),
 						],
 					});
@@ -120,7 +94,7 @@ export default new Event('interactionCreate', false, async (client, interaction)
 				});
 			}
 
-			await cmd.execute(client, interaction);
+			await cmd.execute(interaction);
 
 			break;
 		}
@@ -146,7 +120,7 @@ export default new Event('interactionCreate', false, async (client, interaction)
 			if (interaction.message.interaction?.id !== parentData.interactionID) return;
 			if (interaction.user.id !== parentData.userID) return;
 
-			await component.execute(client, interaction, parentData);
+			await component.execute(interaction, parentData);
 
 			break;
 		}

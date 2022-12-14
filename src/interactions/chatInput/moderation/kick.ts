@@ -1,4 +1,3 @@
-import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -24,7 +23,7 @@ export default class KickCommand extends Command {
 
 	override userPermission = 'KICK_MEMBERS' as Lib.PermissionName;
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		let user: Lib.Member;
 
 		try {
@@ -77,7 +76,7 @@ export default class KickCommand extends Command {
 			}
 
 			if (
-				client.utils.getHighestRole(user).position >= client.utils.getHighestRole(interaction.member).position
+				this.client.utils.getHighestRole(user).position >= this.client.utils.getHighestRole(interaction.member).position
 			) {
 				return interaction.createMessage({
 					embeds: [
@@ -88,16 +87,12 @@ export default class KickCommand extends Command {
 		}
 
 		if (
-			client.utils.getHighestRole(user).position >=
-			client.utils.getHighestRole(interaction.guild.clientMember).position
+			this.client.utils.getHighestRole(user).position >=
+			this.client.utils.getHighestRole(interaction.guild.clientMember).position
 		) {
 			return interaction.createMessage({
 				embeds: [
-					Builders.ErrorEmbed()
-						.setDescription(
-							`${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`
-						)
-						.toJSON(),
+					Builders.ErrorEmbed().setDescription(`${user.tag} have higher (or same) role than me`).toJSON(),
 				],
 			});
 		}
@@ -127,9 +122,9 @@ export default class KickCommand extends Command {
 			} catch (error) {
 				dmSuccess = false;
 				if (error instanceof Error) {
-					client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+					this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 				} else {
-					client.utils.logger({ title: 'Error', content: error, type: 2 });
+					this.client.utils.logger({ title: 'Error', content: error, type: 2 });
 				}
 			}
 		}
@@ -154,9 +149,9 @@ export default class KickCommand extends Command {
 			});
 
 			if (error instanceof Error) {
-				client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+				this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 			} else {
-				client.utils.logger({ title: 'Error', content: error, type: 2 });
+				this.client.utils.logger({ title: 'Error', content: error, type: 2 });
 			}
 		}
 	}

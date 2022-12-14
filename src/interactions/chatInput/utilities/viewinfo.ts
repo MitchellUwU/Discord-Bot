@@ -1,4 +1,3 @@
-import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -42,14 +41,14 @@ export default class ViewInfoCommand extends Command {
 		])
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true).toString();
 
 		switch (command) {
 			case 'user': {
 				const id = interaction.data.options.getUser('user', false)?.id || interaction.user.id;
 				try {
-					const user = await client.utils.getMember(interaction.guildID, id);
+					const user = await this.client.utils.getMember(interaction.guildID, id);
 					const roles = interaction.guild.roles
 						.toArray()
 						.filter((role) => user.roles.includes(role.id))
@@ -86,7 +85,7 @@ export default class ViewInfoCommand extends Command {
 							.toJSON(),
 					});
 				} catch (error) {
-					const user = await client.utils.getUser(id);
+					const user = await this.client.utils.getUser(id);
 
 					interaction.createMessage({
 						embeds: [
@@ -247,7 +246,7 @@ export default class ViewInfoCommand extends Command {
 					},
 				];
 
-				const paginator = new Paginator(client, pages);
+				const paginator = new Paginator(this.client, pages);
 				await paginator.start(interaction, 20000);
 
 				break;
@@ -343,7 +342,7 @@ export default class ViewInfoCommand extends Command {
 					});
 				} else {
 					if (interaction.user.id !== interaction.guild.ownerID) {
-						if (role.position >= client.utils.getHighestRole(interaction.member).position) {
+						if (role.position >= this.client.utils.getHighestRole(interaction.member).position) {
 							return interaction.createMessage({
 								embeds: [
 									Builders.ErrorEmbed().setDescription('that role is higher (or same) role than you').toJSON(),

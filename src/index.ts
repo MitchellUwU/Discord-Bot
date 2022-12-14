@@ -28,7 +28,6 @@ process.on('unhandledRejection', (reason: Error) => {
 
 process.on('uncaughtException', (error) => {
 	client.utils.logger({ title: 'UncaughtException', content: error.stack, type: 2 });
-	client.onMaintenance = true;
 });
 
 process.on('SIGINT', () => {

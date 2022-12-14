@@ -1,4 +1,3 @@
-import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -35,7 +34,7 @@ export default class SlowmodeCommand extends Command {
 
 	override userPermission = 'MANAGE_CHANNELS' as Lib.PermissionName;
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true).toString();
 
 		switch (command) {
@@ -97,9 +96,9 @@ export default class SlowmodeCommand extends Command {
 					});
 
 					if (error instanceof Error) {
-						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 					} else {
-						client.utils.logger({ title: 'Error', content: error, type: 2 });
+						this.client.utils.logger({ title: 'Error', content: error, type: 2 });
 					}
 				}
 
@@ -140,9 +139,9 @@ export default class SlowmodeCommand extends Command {
 					});
 
 					if (error instanceof Error) {
-						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 					} else {
-						client.utils.logger({ title: 'Error', content: error, type: 2 });
+						this.client.utils.logger({ title: 'Error', content: error, type: 2 });
 					}
 				}
 

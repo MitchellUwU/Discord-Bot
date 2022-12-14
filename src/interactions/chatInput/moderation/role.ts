@@ -1,4 +1,3 @@
-import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -46,7 +45,7 @@ export default class RoleCommand extends Command {
 
 	override userPermission = 'MANAGE_ROLES' as Lib.PermissionName;
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true).toString();
 
 		switch (command) {
@@ -91,8 +90,8 @@ export default class RoleCommand extends Command {
 					}
 
 					if (
-						client.utils.getHighestRole(user).position >=
-						client.utils.getHighestRole(interaction.member).position
+						this.client.utils.getHighestRole(user).position >=
+						this.client.utils.getHighestRole(interaction.member).position
 					) {
 						return interaction.createMessage({
 							embeds: [
@@ -103,7 +102,7 @@ export default class RoleCommand extends Command {
 						});
 					}
 
-					if (role.position >= client.utils.getHighestRole(interaction.member).position) {
+					if (role.position >= this.client.utils.getHighestRole(interaction.member).position) {
 						return interaction.createMessage({
 							embeds: [
 								Builders.ErrorEmbed()
@@ -115,28 +114,20 @@ export default class RoleCommand extends Command {
 				}
 
 				if (
-					client.utils.getHighestRole(user).position >=
-					client.utils.getHighestRole(interaction.guild.clientMember).position
+					this.client.utils.getHighestRole(user).position >=
+					this.client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
 					return interaction.createMessage({
 						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(
-									`${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`
-								)
-								.toJSON(),
+							Builders.ErrorEmbed().setDescription(`${user.tag} have higher (or same) role than me`).toJSON(),
 						],
 					});
 				}
 
-				if (role.position >= client.utils.getHighestRole(interaction.guild.clientMember).position) {
+				if (role.position >= this.client.utils.getHighestRole(interaction.guild.clientMember).position) {
 					return interaction.createMessage({
 						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(
-									`${role.name} role is higher (or same) than me, please ask an admin or the owner to fix this`
-								)
-								.toJSON(),
+							Builders.ErrorEmbed().setDescription(`${role.name} role is higher (or same) than me`).toJSON(),
 						],
 					});
 				}
@@ -160,9 +151,9 @@ export default class RoleCommand extends Command {
 					});
 
 					if (error instanceof Error) {
-						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 					} else {
-						client.utils.logger({ title: 'Error', content: error, type: 2 });
+						this.client.utils.logger({ title: 'Error', content: error, type: 2 });
 					}
 				}
 
@@ -211,8 +202,8 @@ export default class RoleCommand extends Command {
 					}
 
 					if (
-						client.utils.getHighestRole(user).position >=
-						client.utils.getHighestRole(interaction.member).position
+						this.client.utils.getHighestRole(user).position >=
+						this.client.utils.getHighestRole(interaction.member).position
 					) {
 						return interaction.createMessage({
 							embeds: [
@@ -223,7 +214,7 @@ export default class RoleCommand extends Command {
 						});
 					}
 
-					if (role.position >= client.utils.getHighestRole(interaction.member).position) {
+					if (role.position >= this.client.utils.getHighestRole(interaction.member).position) {
 						return interaction.createMessage({
 							embeds: [
 								Builders.ErrorEmbed()
@@ -235,28 +226,20 @@ export default class RoleCommand extends Command {
 				}
 
 				if (
-					client.utils.getHighestRole(user).position >=
-					client.utils.getHighestRole(interaction.guild.clientMember).position
+					this.client.utils.getHighestRole(user).position >=
+					this.client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
 					return interaction.createMessage({
 						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(
-									`${user.tag} have higher (or same) role than me, please ask an admin or the owner to fix this`
-								)
-								.toJSON(),
+							Builders.ErrorEmbed().setDescription(`${user.tag} have higher (or same) role than me`).toJSON(),
 						],
 					});
 				}
 
-				if (role.position >= client.utils.getHighestRole(interaction.guild.clientMember).position) {
+				if (role.position >= this.client.utils.getHighestRole(interaction.guild.clientMember).position) {
 					return interaction.createMessage({
 						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(
-									`${role.name} role is higher (or same) than me, please ask an admin or the owner to fix this`
-								)
-								.toJSON(),
+							Builders.ErrorEmbed().setDescription(`${role.name} role is higher (or same) than me`).toJSON(),
 						],
 					});
 				}
@@ -280,9 +263,9 @@ export default class RoleCommand extends Command {
 					});
 
 					if (error instanceof Error) {
-						client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 					} else {
-						client.utils.logger({ title: 'Error', content: error, type: 2 });
+						this.client.utils.logger({ title: 'Error', content: error, type: 2 });
 					}
 				}
 

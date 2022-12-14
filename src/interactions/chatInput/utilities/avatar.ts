@@ -1,4 +1,3 @@
-import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -19,17 +18,11 @@ export default class AvatarCommand extends Command {
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
 				.setDescription('show guild icon (and also banner)')
-				.addOption(
-					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'id')
-						.setDescription('guild id')
-						.setRequired(false)
-						.toJSON()
-				)
 				.toJSON(),
 		])
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true).toString();
 
 		switch (command) {
@@ -56,14 +49,7 @@ export default class AvatarCommand extends Command {
 				break;
 			}
 			case 'guild': {
-				const id = interaction.data.options.getString('guild', false) || interaction.guildID;
-				let guild: Lib.Guild;
-
-				try {
-					guild = await client.utils.getGuild(id);
-				} catch (error) {
-					guild = interaction.guild;
-				}
+				const guild = interaction.guild;
 
 				if (!guild.bannerURL() && !guild.iconURL()) {
 					return interaction.createMessage({

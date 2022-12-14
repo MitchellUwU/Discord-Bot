@@ -1,4 +1,3 @@
-import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -9,9 +8,6 @@ export default class FetchCommand extends Command {
 		.setDescription('fetch some random stuff from the internet')
 		.setDMPermission(false)
 		.addOptions([
-			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'meme')
-				.setDescription('get memes')
-				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'cat')
 				.setDescription('get a cat picture')
 				.toJSON(),
@@ -27,39 +23,13 @@ export default class FetchCommand extends Command {
 		])
 		.toJSON();
 
-		override async execute(_client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const command = interaction.data.options.getSubCommand(true);
 
 		switch (command.toString()) {
-			case 'meme': {
-				// api is dead, but i'm still gonna keep the command
-				const data = await request('https://meme-api.herokuapp.com/gimme/memes');
-				const file = await data.body.json();
-
-				interaction.createMessage({
-					embeds: [
-						new Builders.Embed()
-							.setRandomColor()
-							.setTitle(file.title)
-							.setDescription(
-								`**- upvotes:** ${file.ups}`,
-								`**- post link:** [Link](${file.postLink})`,
-								`**- subreddit:** r/${file.subreddit}`,
-								`**- post author:** ${file.author}`,
-								`**- nsfw:** ${file.nsfw ? 'yes' : 'no'}`,
-								`**- spoiler:** ${file.spoiler ? 'yes' : 'no'}`
-							)
-							.setImage(file.url)
-							.setTimestamp()
-							.toJSON(),
-					],
-				});
-
-				break;
-			}
 			case 'cat': {
 				const data = await request('https://aws.random.cat/meow');
-				const { file } = await data.body.json()
+				const { file } = await data.body.json();
 
 				interaction.createMessage({
 					embeds: [
@@ -78,7 +48,7 @@ export default class FetchCommand extends Command {
 				const message = interaction.data.options.getString('word', true);
 				const query = new URLSearchParams(message);
 				const data = await request(`https://api.urbandictionary.com/v0/define?term=${query}`);
-				const { list } = await data.body.json()
+				const { list } = await data.body.json();
 
 				if (!list.length) {
 					return interaction.createMessage({

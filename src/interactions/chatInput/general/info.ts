@@ -1,4 +1,3 @@
-import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -11,7 +10,7 @@ export default class InfoCommand extends Command {
 		.setDMPermission(false)
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()
@@ -23,9 +22,9 @@ export default class InfoCommand extends Command {
 							value: [
 								`**developer:** ${packageJSON.author}`,
 								`**bot version:** ${packageJSON.version}`,
-								`**total commands:** ${client.handler.chatInputCommands.size}`,
-								`**total guilds:** ${client.guilds.size}`,
-								`**total shards:** ${client.shards.size} (this guild is in shard ${
+								`**total commands:** ${this.client.handler.chatInputCommands.size}`,
+								`**total guilds:** ${this.client.guilds.size}`,
+								`**total shards:** ${this.client.shards.size} (this guild is in shard ${
 									interaction.guild.shard.id + 1
 								})`,
 								`**uptime:** ${ms(process.uptime() * 1000, { long: true })}`,

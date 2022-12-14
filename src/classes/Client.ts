@@ -5,13 +5,11 @@ import Handler from './Handler';
 
 export default class BotClient extends Client {
 	readonly config: BotConfig;
-	onMaintenance: boolean;
 	handler: Handler;
 	utils: Utils;
 	constructor(options: BotConfig) {
 		super(options.clientOptions);
 
-		this.onMaintenance = false;
 		this.config = options;
 		this.handler = new Handler(this);
 		this.utils = new Utils(this);
@@ -26,7 +24,7 @@ export default class BotClient extends Client {
 			await this.handler.handleChatInputCommands();
 			await this.handler.handleMessageCommands();
 			await this.handler.handleUserCommands();
-			await this.handler.handleComponents();
+			//await this.handler.handleComponents();
 			this.handler.registerCommands();
 		});
 

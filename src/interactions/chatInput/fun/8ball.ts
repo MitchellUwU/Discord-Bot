@@ -1,4 +1,3 @@
-import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -15,9 +14,9 @@ export default class EightBallCommand extends Command {
 		)
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		const message = interaction.data.options.getString('message', true);
-		const config = client.config.answers;
+		const config = this.client.config.answers;
 		const botAnswer = config.repliesTemplate[
 			Math.floor(Math.random() * config.repliesTemplate.length)
 		]!.replace('{answer}', config.answers[Math.floor(Math.random() * config.answers.length)]!)

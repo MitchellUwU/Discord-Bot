@@ -1,6 +1,6 @@
 {
 	"name": "mitchell-bot",
-	"version": "1.0.0-beta.12",
+	"version": "1.0.0-beta.13",
 	"description": "A experimental discord bot, doesn't have a name though...",
 	"main": "dist/src/index.js",
 	"scripts": {

@@ -7,10 +7,13 @@ import type {
 } from 'oceanic.js';
 
 export default abstract class Command {
+	client: BotClient;
 	abstract data: CreateApplicationCommandOptions;
-	abstract execute(
-		client: BotClient,
-		interaction: CommandInteraction<AnyGuildTextChannel>
-	): Promise<void> | void;
+	abstract execute(interaction: CommandInteraction<AnyGuildTextChannel>): Promise<void> | void;
+
+	constructor(client: BotClient) {
+		this.client = client;
+	}
+
 	userPermission: PermissionName | bigint = 'USE_APPLICATION_COMMANDS';
 }

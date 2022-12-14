@@ -1,4 +1,3 @@
-import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -22,7 +21,7 @@ export default class PurgeCommand extends Command {
 
 		override userPermission = 'MANAGE_MESSAGES' as Lib.PermissionName;
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		let user: Lib.User;
 
 		try {
@@ -65,9 +64,9 @@ export default class PurgeCommand extends Command {
 			});
 
 			if (error instanceof Error) {
-				client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
+				this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
 			} else {
-				client.utils.logger({ title: 'Error', content: error, type: 2 });
+				this.client.utils.logger({ title: 'Error', content: error, type: 2 });
 			}
 		}
 	}

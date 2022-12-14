@@ -1,4 +1,3 @@
-import type BotClient from '../../classes/Client';
 import Builders from '../../classes/Builders';
 import Command from '../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -8,7 +7,7 @@ export default class ViewRawCommand extends Command {
 		.setDMPermission(false)
 		.toJSON();
 
-	override async execute(client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		if (!interaction.data.target) return;
 		if (!(interaction.data.target instanceof Lib.Message)) return;
 
@@ -32,7 +31,7 @@ export default class ViewRawCommand extends Command {
 		};
 
 		interaction.createMessage({
-			content: `\`\`\`${client.utils.trim(JSON.stringify(logged, null, 2), 1992)}\`\`\``,
+			content: `\`\`\`${this.client.utils.trim(JSON.stringify(logged, null, 2), 1992)}\`\`\``,
 			flags: 64,
 		});
 	}

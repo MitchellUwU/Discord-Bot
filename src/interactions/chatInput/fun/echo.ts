@@ -1,4 +1,3 @@
-import type BotClient from '../../../classes/Client';
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
@@ -15,7 +14,7 @@ export default class EchoCommand extends Command {
 		)
 		.toJSON();
 
-	override async execute(_client: BotClient, interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
+	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		interaction.createMessage({
 			embeds: [
 				new Builders.Embed()
