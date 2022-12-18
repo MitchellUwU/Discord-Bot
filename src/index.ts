@@ -22,8 +22,12 @@ process.on('exit', (code) => {
 	client.utils.logger({ title: 'Exit', content: `Exited with code ${code}`, type: 3 });
 });
 
-process.on('unhandledRejection', (reason: Error) => {
-	client.utils.logger({ title: 'UnhandledRejection', content: reason.stack, type: 2 });
+process.on('unhandledRejection', (reason) => {
+	client.utils.logger({
+		title: 'UnhandledRejection',
+		content: reason instanceof Error ? reason.stack : reason,
+		type: 2,
+	});
 });
 
 process.on('uncaughtException', (error) => {

@@ -76,7 +76,8 @@ export default class KickCommand extends Command {
 			}
 
 			if (
-				this.client.utils.getHighestRole(user).position >= this.client.utils.getHighestRole(interaction.member).position
+				this.client.utils.getHighestRole(user).position >=
+				this.client.utils.getHighestRole(interaction.member).position
 			) {
 				return interaction.createMessage({
 					embeds: [

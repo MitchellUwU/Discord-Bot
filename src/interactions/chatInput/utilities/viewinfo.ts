@@ -69,11 +69,16 @@ export default class ViewInfoCommand extends Command {
 										`**- is system:** ${user.user.system ? 'yes' : 'no'}`,
 										`**- id:** ${user.id}`,
 										`**- roles (${user.roles.length}):** ${roles.map((role) => role.mention).join(' ')}`,
-										`**- timeout until** ${user.communicationDisabledUntil ? `<t:${Math.floor(
-											user.communicationDisabledUntil.getTime() / 1000
-										)}:f> (in ${ms(user.communicationDisabledUntil.getTime() - Date.now(), {
-											long: true,
-										})})` : "this user isn't in timeout"}`,
+										`**- timeout until** ${
+											user.communicationDisabledUntil
+												? `<t:${Math.floor(user.communicationDisabledUntil.getTime() / 1000)}:f> (in ${ms(
+														user.communicationDisabledUntil.getTime() - Date.now(),
+														{
+															long: true,
+														}
+												  )})`
+												: "this user isn't in timeout"
+										}`,
 									].join('\n')
 								)
 								.setThumbnail(user.avatarURL())
@@ -345,7 +350,9 @@ export default class ViewInfoCommand extends Command {
 						if (role.position >= this.client.utils.getHighestRole(interaction.member).position) {
 							return interaction.createMessage({
 								embeds: [
-									Builders.ErrorEmbed().setDescription('that role is higher (or same) role than you').toJSON(),
+									Builders.ErrorEmbed()
+										.setDescription('that role is higher (or same) role than you')
+										.toJSON(),
 								],
 							});
 						}

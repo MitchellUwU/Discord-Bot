@@ -19,7 +19,7 @@ export default class PurgeCommand extends Command {
 		])
 		.toJSON();
 
-		override userPermission = 'MANAGE_MESSAGES' as Lib.PermissionName;
+	override userPermission = 'MANAGE_MESSAGES' as Lib.PermissionName;
 
 	override async execute(interaction: Lib.CommandInteraction<Lib.AnyGuildTextChannel>) {
 		let user: Lib.User;
