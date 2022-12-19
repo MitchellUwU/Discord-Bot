@@ -42,9 +42,7 @@ export default class KickCommand extends Command {
 		}
 
 		const reason = interaction.data.options.getString('reason', false) || 'no reason?';
-		let dmOption = interaction.data.options.getBoolean('dm', false);
-
-		if (dmOption === undefined) dmOption = true;
+		const dmOption = interaction.data.options.getBoolean('dm', false) ?? true;
 
 		if (user.id === interaction.user.id) {
 			return interaction.createMessage({

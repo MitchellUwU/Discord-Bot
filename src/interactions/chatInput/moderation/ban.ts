@@ -92,8 +92,7 @@ export default class BanCommand extends Command {
 				const deleteMessageTime = ms(
 					`${interaction.data.options.getString('deleteMessageTime', false) || 0}`
 				);
-				let dmOption = interaction.data.options.getBoolean('dm', false);
-				if (dmOption === undefined) dmOption = true;
+				const dmOption = interaction.data.options.getBoolean('dm', false) ?? true;
 
 				if (user.id === interaction.user.id) {
 					return interaction.createMessage({

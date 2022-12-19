@@ -69,10 +69,8 @@ export default class TimeoutCommand extends Command {
 
 				const reason = interaction.data.options.getString('reason', false) || 'no reason?';
 				const time = ms(`${interaction.data.options.getString('time', true)}`);
-				let dmOption = interaction.data.options.getBoolean('dm', false);
+				const dmOption = interaction.data.options.getBoolean('dm', false) ?? true;
 				const date = new Date(Date.now() + time).toISOString();
-
-				if (dmOption === undefined) dmOption = true;
 
 				if (user.id === interaction.user.id) {
 					return interaction.createMessage({

@@ -33,7 +33,10 @@
 		"noUnusedParameters": true,
 		"importsNotUsedAsValues": "error",
 		"checkJs": true,
-		"forceConsistentCasingInFileNames": true
+		"forceConsistentCasingInFileNames": true,
+		"allowJs": true,
+		"noEmitOnError": true,
+		"strictPropertyInitialization": true
 	},
 	"include": ["**/*"],
 	"exclude": ["./node_modules", "./dist", "config.json"]
