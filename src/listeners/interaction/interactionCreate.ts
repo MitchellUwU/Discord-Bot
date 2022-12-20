@@ -21,28 +21,8 @@ export default new Event('interactionCreate', false, async (client, interaction)
 				});
 			}
 
-			if (!client.config.devIDs.includes(interaction.user.id)) {
-				if (client.config.blockedUsers?.includes(interaction.user.id)) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed().setDescription('you were blacklisted by bot developers...').toJSON(),
-						],
-					});
-				}
-
-				if (client.config.blockedGuilds?.includes(interaction.guildID)) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription('this guild was blacklisted by bot developers...')
-								.toJSON(),
-						],
-					});
-				}
-			}
-
 			if (!interaction.guild.clientMember.permissions.has('ADMINISTRATOR')) {
-				if (!interaction.guild.clientMember.permissions.has(BigInt(client.config.requiredPermission))) {
+				if (!interaction.guild.clientMember.permissions.has(1615410359415n)) {
 					return interaction.createMessage({
 						embeds: [
 							Builders.ErrorEmbed()
@@ -109,8 +89,6 @@ export default new Event('interactionCreate', false, async (client, interaction)
 				interactionID: arrayData[1],
 				componentID: arrayData[2],
 			};
-
-			console.log(arrayData, parentData);
 
 			const component = client.handler.components.get(parentData.componentID);
 

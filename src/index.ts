@@ -4,7 +4,7 @@ import config from '../config.json';
 // Print super duper epic ASCII art.
 console.log(config.ascii.join('\n'));
 
-export const client = new BotClient(config); // Initialize the client.
+export const client = new BotClient(config.clientOptions); // Initialize the client.
 
 // Run the client.
 client.run();

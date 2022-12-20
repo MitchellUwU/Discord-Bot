@@ -8,6 +8,7 @@ import {
 import type BotClient from './Client';
 import type Command from './Command';
 import type Component from './Component';
+import config from '../../config.json';
 import type Event from './Event';
 
 export default class Handler {
@@ -130,8 +131,8 @@ export default class Handler {
 
 	registerCommands() {
 		try {
-			if (this.client.config.devMode && this.client.config.guildID) {
-				this.client.application.bulkEditGuildCommands(this.client.config.guildID, this.commandList);
+			if (config.devMode && config.guildID) {
+				this.client.application.bulkEditGuildCommands(config.guildID, this.commandList);
 				this.client.utils.logger({
 					title: 'ApplicationCommandsHandler',
 					content: 'Successfully registered all application commands! (Guild)',
