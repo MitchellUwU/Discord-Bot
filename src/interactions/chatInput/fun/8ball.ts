@@ -1,31 +1,9 @@
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
+import { answers } from '../../../../config.json';
 import * as Lib from 'oceanic.js';
 
 export default class EightBallCommand extends Command {
-	private answers: string[] = [
-		'it is certain',
-		'without a doubt',
-		'you may rely on it',
-		'yes definitely',
-		'it is decidedly so',
-		'as I see it, yes',
-		'most likely',
-		'yes',
-		'outlook good',
-		'signs point to yes',
-		'reply hazy try again',
-		'better not tell you now',
-		'ask again later',
-		'cannot predict now',
-		'concentrate and ask again',
-		"don't count on it",
-		'outlook not so good',
-		'my sources say no',
-		'very doubtful',
-		'my reply is no',
-	];
-
 	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, '8ball')
 		.setDescription('ask the 8ball (kinda) a question')
 		.setDMPermission(false)
@@ -47,11 +25,16 @@ export default class EightBallCommand extends Command {
 					.setTitle('🎱 8ball')
 					.setDescription(
 						`**question:** ${message}`,
-						`**answer:** ${this.answers[Math.floor(Math.random() * this.answers.length)]}`
+						`**answer:** ${answers[Math.floor(Math.random() * answers.length)]}`
 					)
 					.setTimestamp()
 					.toJSON(),
 			],
+			components: new Builders.ActionRow().addInteractionButton({
+				label: 'regenerate',
+				style: Lib.ButtonStyles.PRIMARY,
+				customID: [interaction.user.id, interaction.id, 'regen8ball', message].join('|'),
+			}).toJSON(),
 		});
 	}
 }

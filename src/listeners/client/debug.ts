@@ -1,7 +1,8 @@
 import Event from '../../classes/Event';
+import config from '../../../config.json';
 
 export default new Event('debug', false, async (client, msg, id) => {
-	if (client.config.devMode !== true) return;
+	if (config.devMode !== true) return;
 	if (msg.startsWith('{"op"')) return;
 
 	if (!id) {

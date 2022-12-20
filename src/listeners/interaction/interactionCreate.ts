@@ -1,8 +1,4 @@
-import {
-	InteractionTypes,
-	CommandInteraction,
-	ComponentInteraction,
-} from 'oceanic.js';
+import { InteractionTypes, CommandInteraction, ComponentInteraction } from 'oceanic.js';
 import Builders from '../../classes/Builders';
 import Event from '../../classes/Event';
 import type { ArrayParentData, ParentData } from '../../types/options';
@@ -88,16 +84,16 @@ export default new Event('interactionCreate', false, async (client, interaction)
 				userID: arrayData[0],
 				interactionID: arrayData[1],
 				componentID: arrayData[2],
+				addition: arrayData[3],
 			};
 
 			const component = client.handler.components.get(parentData.componentID);
 
 			if (!component || !parentData) return;
-
 			if (interaction.type !== InteractionTypes.MESSAGE_COMPONENT) return;
 			if (interaction.message.interaction?.id !== parentData.interactionID) return;
 			if (interaction.user.id !== parentData.userID) return;
-
+			
 			await component.execute(interaction, parentData);
 
 			break;

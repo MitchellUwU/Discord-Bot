@@ -9,10 +9,6 @@ export default abstract class Component {
 		interaction: ComponentInteraction<ComponentTypes.BUTTON | SelectMenuTypes, AnyGuildTextChannel>,
 		parentData: ParentData
 	): Promise<void> | void;
-	abstract disable(
-		interaction: ComponentInteraction<ComponentTypes.BUTTON | SelectMenuTypes, AnyGuildTextChannel>,
-		parentData: ParentData
-	): Promise<void> | void;
 
 	constructor(client: BotClient) {
 		this.client = client;
