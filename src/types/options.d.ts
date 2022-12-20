@@ -10,12 +10,12 @@ export interface ParentData {
 	userID: string;
 	interactionID: string;
 	componentID: string;
-	addition: string;
+	addition?: string;
 }
 
 export type ArrayParentData = [
 	userID: string,
 	interactionID: string,
 	componentID: string,
-	addition: string,
+	addition?: string,
 ]
