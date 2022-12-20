@@ -30,11 +30,18 @@ export default class EightBallCommand extends Command {
 					.setTimestamp()
 					.toJSON(),
 			],
-			components: new Builders.ActionRow().addInteractionButton({
-				label: 'regenerate',
-				style: Lib.ButtonStyles.PRIMARY,
-				customID: [interaction.user.id, interaction.id, 'regen8ball', this.client.utils.trim(message, 25)].join('|'),
-			}).toJSON(),
+			components: new Builders.ActionRow()
+				.addInteractionButton({
+					label: 'regenerate',
+					style: Lib.ButtonStyles.PRIMARY,
+					customID: [
+						interaction.user.id,
+						interaction.id,
+						'regen8ball',
+						this.client.utils.trim(message, 25),
+					].join('|'),
+				})
+				.toJSON(),
 		});
 	}
 }
