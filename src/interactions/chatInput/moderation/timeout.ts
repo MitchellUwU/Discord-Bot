@@ -179,14 +179,16 @@ export default class TimeoutCommand extends Command {
 						reason: reason,
 					});
 
+					let description = `successfully timeout ${user.tag}!`;
+
+					if (dmOption && !dmSuccess) {
+						description += " but i can't dm them.";
+					}
+
 					interaction.createMessage({
 						embeds: [
 							Builders.SuccessEmbed()
-								.setDescription(
-									`successfully timeout ${user.tag}!${
-										dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
-									}`
-								)
+								.setDescription(description)
 								.toJSON(),
 						],
 					});

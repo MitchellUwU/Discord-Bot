@@ -54,6 +54,20 @@ export default class ViewInfoCommand extends Command {
 						.filter((role) => user.roles.includes(role.id))
 						.sort((prev, next) => next.position - prev.position);
 
+					let onTimeout = '';
+
+					if (user.communicationDisabledUntil) {
+						const timeLeft = ms(user.communicationDisabledUntil.getTime() - Date.now(), {
+							long: true,
+						});
+
+						onTimeout += `<t:${Math.floor(
+							user.communicationDisabledUntil.getTime() / 1000
+						)}:f> (in ${timeLeft})`;
+					} else {
+						onTimeout += "this user isn't in timeout";
+					}
+
 					interaction.createMessage({
 						embeds: [
 							new Builders.Embed()
@@ -69,16 +83,7 @@ export default class ViewInfoCommand extends Command {
 										`**- is system:** ${user.user.system ? 'yes' : 'no'}`,
 										`**- id:** ${user.id}`,
 										`**- roles (${user.roles.length}):** ${roles.map((role) => role.mention).join(' ')}`,
-										`**- timeout until** ${
-											user.communicationDisabledUntil
-												? `<t:${Math.floor(user.communicationDisabledUntil.getTime() / 1000)}:f> (in ${ms(
-														user.communicationDisabledUntil.getTime() - Date.now(),
-														{
-															long: true,
-														}
-												  )})`
-												: "this user isn't in timeout"
-										}`,
+										`**- timeout until:** ${onTimeout}`,
 									].join('\n')
 								)
 								.setThumbnail(user.avatarURL())

@@ -130,14 +130,15 @@ export default class KickCommand extends Command {
 
 		try {
 			await user.kick(reason);
+
+			let description = `successfully kicked ${user.tag}!`;
+
+			if (dmOption && !dmSuccess) {
+				description += " but i can't dm them.";
+			}
+
 			interaction.createMessage({
-				embeds: [
-					Builders.SuccessEmbed()
-						.setDescription(
-							`successfully kicked ${user.tag}!${dmOption ? (dmSuccess ? " but i can't dm them" : '') : ''}`
-						)
-						.toJSON(),
-				],
+				embeds: [Builders.SuccessEmbed().setDescription(description).toJSON()],
 			});
 		} catch (error) {
 			message!.delete();

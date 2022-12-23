@@ -203,16 +203,14 @@ export default class BanCommand extends Command {
 						reason: reason,
 					});
 
+					let description = `successfully banned ${user.tag}!`;
+
+					if (dmOption && !dmSuccess) {
+						description += " but i can't dm them.";
+					}
+
 					interaction.createMessage({
-						embeds: [
-							Builders.SuccessEmbed()
-								.setDescription(
-									`successfully banned ${user.tag}!${
-										dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
-									}`
-								)
-								.toJSON(),
-						],
+						embeds: [Builders.SuccessEmbed().setDescription(description).toJSON()],
 					});
 				} catch (error) {
 					message!.delete();
@@ -253,8 +251,7 @@ export default class BanCommand extends Command {
 				const deleteMessageTime = ms(
 					`${interaction.data.options.getString('deleteMessageTime', false) || 0}`
 				);
-				let dmOption = interaction.data.options.getBoolean('dm', false);
-				if (dmOption === undefined) dmOption = true;
+				const dmOption = interaction.data.options.getBoolean('dm', false) ?? true;
 
 				if (user.id === interaction.user.id) {
 					return interaction.createMessage({
@@ -367,16 +364,14 @@ export default class BanCommand extends Command {
 
 					await interaction.guild.removeBan(user.id, 'softban');
 
+					let description = `successfully softbanned ${user.tag}!`;
+
+					if (dmOption && !dmSuccess) {
+						description += " but i can't dm them.";
+					}
+
 					interaction.createMessage({
-						embeds: [
-							Builders.SuccessEmbed()
-								.setDescription(
-									`successfully softbanned ${user.tag}!${
-										dmOption ? (dmSuccess ? '' : " but i can't dm them") : ''
-									}`
-								)
-								.toJSON(),
-						],
+						embeds: [Builders.SuccessEmbed().setDescription(description).toJSON()],
 					});
 				} catch (error) {
 					message!.delete();

@@ -50,6 +50,10 @@ export default class Handler {
 		this.userCommandList = [];
 	}
 
+	private getPath() {
+		return `${process.cwd()}/dist/src`;
+	}
+
 	getCommand(name: string, type: ApplicationCommandTypes) {
 		if (type === ApplicationCommandTypes.CHAT_INPUT) return this.chatInputCommands.get(name);
 		else if (type === ApplicationCommandTypes.MESSAGE) return this.messageCommands.get(name);
@@ -58,7 +62,7 @@ export default class Handler {
 	}
 
 	async handleEvents() {
-		const files = this.client.utils.loadFiles(`${__dirname}/../listeners`);
+		const files = this.client.utils.loadFiles(`${this.getPath()}/listeners`);
 		for await (const file of files) {
 			const event: Event = (await import(file)).default;
 			this.client.utils.logger({
@@ -72,7 +76,7 @@ export default class Handler {
 	}
 
 	async handleChatInputCommands() {
-		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/chatInput`);
+		const files = this.client.utils.loadFiles(`${this.getPath()}/interactions/chatInput`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
 			const cmd = new Command(this.client);
@@ -88,7 +92,7 @@ export default class Handler {
 	}
 
 	async handleMessageCommands() {
-		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/message`);
+		const files = this.client.utils.loadFiles(`${this.getPath()}/interactions/message`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
 			const cmd = new Command(this.client);
@@ -104,7 +108,7 @@ export default class Handler {
 	}
 
 	async handleUserCommands() {
-		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/user`);
+		const files = this.client.utils.loadFiles(`${this.getPath()}/interactions/user`);
 		for await (const file of files) {
 			const Command = (await import(file)).default;
 			const cmd = new Command(this.client);
@@ -120,7 +124,7 @@ export default class Handler {
 	}
 
 	async handleComponents() {
-		const files = this.client.utils.loadFiles(`${__dirname}/../interactions/components`);
+		const files = this.client.utils.loadFiles(`${this.getPath()}/interactions/components`);
 		for await (const file of files) {
 			const Component = (await import(file)).default;
 			const cmpt = new Component(this.client);
