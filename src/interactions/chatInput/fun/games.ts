@@ -1,21 +1,22 @@
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
+import { errors } from '../../../locales/main';
 
 export default class EightBallCommand extends Command {
 	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'games')
-		.setDescription('games')
+		.setDescription('Simple games. Fun fact: This will never appear in the discord client.')
 		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'rps')
-				.setDescription('rock paper scissors')
+				.setDescription('Rock Paper Scissors, A true classic.')
 				.addOption(
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'choice')
-						.setDescription('choose one')
+						.setDescription('Choose one.')
 						.addChoices([
-							new Builders.Choice('rock', 'rock').toJSON(),
-							new Builders.Choice('paper', 'paper').toJSON(),
-							new Builders.Choice('scissors', 'scissors').toJSON(),
+							new Builders.Choice('Rock', 'Rock').toJSON(),
+							new Builders.Choice('Paper', 'Paper').toJSON(),
+							new Builders.Choice('Scissors', 'Scissors').toJSON(),
 						])
 						.setRequired(true)
 						.toJSON()
@@ -29,32 +30,30 @@ export default class EightBallCommand extends Command {
 
 		switch (command) {
 			case 'rps': {
-				const choices = ['rock', 'paper', 'scissors'];
+				const choices = ['Rock', 'Paper', 'Scissors'];
 				const playerChoice = interaction.data.options.getString('choice', true);
 				const botChoice = choices[Math.floor(Math.random() * choices.length)];
 				let result: string;
 
 				if (!choices.includes(playerChoice)) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription('can you do it properly? please?').toJSON()],
-					});
+					return interaction.createMessage({ content: errors.invalidChoice });
 				}
 
-				if (playerChoice === botChoice) result = 'you tied!';
-				else if (playerChoice === 'rock' && botChoice === 'paper') result = 'i win!';
-				else if (playerChoice === 'paper' && botChoice === 'scissors') result = 'i win!';
-				else if (playerChoice === 'scissors' && botChoice === 'rock') result = 'i win!';
-				else result = 'you win!';
+				if (playerChoice === botChoice) result = 'You tied!';
+				else if (playerChoice === 'Rock' && botChoice === 'Paper') result = 'I win!';
+				else if (playerChoice === 'Paper' && botChoice === 'Scissors') result = 'I win!';
+				else if (playerChoice === 'Scissors' && botChoice === 'Rock') result = 'I win!';
+				else result = 'You win!';
 
 				interaction.createMessage({
 					embeds: [
 						new Builders.Embed()
 							.setRandomColor()
-							.setTitle('🗻 rock 📃 paper ✂ scissors')
+							.setTitle('🗻 Rock 📃 Paper ✂ Scissors')
 							.setDescription(
-								`**your choice:** ${playerChoice}`,
-								`**bot choice:** ${botChoice}`,
-								`**result:** ${result}`
+								`**Your choice:** ${playerChoice}`,
+								`**Bot choice:** ${botChoice}`,
+								`**Result:** ${result}`
 							)
 							.setTimestamp()
 							.toJSON(),
@@ -63,13 +62,7 @@ export default class EightBallCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription('wait for a bit or until the bot restart and try again')
-							.toJSON(),
-					],
-				});
+				interaction.createMessage({ content: errors.invalidSubcommand, flags: 64 });
 			}
 		}
 	}

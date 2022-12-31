@@ -1,22 +1,23 @@
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
+import { dm, errors, others, success } from '../../../locales/main';
 
 export default class KickCommand extends Command {
 	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'kick')
-		.setDescription('kick someone')
+		.setDescription('Kick someone.')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('KICK_MEMBERS')
 		.addOptions([
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
-				.setDescription('user to kick')
+				.setDescription('User to kick.')
 				.setRequired(true)
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
-				.setDescription('why did you kick the user?')
+				.setDescription('Reason for kicking.')
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
-				.setDescription('whether to dm the user or not (default to true)')
+				.setDescription('Whether to dm the user or not. (default to true)')
 				.toJSON(),
 		])
 		.toJSON();
@@ -30,58 +31,38 @@ export default class KickCommand extends Command {
 			user = interaction.data.options.getMember('user', true);
 		} catch (error) {
 			try {
-				const name = interaction.data.options.getUser('user', true).tag;
-				return interaction.createMessage({
-					embeds: [Builders.ErrorEmbed().setDescription(`${name} is not in this server!`).toJSON()],
-				});
+				interaction.data.options.getUser('user', true);
+				return interaction.createMessage({ content: errors.userNotInGuild });
 			} catch (error) {
-				return interaction.createMessage({
-					embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
-				});
+				return interaction.createMessage({ content: errors.invalidUser });
 			}
 		}
 
-		const reason = interaction.data.options.getString('reason', false) || 'no reason?';
+		const reason = interaction.data.options.getString('reason', false) || others.defaultReason;
 		const dmOption = interaction.data.options.getBoolean('dm', false) ?? true;
 
 		if (user.id === interaction.user.id) {
-			return interaction.createMessage({
-				embeds: [Builders.ErrorEmbed().setDescription("you can't kick yourself").toJSON()],
-			});
+			return interaction.createMessage({ content: errors.kickActionOnSelf });
 		}
 
 		if (user.id === interaction.guild.clientMember.id) {
-			return interaction.createMessage({
-				embeds: [Builders.ErrorEmbed().setDescription('T_T').toJSON()],
-			});
+			return interaction.createMessage({ content: errors.kickActionOnBot });
 		}
 
 		if (interaction.user.id !== interaction.guild.ownerID) {
 			if (user.id === interaction.guild.ownerID) {
-				return interaction.createMessage({
-					embeds: [Builders.ErrorEmbed().setDescription("i can't kick the owner").toJSON()],
-				});
+				return interaction.createMessage({ content: errors.kickActionOnOwner });
 			}
 
 			if (user.permissions.has('ADMINISTRATOR')) {
-				return interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription(`${user.tag} have administrator permission, i can't kick them!`)
-							.toJSON(),
-					],
-				});
+				return interaction.createMessage({ content: errors.kickActionOnAdmin });
 			}
 
 			if (
 				this.client.utils.getHighestRole(user).position >=
 				this.client.utils.getHighestRole(interaction.member).position
 			) {
-				return interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed().setDescription(`${user.tag} have higher (or same) role than you`).toJSON(),
-					],
-				});
+				return interaction.createMessage({ content: errors.kickActionOnHigherRoleUser });
 			}
 		}
 
@@ -89,11 +70,7 @@ export default class KickCommand extends Command {
 			this.client.utils.getHighestRole(user).position >=
 			this.client.utils.getHighestRole(interaction.guild.clientMember).position
 		) {
-			return interaction.createMessage({
-				embeds: [
-					Builders.ErrorEmbed().setDescription(`${user.tag} have higher (or same) role than me`).toJSON(),
-				],
-			});
+			return interaction.createMessage({ content: errors.kickActionOnHigherRoleBot });
 		}
 
 		let message: Lib.Message;
@@ -102,22 +79,7 @@ export default class KickCommand extends Command {
 		if (dmOption) {
 			try {
 				const channel = await user.user.createDM();
-				message = await channel.createMessage({
-					embeds: [
-						new Builders.Embed()
-							.setRandomColor()
-							.setTitle(`you got kicked from ${interaction.guild.name} :(`)
-							.setDescription(
-								`you broke the rules, didn't you?`,
-								``,
-								`**guild name:** ${interaction.guild.name}`,
-								`**responsible moderator:** ${interaction.user.tag}`,
-								`**reason:** ${reason}`
-							)
-							.setTimestamp()
-							.toJSON(),
-					],
-				});
+				message = await channel.createMessage({ content: dm.kick(interaction, reason) });
 			} catch (error) {
 				dmSuccess = false;
 				if (error instanceof Error) {
@@ -131,22 +93,10 @@ export default class KickCommand extends Command {
 		try {
 			await user.kick(reason);
 
-			let description = `successfully kicked ${user.tag}!`;
-
-			if (dmOption && !dmSuccess) {
-				description += " but i can't dm them.";
-			}
-
-			interaction.createMessage({
-				embeds: [Builders.SuccessEmbed().setDescription(description).toJSON()],
-			});
+			interaction.createMessage({ content: success.kick(user, dmSuccess) });
 		} catch (error) {
-			message!.delete();
-			interaction.createMessage({
-				embeds: [
-					Builders.ErrorEmbed().setDescription(`i can't kick ${user.tag} sorry! :(\n\n${error}`).toJSON(),
-				],
-			});
+			message!.delete().catch();
+			interaction.createMessage({ content: errors.cannotKick(error) });
 
 			if (error instanceof Error) {
 				this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });

@@ -1,5 +1,6 @@
 import { InteractionCollector } from 'oceanic-collectors';
 import * as Lib from 'oceanic.js';
+import { errors } from '../locales/main';
 import Builders from './Builders';
 import type BotClient from './Client';
 
@@ -65,53 +66,29 @@ export default class Paginator {
 		if (interaction.data.customID === 'gotofirst') {
 			if (this.currentPage === 0) {
 				return interaction.acknowledged
-					? interaction.createFollowup({
-							embeds: [Builders.ErrorEmbed().setDescription("you're already on the first page!").toJSON()],
-							flags: 64,
-					  })
-					: interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("you're already on the first page!").toJSON()],
-							flags: 64,
-					  });
+					? interaction.createFollowup({ content: errors.onFirstPage, flags: 64 })
+					: interaction.createMessage({ content: errors.onFirstPage, flags: 64 });
 			}
 			await interaction.editParent(this.getPage(0));
 		} else if (interaction.data.customID === 'goback') {
 			if (this.currentPage === 0) {
 				return interaction.acknowledged
-					? interaction.createFollowup({
-							embeds: [Builders.ErrorEmbed().setDescription("you're already on the first page!").toJSON()],
-							flags: 64,
-					  })
-					: interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("you're already on the first page!").toJSON()],
-							flags: 64,
-					  });
+					? interaction.createFollowup({ content: errors.onFirstPage, flags: 64 })
+					: interaction.createMessage({ content: errors.onFirstPage, flags: 64 });
 			}
 			await interaction.editParent(this.getPage(this.currentPage - 1));
 		} else if (interaction.data.customID === 'gonext') {
 			if (this.currentPage === this.pages.length - 1) {
 				return interaction.acknowledged
-					? interaction.createFollowup({
-							embeds: [Builders.ErrorEmbed().setDescription("you're already on the last page!").toJSON()],
-							flags: 64,
-					  })
-					: interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("you're already on the last page!").toJSON()],
-							flags: 64,
-					  });
+					? interaction.createFollowup({ content: errors.onLastPage, flags: 64 })
+					: interaction.createMessage({ content: errors.onLastPage, flags: 64 });
 			}
 			await interaction.editParent(this.getPage(this.currentPage + 1));
 		} else if (interaction.data.customID === 'gotolast') {
 			if (this.currentPage === this.pages.length - 1) {
 				return interaction.acknowledged
-					? interaction.createFollowup({
-							embeds: [Builders.ErrorEmbed().setDescription("you're already on the last page!").toJSON()],
-							flags: 64,
-					  })
-					: interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("you're already on the last page!").toJSON()],
-							flags: 64,
-					  });
+					? interaction.createFollowup({ content: errors.onLastPage, flags: 64 })
+					: interaction.createMessage({ content: errors.onLastPage, flags: 64 });
 			}
 			await interaction.editParent(this.getPage(this.pages.length - 1));
 		}

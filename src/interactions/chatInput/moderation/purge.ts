@@ -1,20 +1,21 @@
 import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
+import { errors, success } from '../../../locales/main';
 
 export default class PurgeCommand extends Command {
 	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'purge')
-		.setDescription('purge messages from the channel or from the user')
+		.setDescription('Purge messages from the channel or user.')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('MANAGE_MESSAGES')
 		.addOptions([
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.INTEGER, 'amount')
-				.setDescription('amount of messages to delete')
+				.setDescription('Amount of messages to delete.')
 				.setMinMax(1, 100)
 				.setRequired(true)
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
-				.setDescription('which user to delete messages from')
+				.setDescription('User to delete messages from.')
 				.toJSON(),
 		])
 		.toJSON();
@@ -27,9 +28,7 @@ export default class PurgeCommand extends Command {
 		try {
 			user = interaction.data.options.getUser('user', true);
 		} catch (error) {
-			return interaction.createMessage({
-				embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
-			});
+			return interaction.createMessage({ content: errors.invalidUser });
 		}
 
 		const amount = interaction.data.options.getInteger('amount', true);
@@ -37,31 +36,17 @@ export default class PurgeCommand extends Command {
 		try {
 			if (!user) {
 				interaction.channel.purge({ limit: amount }).then((deleted: number) => {
-					return interaction.createMessage({
-						embeds: [
-							Builders.SuccessEmbed().setDescription(`successfully deleted ${deleted} messages!`).toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: success.purge(deleted) });
 				});
 			} else {
 				interaction.channel
 					.purge({ limit: amount, filter: (m) => m.author.id === user.id })
 					.then((deleted: number) => {
-						return interaction.createMessage({
-							embeds: [
-								Builders.SuccessEmbed().setDescription(`successfully deleted ${deleted} messages!`).toJSON(),
-							],
-						});
+						return interaction.createMessage({ content: success.purgeWithUser(user, deleted) });
 					});
 			}
 		} catch (error) {
-			interaction.createMessage({
-				embeds: [
-					Builders.ErrorEmbed()
-						.setDescription('wait for a bit or until the bot restart and try again')
-						.toJSON(),
-				],
-			});
+			interaction.createMessage({ content: errors.cannotPurge(error) });
 
 			if (error instanceof Error) {
 				this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });

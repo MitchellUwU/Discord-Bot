@@ -2,20 +2,23 @@ import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
 import { request } from 'undici';
+import { errors } from '../../../locales/main';
 
 export default class FetchCommand extends Command {
 	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'fetch')
-		.setDescription('fetch some random stuff from the internet')
+		.setDescription(
+			'Fetch something from the internet. Fun fact: This will never appear in the discord client.'
+		)
 		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'cat')
-				.setDescription('get a cat picture')
+				.setDescription('Fetch a cat picture.')
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'urban')
-				.setDescription('search urban dictionary')
+				.setDescription('Search Urban Dictionary.')
 				.addOption(
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'word')
-						.setDescription('a word or sentence or whatever')
+						.setDescription('Anything')
 						.setRequired(true)
 						.toJSON()
 				)
@@ -35,7 +38,7 @@ export default class FetchCommand extends Command {
 					embeds: [
 						new Builders.Embed()
 							.setRandomColor()
-							.setTitle('a cat picture :D')
+							.setTitle('A cat picture.')
 							.setImage(file)
 							.setTimestamp()
 							.toJSON(),
@@ -51,9 +54,7 @@ export default class FetchCommand extends Command {
 				const { list } = await data.body.json();
 
 				if (!list.length) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription('no result found :(').toJSON()],
-					});
+					return interaction.createMessage({ content: errors.noResult });
 				}
 
 				interaction.createMessage({
@@ -62,14 +63,14 @@ export default class FetchCommand extends Command {
 							.setRandomColor()
 							.setTitle(`${list[0].word} defined by ${list[0].author}`)
 							.setURL(list[0].permalink)
-							.setDescription(`👍 ${list[0].thumbs_up} upvotes | 👎 ${list[0].thumbs_down} downvotes`)
+							.setDescription(`👍 ${list[0].thumbs_up} Upvotes | 👎 ${list[0].thumbs_down} Downvotes`)
 							.addFields([
 								{
-									name: 'definition:',
+									name: 'Definition:',
 									value: list[0].definition,
 								},
 								{
-									name: 'example:',
+									name: 'Example:',
 									value: list[0].example,
 								},
 							])
@@ -81,13 +82,7 @@ export default class FetchCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription('wait for a bit or until the bot restart and try again')
-							.toJSON(),
-					],
-				});
+				interaction.createMessage({ content: errors.invalidSubcommand, flags: 64 });
 			}
 		}
 	}

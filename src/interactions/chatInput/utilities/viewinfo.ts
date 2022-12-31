@@ -3,37 +3,38 @@ import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
 import Paginator from '../../../classes/Paginator';
+import { errors } from '../../../locales/main';
 
 export default class ViewInfoCommand extends Command {
 	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'viewinfo')
-		.setDescription('view user info or guild info')
+		.setDescription('View information. Fun fact: This will never appear in the discord client.')
 		.setDMPermission(false)
 		.addOptions([
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'user')
-				.setDescription('view user info')
+				.setDescription('View user information.')
 				.addOption(
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
-						.setDescription('a user')
+						.setDescription('User to view.')
 						.setRequired(false)
 						.toJSON()
 				)
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'guild')
-				.setDescription('view guild info')
+				.setDescription('View guild information.')
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'channel')
-				.setDescription('view channel info')
+				.setDescription('View channel information.')
 				.addOption(
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.CHANNEL, 'channel')
-						.setDescription('a channel')
+						.setDescription('Channel to view.')
 						.toJSON()
 				)
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'role')
-				.setDescription('view role info')
+				.setDescription('View role information.')
 				.addOption(
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.ROLE, 'role')
-						.setDescription('a role')
+						.setDescription('Role to view.')
 						.setRequired(false)
 						.toJSON()
 				)
@@ -65,25 +66,25 @@ export default class ViewInfoCommand extends Command {
 							user.communicationDisabledUntil.getTime() / 1000
 						)}:f> (in ${timeLeft})`;
 					} else {
-						onTimeout += "this user isn't in timeout";
+						onTimeout += "This user isn't in timeout";
 					}
 
 					interaction.createMessage({
 						embeds: [
 							new Builders.Embed()
 								.setRandomColor()
-								.setAuthor(`${user.tag} information`, user.avatarURL())
+								.setAuthor(`${user.tag}'s information`, user.avatarURL())
 								.setDescription(
 									[
-										`**- name:** ${user.tag}`,
-										`**- nickname:** ${user.nick || 'none'}`,
-										`**- join date:** <t:${Math.floor(user.joinedAt!.getTime() / 1000)}:f>`,
-										`**- creation date:** <t:${Math.floor(user.createdAt.getTime() / 1000)}:f>`,
-										`**- is bot:** ${user.bot ? 'yes' : 'no'}`,
-										`**- is system:** ${user.user.system ? 'yes' : 'no'}`,
-										`**- id:** ${user.id}`,
-										`**- roles (${user.roles.length}):** ${roles.map((role) => role.mention).join(' ')}`,
-										`**- timeout until:** ${onTimeout}`,
+										`**- Name:** ${user.tag}`,
+										`**- Nickname:** ${user.nick || 'None'}`,
+										`**- Join date:** <t:${Math.floor(user.joinedAt!.getTime() / 1000)}:f>`,
+										`**- Creation date:** <t:${Math.floor(user.createdAt.getTime() / 1000)}:f>`,
+										`**- Is bot:** ${user.bot ? 'Yes' : 'No'}`,
+										`**- Is system:** ${user.user.system ? 'Yes' : 'No'}`,
+										`**- ID:** ${user.id}`,
+										`**- Roles (${user.roles.length}):** ${roles.map((role) => role.mention).join(' ')}`,
+										`**- Timeout until:** ${onTimeout}`,
 									].join('\n')
 								)
 								.setThumbnail(user.avatarURL())
@@ -91,7 +92,7 @@ export default class ViewInfoCommand extends Command {
 								.toJSON(),
 						],
 						components: new Builders.ActionRow()
-							.addURLButton({ label: 'avatar url', url: user.avatarURL() })
+							.addURLButton({ label: 'Avatar URL', url: user.avatarURL() })
 							.toJSON(),
 					});
 				} catch (error) {
@@ -101,14 +102,14 @@ export default class ViewInfoCommand extends Command {
 						embeds: [
 							new Builders.Embed()
 								.setRandomColor()
-								.setAuthor(`${user.tag} information`, user.avatarURL())
+								.setAuthor(`${user.tag}'s information`, user.avatarURL())
 								.setDescription(
 									[
-										`**- name:** ${user.tag}`,
-										`**- creation date:** <t:${Math.floor(user.createdAt.getTime() / 1000)}:f>`,
-										`**- is bot:** ${user.bot ? 'yes' : 'no'}`,
-										`**- is system:** ${user.system ? 'yes' : 'no'}`,
-										`**- id:** ${user.id}`,
+										`**- Name:** ${user.tag}`,
+										`**- Creation date:** <t:${Math.floor(user.createdAt.getTime() / 1000)}:f>`,
+										`**- Is bot:** ${user.bot ? 'Yes' : 'No'}`,
+										`**- Is system:** ${user.system ? 'Yes' : 'No'}`,
+										`**- ID:** ${user.id}`,
 									].join('\n')
 								)
 								.setThumbnail(user.avatarURL())
@@ -116,7 +117,7 @@ export default class ViewInfoCommand extends Command {
 								.toJSON(),
 						],
 						components: new Builders.ActionRow()
-							.addURLButton({ label: 'avatar url', url: user.avatarURL() })
+							.addURLButton({ label: 'Avatar URL', url: user.avatarURL() })
 							.toJSON(),
 					});
 				}
@@ -124,8 +125,8 @@ export default class ViewInfoCommand extends Command {
 				break;
 			}
 			case 'guild': {
-				const verificationLevels = ['none', 'low', 'medium', 'high', 'very high'];
-				const mfaLevels = ['disabled', 'enabled'];
+				const verificationLevels = ['None', 'Low', 'Medium', 'High', 'Very high'];
+				const mfaLevels = ['Disabled', 'Enabled'];
 				const guild = interaction.guild;
 
 				const { channels, threads, members, stickers, emojis } = interaction.guild;
@@ -144,20 +145,20 @@ export default class ViewInfoCommand extends Command {
 								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
 								.addFields([
 									{
-										name: '📃 | general',
+										name: '📃 | General',
 										value: [
-											`**- name:** ${guild.name}`,
-											`**- created:** <t:${Math.floor(guild.createdAt.getTime() / 1000)}:f>`,
-											`**- owner:** <@${guild.ownerID}>`,
-											`**- roles:** ${guild.roles.size - 1}`,
-											`**- large guild:** ${guild.large ? 'yes' : 'no'}`,
-											`**- nsfw level:** ${guild.nsfwLevel}`,
-											`**- preferred locale:** ${guild.preferredLocale}`,
-											`**- 2fa for moderation:** ${mfaLevels[guild.mfaLevel]}`,
-											`**- verification level:** ${verificationLevels[guild.verificationLevel]}`,
-											`**- id:** ${guild.id}`,
+											`**- Name:** ${guild.name}`,
+											`**- Creation date:** <t:${Math.floor(guild.createdAt.getTime() / 1000)}:f>`,
+											`**- Owner:** <@${guild.ownerID}>`,
+											`**- Roles:** ${guild.roles.size - 1}`,
+											`**- Large guild:** ${guild.large ? 'Yes' : 'No'}`,
+											`**- NSFW level:** ${guild.nsfwLevel}`,
+											`**- Preferred locale:** ${guild.preferredLocale}`,
+											`**- 2FA for moderation:** ${mfaLevels[guild.mfaLevel]}`,
+											`**- Verification level:** ${verificationLevels[guild.verificationLevel]}`,
+											`**- ID:** ${guild.id}`,
 											``,
-											`**- description:** ${guild.description || 'no description...'}`,
+											`**- Description:** ${guild.description || 'None'}`,
 										].join('\n'),
 									},
 								])
@@ -174,12 +175,27 @@ export default class ViewInfoCommand extends Command {
 								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
 								.addFields([
 									{
-										name: '👥 | users',
+										name: '🔨 | Features',
+										value: guild.features.join('\n'),
+									},
+								])
+								.setTimestamp()
+								.toJSON(),
+						],
+					},
+					{
+						embeds: [
+							new Builders.Embed()
+								.setRandomColor()
+								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
+								.addFields([
+									{
+										name: '👥 | Users',
 										value: [
-											`**- members:** ${members.filter((member) => !member.bot).length} (may be inaccurate.)`,
-											`**- bots:** ${members.filter((member) => member.bot).length} (may be inaccurate.)`,
+											`**- Members:** ${members.filter((member) => !member.bot).length}`,
+											`**- Bots:** ${members.filter((member) => member.bot).length}`,
 											``,
-											`**- total:** ${guild.memberCount}`,
+											`**- Total:** ${guild.memberCount}`,
 										].join('\n'),
 									},
 								])
@@ -194,17 +210,20 @@ export default class ViewInfoCommand extends Command {
 								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
 								.addFields([
 									{
-										name: '📕 | channels',
+										name: '📕 | Channels',
 										value: [
-											`**- text:** ${channels.filter((channel) => channel.type == 0).length}`,
-											`**- voice:** ${channels.filter((channel) => channel.type == 2).length}`,
-											`**- threads:** ${threads.filter((channel) => channel.type == 10 && 12 && 11).length}`,
-											`**- categories:** ${channels.filter((channel) => channel.type == 4).length}`,
-											`**- stage voices:** ${channels.filter((channel) => channel.type == 13).length}`,
-											`**- announcements:** ${channels.filter((channel) => channel.type == 5).length}`,
-											`**- forum:** ${channels.filter((channel) => channel.type == 15).length}`,
+											`**- Text:** ${channels.filter((channel) => channel.type == 0).length}`,
+											`**- Voice:** ${channels.filter((channel) => channel.type == 2).length}`,
+											`**- Announcement threads:** ${threads.filter((channel) => channel.type == 10).length}`,
+											`**- Public threads:** ${threads.filter((channel) => channel.type == 11).length}`,
+											`**- Private threads:** ${threads.filter((channel) => channel.type == 12).length}`,
+											`**- Categories:** ${channels.filter((channel) => channel.type == 4).length}`,
+											`**- Stage voices:** ${channels.filter((channel) => channel.type == 13).length}`,
+											`**- Announcements:** ${channels.filter((channel) => channel.type == 5).length}`,
+											`**- Forum:** ${channels.filter((channel) => channel.type == 15).length}`,
 											``,
-											`**- total:** ${channels.size}`,
+											`**- Total channels:** ${channels.size}`,
+											`**- Total threads:** ${threads.size}`,
 										].join('\n'),
 									},
 								])
@@ -219,13 +238,13 @@ export default class ViewInfoCommand extends Command {
 								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
 								.addFields([
 									{
-										name: '😂 | emojis & stickers',
+										name: '😂 | Emojis & Stickers',
 										value: [
-											`**- animated:** ${emojis.filter((emoji) => emoji.animated).length}`,
-											`**- static:** ${emojis.filter((emoji) => !emoji.animated).length}`,
-											`**- stickers:** ${stickers ? stickers.length : 0}`,
+											`**- Animated:** ${emojis.filter((emoji) => emoji.animated).length}`,
+											`**- Static:** ${emojis.filter((emoji) => !emoji.animated).length}`,
+											`**- Stickers:** ${stickers ? stickers.length : 0}`,
 											``,
-											`**- total:** ${stickers ? stickers.length : 0 + emojis.length}`,
+											`**- Total:** ${stickers ? stickers.length : 0 + emojis.length}`,
 										].join('\n'),
 									},
 								])
@@ -240,11 +259,11 @@ export default class ViewInfoCommand extends Command {
 								.setAuthor(`${guild.name}'s information`, guild.iconURL()!)
 								.addFields([
 									{
-										name: '🚀 | nitro statisitcs',
+										name: '🚀 | Nitro statisitcs',
 										value: [
-											`**- tier:** ${guild.premiumTier}`,
-											`**- boosts:** ${guild.premiumSubscriptionCount}`,
-											`**- boosters:** ${
+											`**- Tier:** ${guild.premiumTier}`,
+											`**- Boosts:** ${guild.premiumSubscriptionCount}`,
+											`**- Boosters:** ${
 												members.filter((member) => (member.premiumSince ? true : false)).length
 											}`,
 										].join('\n'),
@@ -263,31 +282,29 @@ export default class ViewInfoCommand extends Command {
 			}
 			case 'channel': {
 				const type = [
-					'text',
-					'dm',
-					'voice',
-					'group dm',
-					'category',
-					'news/announcement',
-					'how did you even get here?',
-					'how did you even get here?',
-					'how did you even get here?',
-					'how did you even get here?',
-					'news/announcement thread',
-					'thread',
-					'private thread',
-					'stage voice',
-					'directory',
-					'forum',
+					'Text',
+					'DM',
+					'Voice',
+					'Group dm',
+					'Category',
+					'News/Announcement',
+					"I don't know",
+					"I don't know",
+					"I don't know",
+					"I don't know",
+					'News/Announcement thread',
+					'Thread',
+					'Private thread',
+					'Stage voice',
+					'Directory',
+					'Forum',
 				];
 
 				const channel =
 					interaction.data.options.getChannel('channel', false)?.completeChannel || interaction.channel;
 
 				if (channel instanceof Lib.PrivateChannel) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription('the channel must be a guild channel').toJSON()],
-					});
+					return interaction.createMessage({ content: errors.notGuildChannel });
 				}
 
 				let slowmode: string;
@@ -296,10 +313,10 @@ export default class ViewInfoCommand extends Command {
 					.setRandomColor()
 					.setAuthor(`${channel.name} information`, interaction.guild.iconURL()!)
 					.setDescription(
-						`**- name:** ${channel.name}`,
-						`**- type:** ${type[channel.type]}`,
-						`**- creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
-						`**- id:** ${channel.id}`
+						`**- Name:** ${channel.name}`,
+						`**- Type:** ${type[channel.type]}`,
+						`**- Creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
+						`**- ID:** ${channel.id}`
 					)
 					.setTimestamp();
 
@@ -311,14 +328,14 @@ export default class ViewInfoCommand extends Command {
 					}
 
 					embed.setDescription(
-						`**- name:** ${channel.name}`,
-						`**- type:** ${type[channel.type]}`,
-						`**- nsfw:** ${channel.nsfw ? 'yes' : 'no'}`,
-						`**- channel position:** ${channel.position}`,
-						`**- creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
-						`**- slowmode time:** ${slowmode}`,
-						`**- topic:** ${channel.topic || 'no topic'}`,
-						`**- id:** ${channel.id}`
+						`**- Name:** ${channel.name}`,
+						`**- Type:** ${type[channel.type]}`,
+						`**- NSFW:** ${channel.nsfw ? 'Yes' : 'No'}`,
+						`**- Channel position:** ${channel.position}`,
+						`**- Creation date:** <t:${Math.floor(channel.createdAt.getTime() / 1000)}:f>`,
+						`**- Slowmode time:** ${slowmode}`,
+						`**- Topic:** ${channel.topic || 'No topic'}`,
+						`**- ID:** ${channel.id}`
 					);
 				}
 
@@ -338,12 +355,12 @@ export default class ViewInfoCommand extends Command {
 						embeds: [
 							new Builders.Embed()
 								.setRandomColor()
-								.setTitle('list of roles')
+								.setTitle('List of roles.')
 								.setDescription(
 									roles
 										.filter((role) => role.name !== '@everyone')
 										.map((role) => role.mention)
-										.join('\n') || 'no role?'
+										.join('\n') || 'This server have no roles.'
 								)
 								.setTimestamp()
 								.toJSON(),
@@ -353,13 +370,7 @@ export default class ViewInfoCommand extends Command {
 				} else {
 					if (interaction.user.id !== interaction.guild.ownerID) {
 						if (role.position >= this.client.utils.getHighestRole(interaction.member).position) {
-							return interaction.createMessage({
-								embeds: [
-									Builders.ErrorEmbed()
-										.setDescription('that role is higher (or same) role than you')
-										.toJSON(),
-								],
-							});
+							return interaction.createMessage({ content: errors.viewActionOnHigherRoleUser });
 						}
 					}
 
@@ -369,12 +380,12 @@ export default class ViewInfoCommand extends Command {
 								.setRandomColor()
 								.setAuthor(`${role.name} information`, interaction.guild.iconURL()!)
 								.setDescription(
-									`**- name:** ${role.name}`,
-									`**- role position:** ${role.position}`,
-									`**- creation date:** <t:${Math.floor(role.createdAt.getTime() / 1000)}:f>`,
-									`**- managed by integration:** ${role.managed ? 'yes' : 'no'}`,
-									`**- color:** ${role.color}`,
-									`**- id:** ${role.id}`
+									`**- Name:** ${role.name}`,
+									`**- Role position:** ${role.position}`,
+									`**- Creation date:** <t:${Math.floor(role.createdAt.getTime() / 1000)}:f>`,
+									`**- Managed by integration:** ${role.managed ? 'Yes' : 'No'}`,
+									`**- Color:** ${role.color}`,
+									`**- ID:** ${role.id}`
 								)
 								.setTimestamp()
 								.toJSON(),
@@ -385,13 +396,7 @@ export default class ViewInfoCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription('wait for a bit or until the bot restart and try again')
-							.toJSON(),
-					],
-				});
+				interaction.createMessage({ content: errors.invalidSubcommand, flags: 64 });
 			}
 		}
 	}

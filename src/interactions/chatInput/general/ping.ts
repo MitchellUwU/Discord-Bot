@@ -5,7 +5,7 @@ import { performance } from 'perf_hooks';
 
 export default class PingCommand extends Command {
 	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'ping')
-		.setDescription('show latency statistic thing')
+		.setDescription('Show bot latency.')
 		.setDMPermission(false)
 		.toJSON();
 
@@ -18,14 +18,11 @@ export default class PingCommand extends Command {
 			embeds: [
 				new Builders.Embed()
 					.setRandomColor()
-					.setTitle('🏓 pong!')
+					.setTitle('🏓 Pong!')
 					.setDescription(
-						`**bot latency:** ${(endTime - startTime).toFixed(0)}ms`,
-						`**rest latency:** ${this.client.rest.handler.latencyRef.latency}ms`,
-						`**gateway latency:** ${interaction.guild.shard.latency}ms`.replace(
-							'Infinityms',
-							'wait for a minute and it should show up'
-						)
+						`**Bot latency:** ${(endTime - startTime).toFixed(0)}ms`,
+						`**Rest latency:** ${this.client.rest.handler.latencyRef.latency}ms`,
+						`**Gateway latency:** ${interaction.guild.shard.latency}ms`.replace('Infinityms', 'Unavailable')
 					)
 					.setTimestamp()
 					.toJSON(),

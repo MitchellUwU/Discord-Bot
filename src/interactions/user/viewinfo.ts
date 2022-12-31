@@ -25,7 +25,7 @@ export default class ViewInfoCommand extends Command {
 
 			onTimeout += `<t:${Math.floor(user.communicationDisabledUntil.getTime() / 1000)}:f> (in ${timeLeft})`;
 		} else {
-			onTimeout += "this user isn't in timeout";
+			onTimeout += "This user isn't in timeout";
 		}
 
 		interaction.createMessage({
@@ -35,15 +35,15 @@ export default class ViewInfoCommand extends Command {
 					.setAuthor(`${user.tag} information`, user.avatarURL())
 					.setDescription(
 						[
-							`**- name:** ${user.tag}`,
-							`**- nickname:** ${user.nick || 'none'}`,
-							`**- join date:** <t:${Math.floor(user.joinedAt!.getTime() / 1000)}:f>`,
-							`**- creation date:** <t:${Math.floor(user.createdAt.getTime() / 1000)}:f>`,
-							`**- is bot:** ${user.bot ? 'yes' : 'no'}`,
-							`**- is system:** ${user.user.system ? 'yes' : 'no'}`,
-							`**- id:** ${user.id}`,
-							`**- roles (${user.roles.length}):** ${roles.map((role) => role.mention).join(' ')}`,
-							`**- timeout until:** ${onTimeout}`,
+							`**- Name:** ${user.tag}`,
+							`**- Nickname:** ${user.nick || 'None'}`,
+							`**- Join date:** <t:${Math.floor(user.joinedAt!.getTime() / 1000)}:f>`,
+							`**- Creation date:** <t:${Math.floor(user.createdAt.getTime() / 1000)}:f>`,
+							`**- Is bot:** ${user.bot ? 'Yes' : 'No'}`,
+							`**- Is system:** ${user.user.system ? 'Yes' : 'No'}`,
+							`**- ID:** ${user.id}`,
+							`**- Roles (${user.roles.length}):** ${roles.map((role) => role.mention).join(' ')}`,
+							`**- Timeout until:** ${onTimeout}`,
 						].join('\n')
 					)
 					.setThumbnail(user.avatarURL())
@@ -51,7 +51,7 @@ export default class ViewInfoCommand extends Command {
 					.toJSON(),
 			],
 			components: new Builders.ActionRow()
-				.addURLButton({ label: 'avatar url', url: user.avatarURL() })
+				.addURLButton({ label: 'Avatar URL', url: user.avatarURL() })
 				.toJSON(),
 			flags: 64,
 		});

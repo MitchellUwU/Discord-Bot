@@ -2,30 +2,31 @@ import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
+import { errors, success } from '../../../locales/main';
 
 export default class SlowmodeCommand extends Command {
 	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'slowmode')
-		.setDescription('manage slowmode')
+		.setDescription('Manage slowmode. Fun fact: This will never appear in the discord client.')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('MANAGE_CHANNELS')
 		.addOptions([
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'change')
-				.setDescription('change channel slowmode')
+				.setDescription('Change channel slowmode.')
 				.addOptions([
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'time')
-						.setDescription('slowmode time (must be between 1 second and 6 hours)')
+						.setDescription('Duration of slowmode. (Must be between 1 second and 6 hours)')
 						.setRequired(true)
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.CHANNEL, 'channel')
-						.setDescription('channel to change slowmode')
+						.setDescription('Channel to change slowmode.')
 						.toJSON(),
 				])
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
-				.setDescription('remove channel slowmode')
+				.setDescription('Remove channel slowmode.')
 				.addOption(
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.CHANNEL, 'channel')
-						.setDescription('channel to remove slowmode')
+						.setDescription('Channel to remove slowmode.')
 						.toJSON()
 				)
 				.toJSON(),
@@ -46,54 +47,22 @@ export default class SlowmodeCommand extends Command {
 				const realtime = ms(`${time}`);
 
 				if (!(channel instanceof Lib.TextableChannel)) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(
-									`${channel.mention} is not a textable channel! please specify a textable channel`
-								)
-								.toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.notTextableChannel });
 				}
 
 				if (isNaN(realtime)) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription('invalid time! please specify them correctly (example: 5h, 10 minutes etc.)')
-								.toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.invalidTime });
 				}
 
 				if (realtime > 21600000 || realtime < 1000) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed().setDescription('time must be between 1 second and 6 hours').toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.timeExceedOrBelowLimitSlowmode });
 				}
 
 				try {
 					channel.edit({ rateLimitPerUser: realtime / 1000 });
-					interaction.createMessage({
-						embeds: [
-							Builders.SuccessEmbed()
-								.setDescription(
-									`successfully changed ${channel.name} slowmode to ${ms(realtime, { long: true })}!`
-								)
-								.toJSON(),
-						],
-					});
+					interaction.createMessage({ content: success.changeSlowmode(channel, realtime) });
 				} catch (error) {
-					interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(`i can't change ${channel.name} slowmode sorry! :(\n\n${error}`)
-								.toJSON(),
-						],
-					});
+					interaction.createMessage({ content: errors.cannotChangeSlowmode(error) });
 
 					if (error instanceof Error) {
 						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
@@ -109,34 +78,14 @@ export default class SlowmodeCommand extends Command {
 					interaction.data.options.getChannel('channel', false)?.completeChannel || interaction.channel;
 
 				if (!(channel instanceof Lib.TextableChannel)) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(
-									`${channel.mention} is not a textable channel! please specify a textable channel`
-								)
-								.toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.notTextableChannel });
 				}
 
 				try {
 					channel.edit({ rateLimitPerUser: 0 });
-					interaction.createMessage({
-						embeds: [
-							Builders.SuccessEmbed()
-								.setDescription(`successfully removed ${channel.name} slowmode!`)
-								.toJSON(),
-						],
-					});
+					interaction.createMessage({ content: success.removeSlowmode(channel) });
 				} catch (error) {
-					interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(`i can't remove ${channel.name} slowmode sorry! :(\n\n${error}`)
-								.toJSON(),
-						],
-					});
+					interaction.createMessage({ content: errors.cannotRemoveSlowmode(error) });
 
 					if (error instanceof Error) {
 						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
@@ -148,13 +97,7 @@ export default class SlowmodeCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription('wait for a bit or until the bot restart and try again')
-							.toJSON(),
-					],
-				});
+				interaction.createMessage({ content: errors.invalidSubcommand, flags: 64 });
 			}
 		}
 	}

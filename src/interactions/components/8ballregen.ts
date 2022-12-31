@@ -15,7 +15,7 @@ export default class EightballRegenerate extends Component {
 	override execute(
 		interaction: ComponentInteraction<ComponentTypes.BUTTON | SelectMenuTypes, AnyGuildTextChannel>,
 		parentData: ParentData
-	): void | Promise<void> {
+	) {
 		if (!interaction.acknowledged) {
 			interaction.editParent({
 				embeds: [
@@ -23,15 +23,15 @@ export default class EightballRegenerate extends Component {
 						.setRandomColor()
 						.setTitle('🎱 8ball')
 						.setDescription(
-							`**question:** ${parentData.addition}`,
-							`**answer:** ${answers[Math.floor(Math.random() * answers.length)]}`
+							`**Question:** ${parentData.addition}`,
+							`**Answer:** ${answers[Math.floor(Math.random() * answers.length)]}`
 						)
 						.setTimestamp()
 						.toJSON(),
 				],
 				components: new Builders.ActionRow()
 					.addInteractionButton({
-						label: 'regenerate',
+						label: 'Regenerate',
 						style: ButtonStyles.PRIMARY,
 						customID: [
 							parentData.userID,
@@ -49,15 +49,15 @@ export default class EightballRegenerate extends Component {
 						.setRandomColor()
 						.setTitle('🎱 8ball')
 						.setDescription(
-							`**question:** ${parentData.addition}`,
-							`**answer:** ${answers[Math.floor(Math.random() * answers.length)]}`
+							`**Question:** ${parentData.addition}`,
+							`**Answer:** ${answers[Math.floor(Math.random() * answers.length)]}`
 						)
 						.setTimestamp()
 						.toJSON(),
 				],
 				components: new Builders.ActionRow()
 					.addInteractionButton({
-						label: 'regenerate',
+						label: 'Regenerate',
 						style: ButtonStyles.PRIMARY,
 						customID: [
 							parentData.userID,

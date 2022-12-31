@@ -2,41 +2,42 @@ import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
+import { dm, errors, others, success } from '../../../locales/main';
 
 export default class TimeoutCommand extends Command {
 	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'timeout')
-		.setDescription('manage timeout')
+		.setDescription('Manage timeout. Fun fact: This will never appear in the discord client.')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('MODERATE_MEMBERS')
 		.addOptions([
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
-				.setDescription('timeout someone')
+				.setDescription('Timeout someone.')
 				.addOptions([
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
-						.setDescription('user to timeout')
+						.setDescription('User to timeout.')
 						.setRequired(true)
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'time')
-						.setDescription('duration of time (must be between 1 second and 1 week)')
+						.setDescription('Duration of time. (Must be between 1 second and 1 week)')
 						.setRequired(true)
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
-						.setDescription('why did you timeout the user?')
+						.setDescription('Reason for timing out.')
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
-						.setDescription('whether to dm the user or not (default to true)')
+						.setDescription('Whether to dm the user or not. (default to true)')
 						.toJSON(),
 				])
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
-				.setDescription('untimeout someone')
+				.setDescription('Untimeout someone.')
 				.addOptions([
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
-						.setDescription('user to untimeout')
+						.setDescription('User to untimeout.')
 						.setRequired(true)
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
-						.setDescription('why did you untimeout the user?')
+						.setDescription('Reason for untiming out.')
 						.toJSON(),
 				])
 				.toJSON(),
@@ -56,62 +57,40 @@ export default class TimeoutCommand extends Command {
 					user = interaction.data.options.getMember('user', true);
 				} catch (error) {
 					try {
-						const name = interaction.data.options.getUser('user', true).tag;
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription(`${name} is not in this server!`).toJSON()],
-						});
+						interaction.data.options.getUser('user', true);
+						return interaction.createMessage({ content: errors.userNotInGuild });
 					} catch (error) {
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
-						});
+						return interaction.createMessage({ content: errors.invalidUser });
 					}
 				}
 
-				const reason = interaction.data.options.getString('reason', false) || 'no reason?';
+				const reason = interaction.data.options.getString('reason', false) || others.defaultReason;
 				const time = ms(`${interaction.data.options.getString('time', true)}`);
 				const dmOption = interaction.data.options.getBoolean('dm', false) ?? true;
 				const date = new Date(Date.now() + time).toISOString();
 
 				if (user.id === interaction.user.id) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription("you can't timeout yourself").toJSON()],
-					});
+					return interaction.createMessage({ content: errors.timeoutActionOnSelf });
 				}
 
 				if (user.id === interaction.guild.clientMember.id) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription('T_T').toJSON()],
-					});
+					return interaction.createMessage({ content: errors.timeoutActionOnBot });
 				}
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("i can't timeout the owner").toJSON()],
-						});
+						return interaction.createMessage({ content: errors.timeoutActionOnOwner });
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
-						return interaction.createMessage({
-							embeds: [
-								Builders.ErrorEmbed()
-									.setDescription(`${user.tag} have administrator permission, i can't timeout them!`)
-									.toJSON(),
-							],
-						});
+						return interaction.createMessage({ content: errors.timeoutActionOnAdmin });
 					}
 
 					if (
 						this.client.utils.getHighestRole(user).position >=
 						this.client.utils.getHighestRole(interaction.member).position
 					) {
-						return interaction.createMessage({
-							embeds: [
-								Builders.ErrorEmbed()
-									.setDescription(`${user.tag} have higher (or same) role than you`)
-									.toJSON(),
-							],
-						});
+						return interaction.createMessage({ content: errors.timeoutActionOnHigherRoleUser });
 					}
 				}
 
@@ -119,29 +98,15 @@ export default class TimeoutCommand extends Command {
 					this.client.utils.getHighestRole(user).position >=
 					this.client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed().setDescription(`${user.tag} have higher (or same) role than me`).toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.timeoutActionOnHigherRoleBot });
 				}
 
 				if (isNaN(time)) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription('invalid time! please specify them correctly (example: 5h, 10 minutes etc.)')
-								.toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.invalidTime });
 				}
 
 				if (time > 604800000 || time < 1000) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed().setDescription('time must be between 1 second and 1 week').toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.timeExceedOrBelowLimitTimeout });
 				}
 
 				let message: Lib.Message;
@@ -150,23 +115,7 @@ export default class TimeoutCommand extends Command {
 				if (dmOption) {
 					try {
 						const channel = await user.user.createDM();
-						message = await channel.createMessage({
-							embeds: [
-								new Builders.Embed()
-									.setRandomColor()
-									.setTitle(`you got timeout from ${interaction.guild.name} :(`)
-									.setDescription(
-										`you broke the rules, didn't you?`,
-										``,
-										`**guild name:** ${interaction.guild.name}`,
-										`**responsible moderator:** ${interaction.user.tag}`,
-										`**reason:** ${reason}`,
-										`**time:** ${ms(time, { long: true })}`
-									)
-									.setTimestamp()
-									.toJSON(),
-							],
-						});
+						message = await channel.createMessage({ content: dm.timeout(interaction, reason) });
 					} catch (error) {
 						dmSuccess = false;
 						this.client.utils.logger({ title: 'Error', content: error, type: 2 });
@@ -179,28 +128,10 @@ export default class TimeoutCommand extends Command {
 						reason: reason,
 					});
 
-					let description = `successfully timeout ${user.tag}!`;
-
-					if (dmOption && !dmSuccess) {
-						description += " but i can't dm them.";
-					}
-
-					interaction.createMessage({
-						embeds: [
-							Builders.SuccessEmbed()
-								.setDescription(description)
-								.toJSON(),
-						],
-					});
+					interaction.createMessage({ content: success.timeout(user, dmSuccess) });
 				} catch (error) {
-					message!.delete();
-					interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(`i can't timeout that member sorry! :(\n\n${error}`)
-								.toJSON(),
-						],
-					});
+					message!.delete().catch();
+					interaction.createMessage({ content: errors.cannotTimeout(error) });
 
 					if (error instanceof Error) {
 						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
@@ -218,53 +149,37 @@ export default class TimeoutCommand extends Command {
 					user = interaction.data.options.getMember('user', true);
 				} catch (error) {
 					try {
-						const name = interaction.data.options.getUser('user', true).tag;
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription(`${name} is not in this server!`).toJSON()],
-						});
+						interaction.data.options.getUser('user', true);
+						return interaction.createMessage({ content: errors.userNotInGuild });
 					} catch (error) {
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
-						});
+						return interaction.createMessage({ content: errors.invalidUser });
 					}
 				}
 
-				const reason = interaction.data.options.getString('reason', false) || 'no reason?';
+				const reason = interaction.data.options.getString('reason', false) || others.defaultReason;
 
 				if (user.id === interaction.user.id) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription("you can't untimeout yourself").toJSON()],
-					});
+					return interaction.createMessage({ content: errors.untimeoutActionOnSelf });
+				}
+
+				if (user.id === interaction.guild.clientMember.id) {
+					return interaction.createMessage({ content: errors.untimeoutActionOnBot });
 				}
 
 				if (interaction.user.id !== interaction.guild.ownerID) {
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("i can't untimeout the owner").toJSON()],
-						});
+						return interaction.createMessage({ content: errors.untimeoutActionOnOwner });
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
-						return interaction.createMessage({
-							embeds: [
-								Builders.ErrorEmbed()
-									.setDescription(`${user.tag} have administrator permission, i can't untimeout them!`)
-									.toJSON(),
-							],
-						});
+						return interaction.createMessage({ content: errors.untimeoutActionOnAdmin });
 					}
 
 					if (
 						this.client.utils.getHighestRole(user).position >=
 						this.client.utils.getHighestRole(interaction.member).position
 					) {
-						return interaction.createMessage({
-							embeds: [
-								Builders.ErrorEmbed()
-									.setDescription(`${user.tag} have higher (or same) role than you`)
-									.toJSON(),
-							],
-						});
+						return interaction.createMessage({ content: errors.untimeoutActionOnHigherRoleUser });
 					}
 				}
 
@@ -272,11 +187,7 @@ export default class TimeoutCommand extends Command {
 					this.client.utils.getHighestRole(user).position >=
 					this.client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed().setDescription(`${user.tag} have higher (or same) role than me`).toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.untimeoutActionOnHigherRoleBot });
 				}
 
 				try {
@@ -288,13 +199,7 @@ export default class TimeoutCommand extends Command {
 						embeds: [Builders.SuccessEmbed().setDescription(`successfully untimeout ${user.tag}!`).toJSON()],
 					});
 				} catch (error) {
-					interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(`i can't untimeout ${user.tag} sorry! :(\n\n${error}`)
-								.toJSON(),
-						],
-					});
+					interaction.createMessage({ content: errors.cannotUntimeout(error) });
 
 					if (error instanceof Error) {
 						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
@@ -306,13 +211,7 @@ export default class TimeoutCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription('wait for a bit or until the bot restart and try again')
-							.toJSON(),
-					],
-				});
+				interaction.createMessage({ content: errors.invalidSubcommand, flags: 64 });
 			}
 		}
 	}

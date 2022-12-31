@@ -2,67 +2,68 @@ import Builders from '../../../classes/Builders';
 import Command from '../../../classes/Command';
 import * as Lib from 'oceanic.js';
 import ms from 'ms';
+import { dm, errors, others, success } from '../../../locales/main';
 
 export default class BanCommand extends Command {
 	override data = new Builders.Command(Lib.ApplicationCommandTypes.CHAT_INPUT, 'ban')
-		.setDescription('manage ban')
+		.setDescription('Manage ban. Fun fact: This will never appear in the discord client.')
 		.setDMPermission(false)
 		.setDefaultMemberPermissions('BAN_MEMBERS')
 		.addOptions([
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'add')
-				.setDescription('ban someone')
+				.setDescription('Ban someone.')
 				.addOptions([
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
-						.setDescription('user to ban')
+						.setDescription('User to ban.')
 						.setRequired(true)
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
-						.setDescription('why did you ban the user?')
+						.setDescription('Reason for banning.')
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'time')
 						.setDescription(
-							'delete messages in specified duration of time (must be between 1 second and 1 week)'
+							'Delete messages in specified duration of time. (Time must be between 1 second and 1 week)'
 						)
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
-						.setDescription('whether to dm the user or not (default to true)')
+						.setDescription('Whether to dm the user or not. (Default to true)')
 						.toJSON(),
 				])
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'addsoft')
-				.setDescription('softban someone')
+				.setDescription('Softban someone.')
 				.addOptions([
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.USER, 'user')
-						.setDescription('user to softban')
+						.setDescription('User to softban.')
 						.setRequired(true)
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
-						.setDescription('why did you softban the user?')
+						.setDescription('Reason for softbanning.')
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'time')
 						.setDescription(
-							'delete messages in specified duration of time (must be between 1 second and 1 week)'
+							'Delete messages in specified duration of time. (must be between 1 second and 1 week)'
 						)
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.BOOLEAN, 'dm')
-						.setDescription('whether to dm the user or not (default to true)')
+						.setDescription('Whether to dm the user or not. (default to true)')
 						.toJSON(),
 				])
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'remove')
-				.setDescription('unban someone')
+				.setDescription('Unban someone.')
 				.addOptions([
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'id')
-						.setDescription('user id to unban')
+						.setDescription('User ID to unban.')
 						.setRequired(true)
 						.toJSON(),
 					new Builders.Option(Lib.ApplicationCommandOptionTypes.STRING, 'reason')
-						.setDescription('why did you unban the user?')
+						.setDescription('Reason for unbanning.')
 						.toJSON(),
 				])
 				.toJSON(),
 			new Builders.Option(Lib.ApplicationCommandOptionTypes.SUB_COMMAND, 'view')
-				.setDescription('view banned members')
+				.setDescription('View banned members')
 				.toJSON(),
 		])
 		.toJSON();
@@ -82,58 +83,38 @@ export default class BanCommand extends Command {
 					try {
 						user = interaction.data.options.getUser('user', true);
 					} catch (error) {
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
-						});
+						return interaction.createMessage({ content: errors.invalidUser });
 					}
 				}
 
-				const reason = interaction.data.options.getString('reason', false) || 'no reason?';
+				const reason = interaction.data.options.getString('reason', false) || others.defaultReason;
 				const deleteMessageTime = ms(
 					`${interaction.data.options.getString('deleteMessageTime', false) || 0}`
 				);
 				const dmOption = interaction.data.options.getBoolean('dm', false) ?? true;
 
 				if (user.id === interaction.user.id) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription("you can't ban yourself").toJSON()],
-					});
+					return interaction.createMessage({ content: errors.banActionOnSelf });
 				}
 
 				if (user.id === interaction.guild.clientMember.id) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription('T_T').toJSON()],
-					});
+					return interaction.createMessage({ content: errors.banActionOnBot });
 				}
 
 				if (interaction.user.id !== interaction.guild.ownerID && user instanceof Lib.Member) {
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("i can't ban the owner").toJSON()],
-						});
+						return interaction.createMessage({ content: errors.banActionOnOwner });
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
-						return interaction.createMessage({
-							embeds: [
-								Builders.ErrorEmbed()
-									.setDescription(`${user.tag} have administrator permission, i can't ban them!`)
-									.toJSON(),
-							],
-						});
+						return interaction.createMessage({ content: errors.banActionOnAdmin });
 					}
 
 					if (
 						this.client.utils.getHighestRole(user).position >=
 						this.client.utils.getHighestRole(interaction.member).position
 					) {
-						return interaction.createMessage({
-							embeds: [
-								Builders.ErrorEmbed()
-									.setDescription(`${user.tag} have higher (or same) role than you`)
-									.toJSON(),
-							],
-						});
+						return interaction.createMessage({ content: errors.banActionOnHigherRoleUser });
 					}
 				}
 
@@ -142,27 +123,15 @@ export default class BanCommand extends Command {
 					this.client.utils.getHighestRole(user).position >=
 						this.client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed().setDescription(`${user.tag} have higher (or same) role than me`).toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.banActionOnHigherRoleBot });
 				}
 
 				if (isNaN(deleteMessageTime)) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription('invalid time! please specify them correctly (example: 5h, 10 minutes etc.)')
-								.toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.invalidTime });
 				}
 
 				if (deleteMessageTime > 604800000 || deleteMessageTime < 0) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription('time must be between 0 and 1 week').toJSON()],
-					});
+					return interaction.createMessage({ content: errors.timeExceedOrBelowLimitBan });
 				}
 
 				let message: Lib.Message;
@@ -171,22 +140,7 @@ export default class BanCommand extends Command {
 				if (dmOption && user instanceof Lib.Member) {
 					try {
 						const channel = await user.user.createDM();
-						message = await channel.createMessage({
-							embeds: [
-								new Builders.Embed()
-									.setRandomColor()
-									.setTitle(`you got banned from ${interaction.guild.name} :(`)
-									.setDescription(
-										`you broke the rules, didn't you?`,
-										``,
-										`**guild name:** ${interaction.guild.name}`,
-										`**responsible moderator:** ${interaction.user.tag}`,
-										`**reason:** ${reason}`
-									)
-									.setTimestamp()
-									.toJSON(),
-							],
-						});
+						message = await channel.createMessage({ content: dm.ban(interaction, reason) });
 					} catch (error) {
 						dmSuccess = false;
 						if (error instanceof Error) {
@@ -203,22 +157,10 @@ export default class BanCommand extends Command {
 						reason: reason,
 					});
 
-					let description = `successfully banned ${user.tag}!`;
-
-					if (dmOption && !dmSuccess) {
-						description += " but i can't dm them.";
-					}
-
-					interaction.createMessage({
-						embeds: [Builders.SuccessEmbed().setDescription(description).toJSON()],
-					});
+					interaction.createMessage({ content: success.ban(user, dmSuccess) });
 				} catch (error) {
-					message!.delete();
-					interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed().setDescription(`i can't ban ${user.tag} sorry! :(\n\n${error}`).toJSON(),
-						],
-					});
+					message!.delete().catch(() => {});
+					interaction.createMessage({ content: errors.cannotBan(error) });
 
 					if (error instanceof Error) {
 						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
@@ -229,7 +171,7 @@ export default class BanCommand extends Command {
 
 				break;
 			}
-			case 'addSoft': {
+			case 'addsoft': {
 				let user: Lib.Member;
 
 				try {
@@ -237,62 +179,40 @@ export default class BanCommand extends Command {
 				} catch (error) {
 					try {
 						interaction.data.options.getUser('user', true);
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("that user isn't in this server!").toJSON()],
-						});
+						return interaction.createMessage({ content: errors.userNotInGuild });
 					} catch (error) {
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
-						});
+						return interaction.createMessage({ content: errors.invalidUser });
 					}
 				}
 
-				const reason = interaction.data.options.getString('reason', false) || 'no reason?';
+				const reason = interaction.data.options.getString('reason', false) || others.defaultReason;
 				const deleteMessageTime = ms(
 					`${interaction.data.options.getString('deleteMessageTime', false) || 0}`
 				);
 				const dmOption = interaction.data.options.getBoolean('dm', false) ?? true;
 
 				if (user.id === interaction.user.id) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription("you can't softban yourself").toJSON()],
-					});
+					return interaction.createMessage({ content: errors.softBanActionOnSelf });
 				}
 
 				if (user.id === interaction.guild.clientMember.id) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription('T_T').toJSON()],
-					});
+					return interaction.createMessage({ content: errors.softBanActionOnBot });
 				}
 
 				if (interaction.user.id !== interaction.guild.ownerID && user instanceof Lib.Member) {
 					if (user.id === interaction.guild.ownerID) {
-						return interaction.createMessage({
-							embeds: [Builders.ErrorEmbed().setDescription("i can't softban the owner").toJSON()],
-						});
+						return interaction.createMessage({ content: errors.softBanActionOnOwner });
 					}
 
 					if (user.permissions.has('ADMINISTRATOR')) {
-						return interaction.createMessage({
-							embeds: [
-								Builders.ErrorEmbed()
-									.setDescription(`${user.tag} have administrator permission, i can't softban them!`)
-									.toJSON(),
-							],
-						});
+						return interaction.createMessage({ content: errors.softBanActionOnAdmin });
 					}
 
 					if (
 						this.client.utils.getHighestRole(user).position >=
 						this.client.utils.getHighestRole(interaction.member).position
 					) {
-						return interaction.createMessage({
-							embeds: [
-								Builders.ErrorEmbed()
-									.setDescription(`${user.tag} have higher (or same) role than you`)
-									.toJSON(),
-							],
-						});
+						return interaction.createMessage({ content: errors.softBanActionOnHigherRoleUser });
 					}
 				}
 
@@ -301,27 +221,15 @@ export default class BanCommand extends Command {
 					this.client.utils.getHighestRole(user).position >=
 						this.client.utils.getHighestRole(interaction.guild.clientMember).position
 				) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed().setDescription(`${user.tag} have higher (or same) role than me`).toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.softBanActionOnHigherRoleBot });
 				}
 
 				if (isNaN(deleteMessageTime)) {
-					return interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription('invalid time! please specify them correctly (example: 5h, 10 minutes etc.)')
-								.toJSON(),
-						],
-					});
+					return interaction.createMessage({ content: errors.invalidTime });
 				}
 
 				if (deleteMessageTime > 604800000 || deleteMessageTime < 0) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription('time must be between 0 and 1 week').toJSON()],
-					});
+					return interaction.createMessage({ content: errors.timeExceedOrBelowLimitSoftban });
 				}
 
 				let message: Lib.Message;
@@ -330,22 +238,7 @@ export default class BanCommand extends Command {
 				if (dmOption) {
 					try {
 						const channel = await user.user.createDM();
-						message = await channel.createMessage({
-							embeds: [
-								new Builders.Embed()
-									.setRandomColor()
-									.setTitle(`you got softbanned from ${interaction.guild.name} :(`)
-									.setDescription(
-										`you broke the rules, didn't you?`,
-										``,
-										`**guild name:** ${interaction.guild.name}`,
-										`**responsible moderator:** ${interaction.user.tag}`,
-										`**reason:** ${reason}`
-									)
-									.setTimestamp()
-									.toJSON(),
-							],
-						});
+						message = await channel.createMessage({ content: dm.softban(interaction, reason) });
 					} catch (error) {
 						dmSuccess = false;
 						if (error instanceof Error) {
@@ -362,26 +255,12 @@ export default class BanCommand extends Command {
 						reason: reason,
 					});
 
-					await interaction.guild.removeBan(user.id, 'softban');
+					await interaction.guild.removeBan(user.id, 'Softban');
 
-					let description = `successfully softbanned ${user.tag}!`;
-
-					if (dmOption && !dmSuccess) {
-						description += " but i can't dm them.";
-					}
-
-					interaction.createMessage({
-						embeds: [Builders.SuccessEmbed().setDescription(description).toJSON()],
-					});
+					interaction.createMessage({ content: success.softban(user, dmSuccess) });
 				} catch (error) {
-					message!.delete();
-					interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(`i can't softban ${user.tag} sorry! :(\n\n${error}`)
-								.toJSON(),
-						],
-					});
+					message!.delete().catch();
+					interaction.createMessage({ content: errors.cannotSoftBan(error) });
 
 					if (error instanceof Error) {
 						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
@@ -398,38 +277,23 @@ export default class BanCommand extends Command {
 				try {
 					await this.client.utils.getUser(user);
 				} catch (error) {
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription("that user doesn't exist?").toJSON()],
-					});
+					return interaction.createMessage({ content: errors.invalidUser });
 				}
 
-				const reason = interaction.data.options.getString('reason', false) || 'no reason?';
+				const reason = interaction.data.options.getString('reason', false) || others.defaultReason;
 				let banned: Lib.Ban;
 
 				try {
 					banned = await interaction.guild.getBan(user);
 				} catch (error) {
-					const name = await this.client.utils.getUser(user);
-					return interaction.createMessage({
-						embeds: [Builders.ErrorEmbed().setDescription(`${name} is not banned!`).toJSON()],
-					});
+					return interaction.createMessage({ content: errors.notBanned });
 				}
 
 				try {
 					await interaction.guild.removeBan(user, reason);
-					interaction.createMessage({
-						embeds: [
-							Builders.SuccessEmbed().setDescription(`successfully unbanned ${banned.user.tag}!`).toJSON(),
-						],
-					});
+					interaction.createMessage({ content: success.unban(banned.user) });
 				} catch (error) {
-					interaction.createMessage({
-						embeds: [
-							Builders.ErrorEmbed()
-								.setDescription(`i can't unban ${banned.user.tag} sorry! :(\n\n${error}`)
-								.toJSON(),
-						],
-					});
+					interaction.createMessage({ content: errors.cannotUnban(error) });
 
 					if (error instanceof Error) {
 						this.client.utils.logger({ title: 'Error', content: error.stack, type: 2 });
@@ -452,8 +316,8 @@ export default class BanCommand extends Command {
 					embeds: [
 						new Builders.Embed()
 							.setRandomColor()
-							.setTitle('list of banned members')
-							.setDescription(bannedMembers || 'no one has been banned yet...')
+							.setTitle('List of banned members')
+							.setDescription(bannedMembers || 'No one has been banned yet.')
 							.setTimestamp()
 							.toJSON(),
 					],
@@ -463,13 +327,7 @@ export default class BanCommand extends Command {
 				break;
 			}
 			default: {
-				interaction.createMessage({
-					embeds: [
-						Builders.ErrorEmbed()
-							.setDescription('wait for a bit or until the bot restart and try again')
-							.toJSON(),
-					],
-				});
+				interaction.createMessage({ content: errors.invalidSubcommand, flags: 64 });
 			}
 		}
 	}
