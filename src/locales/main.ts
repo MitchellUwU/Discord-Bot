@@ -170,6 +170,7 @@ export const success = {
 		if (dmSuccess) return `Successfully timeout ${user.tag}.`;
 		else return `Successfully timeout ${user.tag}. But I can't dm them.`;
 	},
+	untimeout: (user: User | Member) => `Successfully untimeout ${user.tag}.`,
 	changeNick: (user: User | Member) => `Successfully changed ${user.tag}'s nickname.`,
 	removeNick: (user: User | Member) => `Successfully removed ${user.tag}'s nickname.`,
 	purge: (amount: number) => `Successfully purged ${amount} messages.`,

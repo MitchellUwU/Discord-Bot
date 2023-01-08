@@ -55,18 +55,18 @@ export default class ViewInfoCommand extends Command {
 						.filter((role) => user.roles.includes(role.id))
 						.sort((prev, next) => next.position - prev.position);
 
-					let onTimeout = '';
+					let onTimeout: string;
 
 					if (user.communicationDisabledUntil) {
 						const timeLeft = ms(user.communicationDisabledUntil.getTime() - Date.now(), {
 							long: true,
 						});
 
-						onTimeout += `<t:${Math.floor(
+						onTimeout = `<t:${Math.floor(
 							user.communicationDisabledUntil.getTime() / 1000
 						)}:f> (in ${timeLeft})`;
 					} else {
-						onTimeout += "This user isn't in timeout";
+						onTimeout = "This user isn't in timeout";
 					}
 
 					interaction.createMessage({

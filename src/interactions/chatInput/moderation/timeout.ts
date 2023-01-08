@@ -195,9 +195,7 @@ export default class TimeoutCommand extends Command {
 						communicationDisabledUntil: new Date(Date.now()).toISOString(),
 						reason: reason,
 					});
-					interaction.createMessage({
-						embeds: [Builders.SuccessEmbed().setDescription(`successfully untimeout ${user.tag}!`).toJSON()],
-					});
+					interaction.createMessage({ content: success.untimeout(user) });
 				} catch (error) {
 					interaction.createMessage({ content: errors.cannotUntimeout(error) });
 
