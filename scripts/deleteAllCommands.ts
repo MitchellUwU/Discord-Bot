@@ -1,29 +1,29 @@
-import { Client } from 'oceanic.js';
+import { Client, ClientOptions } from 'oceanic.js';
 import options from '../config.json';
 
-const client = new Client(options.clientOptions);
+const client = new Client(options.clientOptions as ClientOptions);
 
 client.once('ready', () => {
 	try {
 		if (options.devMode) {
 			client.application.bulkEditGuildCommands(options.guildID, []);
-			console.log('deleting all guild commands...');
+			console.log('Deleting all guild commands...');
 			setTimeout(() => {
-				console.log('deleted all guild commands!');
+				console.log('Deleted all guild commands.');
 				client.disconnect(false);
 				process.exit();
-			}, 30000);
+			}, 10000);
 		} else {
 			client.application.bulkEditGlobalCommands([]);
-			console.log('deleting all global commands...');
+			console.log('Deleting all global commands...');
 			setTimeout(() => {
-				console.log('deleted all global commands!');
+				console.log('Deleted all global commands.');
 				client.disconnect(false);
 				process.exit();
-			}, 30000);
+			}, 10000);
 		}
 	} catch (error) {
-		console.log("can't delete commands! error:", error);
+		console.log('Error:', error);
 	}
 });
 
